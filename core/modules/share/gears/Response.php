@@ -71,7 +71,7 @@ final class Response extends Primitive {
      */
     public static function prepareRedirectURL($redirectURL) {
         if (empty($redirectURL)) return $redirectURL;
-        $lang = E()->getLanguage();
+        $lang = E()->Language;
 
         return str_replace(
             array(
@@ -80,7 +80,7 @@ final class Response extends Primitive {
             ),
             array(
                 $lang->getAbbrByID($lang->getCurrent()),
-                E()->getSiteManager()->getCurrentSite()->base
+                E()->SiteManager->getCurrentSite()->base
             ),
             $redirectURL);
     }
@@ -129,8 +129,8 @@ final class Response extends Primitive {
                 $domain = '.' . $domain;
                 $path = '/';
             } else {
-                $path = E()->getSiteManager()->getCurrentSite()->root;
-                $domain = E()->getSiteManager()->getCurrentSite()->domain;
+                $path = E()->SiteManager->getCurrentSite()->root;
+                $domain = E()->SiteManager->getCurrentSite()->domain;
             }
         }
         //todo VZ: remove this?
@@ -139,7 +139,7 @@ final class Response extends Primitive {
             $domain = '.' . $this->getConfigValue('site.domain');
         }
         else {
-            $path = E()->getSiteManager()->getCurrentSite()->root;
+            $path = E()->SiteManager->getCurrentSite()->root;
             $domain = '';
         }*/
         $secure = false;
@@ -203,9 +203,9 @@ final class Response extends Primitive {
         if ($action && substr($action, -1) !== '/') {
             $action .= '/';
         }
-        $request = E()->getRequest();
+        $request = E()->Request;
         $this->setRedirect(
-            E()->getSiteManager()->getCurrentSite()->base .
+            E()->SiteManager->getCurrentSite()->base .
                 $request->getLangSegment()
                 . $request->getPath(Request::PATH_TEMPLATE, true)
                 . $action
@@ -234,7 +234,7 @@ final class Response extends Primitive {
             $url = $_SERVER['HTTP_REFERER'];
         }
         else {
-            $url = E()->getSiteManager()->getCurrentSite()->root;
+            $url = E()->SiteManager->getCurrentSite()->root;
         }
         $this->setHeader('Location', $url);
         $this->commit();

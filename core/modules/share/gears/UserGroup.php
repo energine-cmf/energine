@@ -155,7 +155,7 @@ final class UserGroup extends Primitive {
      */
     public function getSites($groupID, $asArray = true) {
         return array_map(function ($siteID) use ($asArray) {
-            return ($asArray) ? $siteID : E()->getSiteManager()->getSiteByID($siteID);
+            return ($asArray) ? $siteID : E()->SiteManager->getSiteByID($siteID);
         }, $this->dbh->getColumn('share_groups2sites', 'site_id', ['group_id' => $groupID]));
     }
 

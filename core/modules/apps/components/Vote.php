@@ -123,7 +123,7 @@ class Vote extends DataSet {
 
         if ($this->isUserCanVote($voteID)) {
             $this->dbh->modify('UPDATE apps_vote_question SET vote_question_counter = vote_question_counter+1 WHERE vote_question_id=%s', $QID);
-            $this->response->addCookie(self::VOTED_COOKIE_PREFIX . $voteID, 'voted', time() + self::COOKIE_LIFETIME, E()->getSiteManager()->getCurrentSite()->host);
+            $this->response->addCookie(self::VOTED_COOKIE_PREFIX . $voteID, 'voted', time() + self::COOKIE_LIFETIME, E()->SiteManager->getCurrentSite()->host);
         }
         $this->setProperty('canVote', 0);
         $this->getVoteResults($voteID);

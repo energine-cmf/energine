@@ -74,7 +74,7 @@ class RestorePassword extends DataSet {
                 $template = new MailTemplate('user_restore_password', [
                     'user_login' => $uName,
                     'user_password' => $password,
-                    'site_url' => E()->getSiteManager()->getCurrentSite()->base,
+                    'site_url' => E()->SiteManager->getCurrentSite()->base,
                     'site_name' => $this->translate('TXT_SITE_NAME')
                 ]);
 

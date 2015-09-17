@@ -136,7 +136,7 @@ final class UserSession implements \SessionHandlerInterface {
             $path = '/';
             $domain = '.' . Primitive::getConfigValue('site.domain');
         } else {
-            $path = E()->getSiteManager()->getCurrentSite()->root;
+            $path = E()->SiteManager->getCurrentSite()->root;
             $domain = '';
         }
         session_set_cookie_params($this->lifespan, $path, $domain);
@@ -156,7 +156,7 @@ final class UserSession implements \SessionHandlerInterface {
             //Inserts session info into DB
             $data['session_created'] = $data['session_last_impression'] = time();
             $data['session_expires'] = $data['session_last_impression'] + $this->lifespan;
-            $data['session_ip'] = E()->getRequest()->getClientIP(true);
+            $data['session_ip'] = E()->Request->getClientIP(true);
             $this->phpSessId = $data['session_native_id'] = self::createIdentifier();
             $this->id = $this->dbh->modify(QAL::INSERT, self::$tableName, $data);
             //start PHP session

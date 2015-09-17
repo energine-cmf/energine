@@ -28,7 +28,7 @@ namespace Energine\share\gears {
                 call_user_func_array('var_dump', $args);
                 print(PHP_EOL);
             }
-            E()->getResponse()->write(ob_get_contents());
+            E()->Response->write(ob_get_contents());
             ob_end_clean();
         }
 
@@ -121,7 +121,7 @@ namespace Energine\share\gears {
                 "\ndate: " . date("l dS of F Y h:i:s") . "\n\n" . implode("\n", $result) . "\n"
             );
             chmod('logs/debug.log', 0666);
-            E()->getResponse()->commit();
+            E()->Response->commit();
         }
 
 
@@ -339,7 +339,7 @@ namespace Energine\share\gears {
 
             $const = strtoupper($const);
             if (is_null($langId)) {
-                $langId = intval(E()->getLanguage()->getCurrent());
+                $langId = intval(E()->Language->getCurrent());
             }
             $result = $const;
 

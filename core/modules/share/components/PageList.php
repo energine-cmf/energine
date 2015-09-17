@@ -49,9 +49,9 @@ class PageList extends DataSet {
         $this->setType(self::COMPONENT_TYPE_LIST);
         $this->addTranslation('TXT_HOME');
         if ($this->getParam('site') == 'default') {
-            $this->setParam('site', E()->getSiteManager()->getDefaultSite()->id);
+            $this->setParam('site', E()->SiteManager->getDefaultSite()->id);
         } elseif ($this->getParam('site') == 'current') {
-            $this->setParam('site', E()->getSiteManager()->getCurrentSite()->id);
+            $this->setParam('site', E()->SiteManager->getCurrentSite()->id);
         }
     }
 
@@ -148,7 +148,7 @@ class PageList extends DataSet {
 
         if (is_numeric($this->getParam('id'))) {
             $param = (int)$this->getParam('id');
-            $sitemap = E()->getMap(E()->getSiteManager()->getSiteByPage($param)->id);
+            $sitemap = E()->getMap(E()->SiteManager->getSiteByPage($param)->id);
         } //Выводим siblin
         elseif ($this->getParam('id') == self::PARENT_PAGE) {
             $param = $sitemap->getParent($this->document->getID());
@@ -160,7 +160,7 @@ class PageList extends DataSet {
             $methodName = 'getInfo';
             $param = NULL;
             if (!($siteId = $this->getParam('site'))) {
-                $siteId = E()->getSiteManager()->getCurrentSite()->id;
+                $siteId = E()->SiteManager->getCurrentSite()->id;
             }
             $sitemap = E()->getMap($siteId);
         } elseif (!$this->getParam('id')) {
@@ -208,7 +208,7 @@ class PageList extends DataSet {
                     $data[$key]['Name'] = $value['Name'];
                     $data[$key]['Redirect'] = Response::prepareRedirectURL($value['RedirectUrl']);
                     $data[$key]['Site'] =
-                        E()->getSiteManager()->getSiteByID($data[$key]['Site'])->base;
+                        E()->SiteManager->getSiteByID($data[$key]['Site'])->base;
                     if ($hasDescriptionRtf) $data[$key]['DescriptionRtf'] =
                         $value['DescriptionRtf'];
                 }

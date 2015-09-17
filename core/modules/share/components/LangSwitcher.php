@@ -44,7 +44,7 @@ final class LangSwitcher extends DataSet {
      * @copydoc DataSet::loadData
      */
     protected function loadData() {
-        $lang = E()->getLanguage();
+        $lang = E()->Language;
         $data = $lang->getLanguages();
         foreach ($data as $langID => $langInfo) {
             if (!isset($langInfo['lang_is_active']) || $langInfo['lang_is_active']) {
@@ -56,7 +56,7 @@ final class LangSwitcher extends DataSet {
                 $result[$langID]['lang_real_abbr'] = $abbr;
                 $result[$langID]['lang_id'] = $langID;
                 $result[$langID]['lang_url'] = $result[$langID]['lang_abbr'] . (($result[$langID]['lang_abbr']) ? '/' : '') .
-                    E()->getRequest()->getPath(Request::PATH_WHOLE, true);
+                    E()->Request->getPath(Request::PATH_WHOLE, true);
             }
         }
         return $result;

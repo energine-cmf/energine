@@ -39,7 +39,7 @@ class BreadCrumbs extends DataSet {
     public function __construct($name,  array $params = null) {
         parent::__construct($name, $params);
         $this->setType(self::COMPONENT_TYPE_LIST);
-        $this->setProperty('site', E()->getSiteManager()->getCurrentSite()->name);
+        $this->setProperty('site', E()->SiteManager->getCurrentSite()->name);
     }
 
     /**

@@ -116,7 +116,7 @@ class Site extends Primitive {
             $result = $this->data[$propName];
         }
         elseif (in_array($propName, ['name', 'metaKeywords', 'metaDescription'])) {
-            return $this->data[$propName] = self::$siteTranslationsData[E()->getLanguage()->getCurrent()][$this->data['id']][$propName];
+            return $this->data[$propName] = self::$siteTranslationsData[E()->Language->getCurrent()][$this->data['id']][$propName];
         } elseif (self::$isPropertiesTableExists) {
             $res = $this->data[$propName] = $this->dbh->getScalar(
                 'SELECT prop_value FROM share_sites_properties

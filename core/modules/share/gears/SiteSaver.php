@@ -124,7 +124,7 @@ class SiteSaver extends Saver {
             'LEFT JOIN share_sitemap s ON s.smap_id = al.smap_id ' .
             'WHERE s.smap_pid is NULL AND site_id= %s',
             $smapId,
-            E()->getSiteManager()->getDefaultSite()->id
+            E()->SiteManager->getDefaultSite()->id
         );
     }
 

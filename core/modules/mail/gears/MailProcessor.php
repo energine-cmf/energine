@@ -48,7 +48,7 @@ class MailProcessor
     }
 
     protected function getDefaultLanguage() {
-        return E()->getLanguage()->getDefault();
+        return E()->Language->getDefault();
     }
 
     protected function getActiveSubscriptions() {

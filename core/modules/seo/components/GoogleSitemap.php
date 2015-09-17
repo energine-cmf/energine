@@ -56,7 +56,7 @@ class GoogleSitemap extends SitemapTree {
      */
     public function __construct($name, array $params = NULL) {
         parent::__construct($name, $params);
-        E()->getResponse()->setHeader('Content-Type', 'text/xml; charset=utf-8');
+        E()->Response->setHeader('Content-Type', 'text/xml; charset=utf-8');
         $this->pdoDB = $this->dbh->getPDO();
         $this->maxVideos = ((int)$this->getConfigValue('seo.maxVideosInMap')) ? (int)$this->getConfigValue('seo.maxVideosInMap') : self::DEFAULT_MAX_VIDEOS;
     }
@@ -83,7 +83,7 @@ class GoogleSitemap extends SitemapTree {
         $this->setDataDescription($dd);
         $d = new Data();
         $sitemaps = [];
-        $siteinfo = E()->getSiteManager()->getCurrentSite();
+        $siteinfo = E()->SiteManager->getCurrentSite();
         if (!$siteinfo->isIndexed) throw new SystemException('ERR_404', SystemException::ERR_404);
 
         $sitePath = $siteinfo->base;
@@ -154,14 +154,14 @@ class GoogleSitemap extends SitemapTree {
      * <tt>Video sitemap</tt> holds an information about video files.
      */
     protected function videomap() {
-        $respone = E()->getResponse();
+        $respone = E()->Response;
 
         $params = $this->getStateParams();
         $mapNumber = ((int)$params[0]) ? (int)$params[0] : 1;
         $limStart = ($mapNumber - 1) * $this->maxVideos;
         $limEnd = $this->maxVideos;
 
-        $siteinfo = E()->getSiteManager()->getCurrentSite();
+        $siteinfo = E()->SiteManager->getCurrentSite();
 
         $videosInfo = $this->pdoDB->query('SELECT * FROM seo_sitemap_videos WHERE site_id = ' . $siteinfo->id . ' ORDER BY videos_date DESC LIMIT ' . $limStart . ',' . $limEnd);
 
@@ -170,7 +170,7 @@ class GoogleSitemap extends SitemapTree {
                 . 'xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">' . PHP_EOL);
 
             while ($videoInfo = $videosInfo->fetch()) {
-                E()->getResponse()->write('<url>' . PHP_EOL
+                E()->Response->write('<url>' . PHP_EOL
                     . '<loc>' . $videoInfo['videos_loc'] . '</loc>' . PHP_EOL
                     . "\t" . '<video:video>' . PHP_EOL
                     . "\t\t" . '<video:thumbnail_loc>' . $videoInfo['videos_thumb'] . '</video:thumbnail_loc>' . PHP_EOL
@@ -185,7 +185,7 @@ class GoogleSitemap extends SitemapTree {
             $respone->write('</urlset>' . PHP_EOL);
         }
 
-        E()->getResponse()->commit();
+        E()->Response->commit();
     }
 
 

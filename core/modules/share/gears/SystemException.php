@@ -109,7 +109,7 @@ class SystemException extends \Exception {
      * @todo определиться с $customMessages: это mixed или array?
      */
     public function __construct($message, $code = self::ERR_CRITICAL, $customMessages = null) {
-        $this->response = E()->getResponse();
+        $this->response = E()->Response;
         if (isset($customMessages)) {
             if (!is_array($customMessages)) {
                 $this->customMessages = array($customMessages);
@@ -123,18 +123,18 @@ class SystemException extends \Exception {
         if ($code == self::ERR_LANG) {
             $this->response->setStatus(503);
             $this->response->setHeader('Retry-After', 20);
-            $message = translate($message, E()->getLanguage()->getDefault());
+            $message = translate($message, E()->Language->getDefault());
         }
         elseif ($code == self::ERR_403) {
             $this->response->setStatus(403);
-            $message = translate($message, E()->getLanguage()->getCurrent());
+            $message = translate($message, E()->Language->getCurrent());
         }
         elseif ($code == self::ERR_404) {
             $this->response->setStatus(404);
-            $message = translate($message, E()->getLanguage()->getCurrent());
+            $message = translate($message, E()->Language->getCurrent());
         }
         elseif ($code != self::ERR_DB ) {
-            $message = translate($message, E()->getLanguage()->getCurrent());
+            $message = translate($message, E()->Language->getCurrent());
         }
         $this->backtrace = debug_backtrace(!DEBUG_BACKTRACE_PROVIDE_OBJECT, 5);
 

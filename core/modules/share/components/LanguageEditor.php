@@ -101,7 +101,7 @@ class LanguageEditor extends Grid {
         //если мы пытаемся удалить текущий язык
         //генерим ошибку
         if ($this->document->getLang() == $id ||
-            $id == E()->getLanguage()->getDefault()
+            $id == E()->Language->getDefault()
         ) {
             throw new SystemException('ERR_CANT_DELETE', SystemException::ERR_CRITICAL);
         }
@@ -127,7 +127,7 @@ class LanguageEditor extends Grid {
             if ($translationTables =
                 $this->dbh->select('SHOW TABLES LIKE "%_translation"')
             ) {
-                $defaultLangID = E()->getLanguage()->getDefault();
+                $defaultLangID = E()->Language->getDefault();
                 foreach ($translationTables as $row) {
                     $tableName = current($row);
                     $fields =

@@ -225,7 +225,7 @@ class AttachmentEditor extends Grid {
                         $fields[$colName] = '';
                     }
                 }
-                $langs = E()->getLanguage()->getLanguages();
+                $langs = E()->Language->getLanguages();
                 foreach ($langs as $lang_id => $lang_data) {
                     $this->dbh->modify(
                         QAL::INSERT,

@@ -88,7 +88,7 @@ class Field extends Primitive implements \Iterator {
         elseif ($setForAll && !$this->getRowCount() && !is_array($data)) {
             $rowData = $data;
             $data = array();
-            for ($i = 0; $i < sizeof(E()->getLanguage()->getLanguages()); $i++) {
+            for ($i = 0; $i < sizeof(E()->Language->getLanguages()); $i++) {
                 $data[$i] = $rowData;
             }
         }

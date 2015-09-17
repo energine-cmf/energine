@@ -151,7 +151,7 @@ class OGPrimitive extends Primitive {
      */
     public function build() {
         if (empty($this->title)) {
-            $this->setTitle(E()->getDocument()->getProperty('title'));
+            $this->setTitle(E()->Document->getProperty('title'));
         }
 
         $doc = new \DOMDocument('1.0', 'UTF-8');
@@ -170,7 +170,7 @@ class OGPrimitive extends Primitive {
             foreach ($this->images as $imageProps) {
 
                 $prop = $doc->createElement('property', (($resizerURL =
-                        $this->getConfigValue('site.resizer')) ? $resizerURL : (E()->getSiteManager()->getDefaultSite()->base . 'resizer/')) . 'w' . $imageProps['width'] . '-h' . $imageProps['height'] . '/' . $imageProps['url'] . '?preview.jpg');
+                        $this->getConfigValue('site.resizer')) ? $resizerURL : (E()->SiteManager->getDefaultSite()->base . 'resizer/')) . 'w' . $imageProps['width'] . '-h' . $imageProps['height'] . '/' . $imageProps['url'] . '?preview.jpg');
                 $prop->setAttribute('name', 'image');
                 $result->appendChild($prop);
                 $prop = $doc->createElement('property', $imageProps['width']);
@@ -183,7 +183,7 @@ class OGPrimitive extends Primitive {
         }
         if (!empty($this->video)) {
             $prop = $doc->createElement('property', (($url =
-                    $this->getConfigValue('site.media')) ? $url : (E()->getSiteManager()->getDefaultSite()->base)) . $this->video['url']);
+                    $this->getConfigValue('site.media')) ? $url : (E()->SiteManager->getDefaultSite()->base)) . $this->video['url']);
             $prop->setAttribute('name', 'video');
             $result->appendChild($prop);
             $prop = $doc->createElement('property', $this->video['width']);

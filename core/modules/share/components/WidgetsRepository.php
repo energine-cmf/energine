@@ -159,7 +159,7 @@ class WidgetsRepository extends Grid {
         if (!simplexml_load_string($xml)) {
             throw new SystemException('ERR_BAD_XML');
         }
-        $this->dbh->modify(QAL::UPDATE, 'share_sitemap', array('smap_content_xml' => $xml), array('smap_id' => E()->getDocument()->getID()));
+        $this->dbh->modify(QAL::UPDATE, 'share_sitemap', array('smap_content_xml' => $xml), array('smap_id' => E()->Document->getID()));
         $b = new JSONCustomBuilder();
         $b->setProperties(array(
             'xml' => $xml,
@@ -200,9 +200,9 @@ class WidgetsRepository extends Grid {
         //если шаблон  - ядреный - мы не можем в него писать изменения
         if ($content == basename($content)) {
             //значит создаем одноименный шаблон в проекте
-            file_put_contents(SITE_DIR . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . E()->getSiteManager()->getCurrentSite()->folder . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . $content, $xml);
+            file_put_contents(SITE_DIR . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . E()->SiteManager->getCurrentSite()->folder . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . $content, $xml);
             //создаем симлинк
-            $symlink = self::createSymlink($content, E()->getSiteManager()->getCurrentSite()->folder);
+            $symlink = self::createSymlink($content, E()->SiteManager->getCurrentSite()->folder);
             //переназначаем для данной страницы шаблон
             //перенезначаем для всех страниц созданных по ядреному шаблону
             $this->dbh->modify(QAL::UPDATE, 'share_sitemap', array('smap_content' => $symlink), array('smap_content' => $content));
@@ -273,7 +273,7 @@ class WidgetsRepository extends Grid {
         $contentFileName = ($contentName = Translit::asURLSegment($title)) . '.content.xml';
 
         //Создаем контентный файл
-        file_put_contents(($target = 'site/modules/' . ($moduleName = E()->getSiteManager()->getCurrentSite()->folder) . '/templates/content/' . $contentFileName), $xml);
+        file_put_contents(($target = 'site/modules/' . ($moduleName = E()->SiteManager->getCurrentSite()->folder) . '/templates/content/' . $contentFileName), $xml);
 
         $symlink = self::createSymlink($contentFileName, $moduleName);
 
@@ -285,7 +285,7 @@ class WidgetsRepository extends Grid {
         $ltagID = $this->dbh->getScalar('share_lang_tags', array('ltag_id'), array('ltag_name' => $ltagName));
         if (!$ltagID) {
             $ltagID = $this->dbh->modify(QAL::INSERT, 'share_lang_tags', array('ltag_name' => $ltagName));
-            foreach (array_keys(E()->getLanguage()->getLanguages()) as $langID) {
+            foreach (array_keys(E()->Language->getLanguages()) as $langID) {
                 $this->dbh->modify(QAL::INSERT, 'share_lang_tags_translation', array('lang_id' => $langID, 'ltag_value_rtf' => $title, 'ltag_id' => $ltagID));
             }
         }

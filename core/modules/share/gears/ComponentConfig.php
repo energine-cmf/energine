@@ -113,7 +113,7 @@ class ComponentConfig {
 
         if (!file_exists($file = ROOT_DIR.'/'.$configFilename)) {
             //Смотрим в директории текущего сайта с пользовательскими конфигами
-            if (!file_exists($file = sprintf(SITE_DIR . self::SITE_CONFIG_DIR . $configFilename, E()->getSiteManager()->getCurrentSite()->folder))) {
+            if (!file_exists($file = sprintf(SITE_DIR . self::SITE_CONFIG_DIR . $configFilename, E()->SiteManager->getCurrentSite()->folder))) {
                 if (!file_exists($file = sprintf(CORE_DIR . self::CORE_CONFIG_DIR, $moduleName) . $configFilename)) {
                     $file = false;
                 }
@@ -237,7 +237,7 @@ class ComponentConfig {
                     if (strpos($pattern, '[any]') !== false) {
                         $useSegments--;
                     }
-                    E()->getRequest()->useSegments(E()->getRequest()->getUsedSegments() + $useSegments);
+                    E()->Request->useSegments(E()->Request->getUsedSegments() + $useSegments);
                 }
                 array_shift($matches);
                 $actionName = $methodName;

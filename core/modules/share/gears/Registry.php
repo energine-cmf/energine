@@ -35,13 +35,15 @@ namespace Energine\share\gears {
     /**
      * Application registry.
      *
-     * @property-read \Energine\share\gears\Utils $Utils
-     * @property-read \Energine\share\gears\UserSession $UserSession
-     * @property-read \Energine\share\gears\Request $Request
-     * @property-read \Energine\share\gears\Response $Response
+     * @property \Energine\share\gears\Utils $Utils
+     * @property \Energine\share\gears\UserSession $UserSession
+     * @property \Energine\share\gears\Request $Request
+     * @property \Energine\share\gears\Response $Response
+     * @property \Energine\share\gears\Document $Document
+     * @property \Energine\share\gears\Language $Language
      *
      *
-     * Such Registry & Service Locator hybrid.
+     * Registry & Service Locator hybrid.
      * Any injected object here become a singleton.
      * In addition there is a set of methods, that returns an objects for commonly used classes.
      *
@@ -168,33 +170,6 @@ namespace Energine\share\gears {
         }
 
         /**
-         * Get Request.
-         *
-         * @return Request
-         */
-        public function getRequest() {
-            return $this->offsetGet('Energine\\share\\gears\\Request');
-        }
-
-        /**
-         * Get Response.
-         *
-         * @return Response
-         */
-        public function getResponse() {
-            return $this->offsetGet('Energine\\share\\gears\\Response');
-        }
-
-        /**
-         * Get Document.
-         *
-         * @return Document
-         */
-        public function getDocument() {
-            return $this->offsetGet('Energine\\share\\gears\\Document');
-        }
-
-        /**
          * Get OGPrimitive.
          *
          * @return OGPrimitive
@@ -203,23 +178,6 @@ namespace Energine\share\gears {
             return $this->offsetGet('Energine\\share\\gears\\OGPrimitive');
         }
 
-        /**
-         * Get Language.
-         *
-         * @return Language
-         */
-        public function getLanguage() {
-            return $this->offsetGet('Energine\\share\\gears\\Language');
-        }
-
-        /**
-         * Get SiteManager.
-         *
-         * @return SiteManager
-         */
-        public function getSiteManager() {
-            return $this->offsetGet('Energine\\share\\gears\\SiteManager');
-        }
 
         /**
          * Get Sitemap object.
@@ -230,7 +188,7 @@ namespace Energine\share\gears {
          * @note In fact, several objects of these class exist.
          */
         public function getMap($siteID = false) {
-            if (!$siteID) $siteID = E()->getSiteManager()->getCurrentSite()->id;
+            if (!$siteID) $siteID = E()->SiteManager->getCurrentSite()->id;
             if (!isset($this->entities['Sitemap'][$siteID])) {
                 $this->entities['Sitemap'][$siteID] = new Sitemap($siteID);
             }
@@ -379,8 +337,7 @@ namespace Energine\share\gears {
          * @since 5.0.0
          */
         public function offsetUnset($offset) {
-            // nothing to do
-            //Manual unsetting is impossible
+            throw new \BadMethodCallException($offset);
         }
     }
 }

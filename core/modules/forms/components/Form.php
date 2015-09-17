@@ -205,7 +205,7 @@ class Form extends DBDataSet {
     protected function send() {
         $postTableName = str_replace('.', '_', $this->getTableName());
         if (!isset($_POST[$postTableName])) {
-            E()->getResponse()->redirectToCurrentSection();
+            E()->Response->redirectToCurrentSection();
         }
         try {
             $data[$this->getTableName()] = $_POST[$postTableName];
@@ -235,7 +235,7 @@ class Form extends DBDataSet {
                                 unset($tableInfo[$m2mPKName]);
                                 $m2mValueFieldInfo = current($tableInfo);
                                 if (isset($m2mValueFieldInfo['key']) && is_array($m2mValueFieldInfo)) {
-                                    list($values, ,) = $this->dbh->getForeignKeyData($m2mValueFieldInfo['key']['tableName'], $m2mValueFieldInfo['key']['fieldName'], E()->getLanguage()->getCurrent(), [$m2mValueFieldInfo['key']['tableName'] . '.' . $m2mValueFieldInfo['key']['fieldName'] => $value]);
+                                    list($values, ,) = $this->dbh->getForeignKeyData($m2mValueFieldInfo['key']['tableName'], $m2mValueFieldInfo['key']['fieldName'], E()->Language->getCurrent(), [$m2mValueFieldInfo['key']['tableName'] . '.' . $m2mValueFieldInfo['key']['fieldName'] => $value]);
                                     if (is_array($values)) {
                                         $data[$key]['value'] = implode(',', array_map(function ($row) {
                                             return $row['fk_name'];
@@ -255,14 +255,14 @@ class Form extends DBDataSet {
                         $this->dbh->getScalar(
                             'frm_forms_translation',
                             'form_name',
-                            ['form_id' => $this->formID, 'lang_id' => E()->getLanguage()->getCurrent()]);
+                            ['form_id' => $this->formID, 'lang_id' => E()->Language->getCurrent()]);
                     $subject = $this->translate('TXT_EMAIL_FROM_FORM') . ' ' .
                         $subject;
 
                     //Create text to send. The last one will contain: translations of variables and  variables.
                     $body = '';
 //                    if (!($url = $this->getConfigValue('site.media')))
-                    $url = E()->getSiteManager()->getCurrentSite()->base;
+                    $url = E()->SiteManager->getCurrentSite()->base;
                     foreach ($data as $fieldname => $value) {
                         $type = $this->getDataDescription()->getFieldDescriptionByName($fieldname)->getType();
                         if ($type == FieldDescription::FIELD_TYPE_FILE) {
@@ -336,7 +336,7 @@ class Form extends DBDataSet {
 
         $this->setTitle($this->dbh->getScalar('frm_forms_translation',
             ['form_name'],
-            ['form_id' => $this->formID, 'lang_id' => E()->getLanguage()->getCurrent()]));
+            ['form_id' => $this->formID, 'lang_id' => E()->Language->getCurrent()]));
     }
 
     //todo VZ: Input argument is not used.
@@ -393,7 +393,7 @@ class Form extends DBDataSet {
     private function buildForm() {
         $result = $this->dbh->select('frm_forms_translation',
             ['form_name', 'form_annotation_rtf', 'form_post_annotation_rtf'],
-            ['form_id' => $this->formID, 'lang_id' => E()->getLanguage()->getCurrent()]);
+            ['form_id' => $this->formID, 'lang_id' => E()->Language->getCurrent()]);
 
         if (is_array($result)) {
             $this->setTitle($result[0]['form_name']);

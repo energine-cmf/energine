@@ -34,7 +34,7 @@ class LinkingEditor extends Grid {
         else {
             $this->setProperty('exttype', 'feededitor');
             if(!in_array($this->getState(),  array('up', 'down')) && isset($_COOKIE[md5($this->getName())])){
-                E()->getResponse()->deleteCookie(md5($this->getName()));
+                E()->Response->deleteCookie(md5($this->getName()));
             }
         }
     }
@@ -57,7 +57,7 @@ class LinkingEditor extends Grid {
     // Убираем все лишнее
     protected function main() {
         if($this->getFilter())
-            E()->getResponse()->addCookie(md5($this->getName()), convert_uuencode($this->document->componentManager->getBlockByName(
+            E()->Response->addCookie(md5($this->getName()), convert_uuencode($this->document->componentManager->getBlockByName(
                    $this->getParam('bind')
                 )->getFilter()));
         $this->addToolbar($this->createToolbar());
@@ -71,7 +71,7 @@ class LinkingEditor extends Grid {
     protected function changeOrder($direction){
         if(isset($_COOKIE[md5($this->getName())])){
             $this->setFilter(convert_uudecode($_COOKIE[md5($this->getName())]));
-            E()->getResponse()->deleteCookie(md5($this->getName()));
+            E()->Response->deleteCookie(md5($this->getName()));
         }
         return parent::changeOrder($direction);
     }

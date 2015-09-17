@@ -148,7 +148,7 @@ class DBDataSet extends DataSet {
     protected function getDataLanguage() {
         $result = false;
         if ($this->getParam('onlyCurrentLang')) {
-            $result = E()->getLanguage()->getCurrent();
+            $result = E()->Language->getCurrent();
         }
 
         return $result;
@@ -230,7 +230,7 @@ class DBDataSet extends DataSet {
                     $relations[$valueFieldName] = [
                         'table' => (!$langTable) ? $relInfo['tableName'] : $langTable,
                         'field' => $relInfo['fieldName'],
-                        'lang' => ($langTable) ? E()->getLanguage()->getCurrent() : false,
+                        'lang' => ($langTable) ? E()->Language->getCurrent() : false,
                         'valueField' => substr($relInfo['fieldName'], 0, strrpos($relInfo['fieldName'], '_')) . '_name'
                     ];
 
@@ -316,7 +316,7 @@ class DBDataSet extends DataSet {
      */
     private function multiLoadData() {
         $data = false;
-        $lang = E()->getLanguage();
+        $lang = E()->Language;
         $lang = $lang->getLanguages();
         $dbFields = [];
         $filter = $order = $limit = '';
@@ -698,7 +698,7 @@ class DBDataSet extends DataSet {
      * @return array
      */
     protected function getFKData($fkTableName, $fkKeyName) {
-        return $this->dbh->getForeignKeyData($fkTableName, $fkKeyName, E()->getLanguage()->getCurrent());
+        return $this->dbh->getForeignKeyData($fkTableName, $fkKeyName, E()->Language->getCurrent());
     }
 
     /**
@@ -804,7 +804,7 @@ class DBDataSet extends DataSet {
         $result = '';
         if ($this->getParam('editable') && isset($_POST['ID']) && isset($_POST['num']) && isset($_POST['data'])) {
             $result = DataSet::cleanupHTML($_POST['data']);
-            $langID = E()->getLanguage()->getCurrent();
+            $langID = E()->Language->getCurrent();
             $entityId = (int)$_POST['ID'];
             $field = $_POST['num'];
             $this->dbh->modify(gears\QAL::UPDATE, $this->getTranslationTableName(), [$field => $result],

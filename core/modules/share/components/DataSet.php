@@ -738,7 +738,7 @@ abstract class DataSet extends Component {
          * If we want to use custom embed player we need to redefine embed_player.xslt in module transformers dir
          */
         $fn = 'embed_player.xslt';
-        if (file_exists($file = sprintf(SITE_DIR . XSLTTransformer::MAIN_TRANSFORMER_DIR, E()->getSiteManager()->getCurrentSite()->folder) . $fn)) {
+        if (file_exists($file = sprintf(SITE_DIR . XSLTTransformer::MAIN_TRANSFORMER_DIR, E()->SiteManager->getCurrentSite()->folder) . $fn)) {
             E()->getController()->getTransformer()->setFileName($fn);
         } else {
             E()->getController()->getTransformer()->setFileName('core/modules/share/transformers/embed_player.xslt', true);
@@ -791,7 +791,7 @@ abstract class DataSet extends Component {
 
         }
 
-        $base = E()->getSiteManager()->getCurrentSite()->base;
+        $base = E()->SiteManager->getCurrentSite()->base;
         $data = str_replace((strpos($data, '%7E')) ? str_replace('~', '%7E', $base) : $base, '', $data);
         return $data;
     }

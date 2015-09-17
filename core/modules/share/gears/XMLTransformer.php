@@ -29,7 +29,7 @@ class XMLTransformer implements ITransformer{
     private $document;
 
     public function transform() {
-        E()->getResponse()->setHeader('Content-Type', 'text/xml; charset=UTF-8');
+        E()->Response->setHeader('Content-Type', 'text/xml; charset=UTF-8');
         return trim($this->document->saveXML());
     }
 

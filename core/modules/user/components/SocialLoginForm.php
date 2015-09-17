@@ -41,7 +41,7 @@ class SocialLoginForm extends LoginForm {
             $messageField = new Field('message');
             $messageField->addRowData($this->translate('ERR_BAD_LOGIN'));
             $this->getData()->addField($messageField);
-            E()->getResponse()->deleteCookie(UserSession::FAILED_LOGIN_COOKIE_NAME);
+            E()->Response->deleteCookie(UserSession::FAILED_LOGIN_COOKIE_NAME);
         }
 
         //Во избежание появления empty рекордсета
@@ -66,7 +66,7 @@ class SocialLoginForm extends LoginForm {
                         ]);
                         $ctrl->setAttribute('loginUrl', $auth->getLoginUrl(
                             [
-                                'redirect_uri' => ($base = E()->getSiteManager()->getCurrentSite()->base)
+                                'redirect_uri' => ($base = E()->SiteManager->getCurrentSite()->base)
                                     . 'auth.php?' . $socialType . 'Auth&return=' . $this->getReturnUrl(),
                                 'scope' => $ctrl->getAttribute('permissions')
                             ]
@@ -86,7 +86,7 @@ class SocialLoginForm extends LoginForm {
      */
     private function getReturnUrl() {
         if (!$returnUrl = $this->getParam('successAction')) {
-            $returnUrl = (string)E()->getRequest()->getURI();
+            $returnUrl = (string)E()->Request->getURI();
         }
         return $returnUrl;
     }

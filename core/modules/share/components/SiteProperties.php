@@ -32,7 +32,7 @@ class SiteProperties extends Component {
             if (!$this->getParam('id')) {
                 throw new \InvalidArgumentException();
             }
-            $code = E()->getSiteManager()->getCurrentSite()->{$this->getParam('id')};
+            $code = E()->SiteManager->getCurrentSite()->{$this->getParam('id')};
             if (!$code) {
                 throw new \InvalidArgumentException();
             }

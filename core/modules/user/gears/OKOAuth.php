@@ -77,7 +77,7 @@ class OKOAuth extends Primitive {
         $this->appId = $config['appId'];
         $this->appPublic = $config['public'];
         $this->appSecret = $config['secret'];
-        $this->callbackUrl = ($base = E()->getSiteManager()->getCurrentSite()->base)
+        $this->callbackUrl = ($base = E()->SiteManager->getCurrentSite()->base)
             . 'auth.php?okAuth&return=' . ((!$return) ? $base : $return);
     }
 

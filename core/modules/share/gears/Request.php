@@ -86,7 +86,7 @@ final class Request extends Primitive {
         $this->uri = URI::create();
         $path = $this->uri->getPath();
 
-        if (strpos($path, E()->getSiteManager()->getCurrentSite()->root) !== false) {
+        if (strpos($path, E()->SiteManager->getCurrentSite()->root) !== false) {
             $path = array_values(
                 array_diff(
                     explode(
@@ -94,7 +94,7 @@ final class Request extends Primitive {
                         substr(
                             $path,
                             strlen(
-                                E()->getSiteManager()->getCurrentSite()->root
+                                E()->SiteManager->getCurrentSite()->root
                             )
                         )
                     ),
@@ -107,7 +107,7 @@ final class Request extends Primitive {
         }
 
         try {
-            $language = E()->getLanguage();
+            $language = E()->Language;
             $this->lang = (isset($path[0]) && $language->isValidLangAbbr($path[0])) ? array_shift($path) : '';
         }
         catch (SystemException $e) {

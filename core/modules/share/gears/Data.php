@@ -77,7 +77,7 @@ class Data extends Primitive {
 			}
 		elseif (!is_array($data)) {
 			$field->setRowData(0, $data);
-			/*for ($i = 0; $i < sizeof(E()->getLanguage()->getLanguages()); $i++) {
+			/*for ($i = 0; $i < sizeof(E()->Language->getLanguages()); $i++) {
 				$field->setRowData($i, $data);
 			}*/
 		} else {

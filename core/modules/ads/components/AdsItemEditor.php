@@ -45,7 +45,7 @@ class AdsItemEditor extends Grid {
         $filter = $result = [];
         if ($fkKeyName == 'site_id') {
             //оставляем только те сайты где есть магазины
-            if ($sites = E()->getSiteManager()->getSitesByTag('shop')) {
+            if ($sites = E()->SiteManager->getSitesByTag('shop')) {
                 $filter['share_sites.site_id'] = array_map(function ($site) {
                     return (string)$site;
                 }, $sites);
@@ -53,7 +53,7 @@ class AdsItemEditor extends Grid {
         }
         if ($fkKeyName == 'smap_id') {
             //оставляем только те сайты где есть магазины
-            if ($sites = E()->getSiteManager()->getSitesByTag('shop')) {
+            if ($sites = E()->SiteManager->getSitesByTag('shop')) {
                 $filter['share_sitemap.site_id'] = array_map(function ($site) {
                     return (string)$site;
                 }, $sites);
@@ -79,7 +79,7 @@ class AdsItemEditor extends Grid {
                 return in_array($row['smap_id'], $pages);
             });
             $result[0] = array_map(function($row) use ($rootPages){
-                if(in_array($row['smap_id'], $rootPages)) $row['root'] = E()->getSiteManager()->getSiteByID($row['site_id'])->name;
+                if(in_array($row['smap_id'], $rootPages)) $row['root'] = E()->SiteManager->getSiteByID($row['site_id'])->name;
                 return $row;
             }, $result[0]);
         }

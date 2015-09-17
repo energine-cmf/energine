@@ -97,7 +97,7 @@ final class Sitemap extends Primitive {
     public function __construct($siteID) {
         parent::__construct();
         $this->siteID = $siteID;
-        $this->langID = E()->getLanguage()->getCurrent();
+        $this->langID = E()->Language->getCurrent();
         $userGroups = array_keys(E()->UserGroup->asArray());
 
         //Загружаем идентификаторы для последующего формирования древовидной стркутуры
@@ -149,7 +149,7 @@ final class Sitemap extends Primitive {
 
         //Загружаем перечень идентификаторов в объект дерева
         $this->tree = TreeConverter::convert($res, 'smap_id', 'smap_pid');
-        $site = E()->getSiteManager()->getSiteByID($this->siteID);
+        $site = E()->SiteManager->getSiteByID($this->siteID);
         $res = $this->dbh->select('
 		  SELECT s.smap_id FROM share_sitemap s
             WHERE s.site_id = %s AND s.smap_pid IS NULL
@@ -305,7 +305,7 @@ final class Sitemap extends Primitive {
      * @return int
      */
     public function getIDByURI(array $segments) {
-        $request = E()->getRequest();
+        $request = E()->Request;
         $id = $this->getDefault();
         if (empty($segments)) {
             return $id;

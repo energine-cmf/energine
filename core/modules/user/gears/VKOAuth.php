@@ -78,7 +78,7 @@ class VKOAuth extends Primitive {
      * @param string|bool $return
      */
     public function __construct($config, $return = false) {
-        $this->callbackUrl = ($base = E()->getSiteManager()->getCurrentSite()->base)
+        $this->callbackUrl = ($base = E()->SiteManager->getCurrentSite()->base)
             . 'auth.php?vkAuth&return=' . ((!$return) ? $base : $return);
         $this->appId = $config['appId'];
         $this->apiSecret = $config['secret'];

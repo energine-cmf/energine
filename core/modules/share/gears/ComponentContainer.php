@@ -68,7 +68,7 @@ class ComponentContainer extends Primitive implements IBlock, \Iterator {
      */
     public function __construct($name, array $properties = [], $value = null) {
         $this->name = $name;
-        $this->document = E()->getDocument();
+        $this->document = E()->Document;
 
         $this->properties = $properties;
         if (!isset($this->properties['tag'])) {

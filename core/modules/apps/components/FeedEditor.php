@@ -49,7 +49,7 @@ class FeedEditor extends LinkingEditor {
         if (in_array($this->getType(), array(self::COMPONENT_TYPE_FORM_ADD, self::COMPONENT_TYPE_FORM_ALTER))) {
             $info = E()->getMap()->getDocumentInfo($this->document->getID());
             $field = $result->getFieldByName('smap_id');
-            for ($i = 0; $i < sizeof(E()->getLanguage()->getLanguages()); $i++) {
+            for ($i = 0; $i < sizeof(E()->Language->getLanguages()); $i++) {
                 $field->setRowProperty($i, 'segment', E()->getMap()->getURLByID($this->document->getID()));
                 $field->setRowData($i, $info['Name']);
             }

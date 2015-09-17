@@ -52,7 +52,7 @@ class XSLTTransformer extends Primitive implements ITransformer {
     public function setFileName($transformerFilename, $isAbsolutePath = false) {
         if (!$isAbsolutePath)
             $transformerFilename =
-                    sprintf(SITE_DIR.self::MAIN_TRANSFORMER_DIR, E()->getSiteManager()->getCurrentSite()->folder) .
+                    sprintf(SITE_DIR.self::MAIN_TRANSFORMER_DIR, E()->SiteManager->getCurrentSite()->folder) .
                             $transformerFilename;
         if (!file_exists($transformerFilename)) {
             throw new SystemException('ERR_DEV_NO_MAIN_TRANSFORMER', SystemException::ERR_DEVELOPER, $transformerFilename);
@@ -91,7 +91,7 @@ class XSLTTransformer extends Primitive implements ITransformer {
             $xsltProc->importStylesheet($xsltDoc);
             $result = $xsltProc->transformToXml($this->document);
         }
-        E()->getResponse()->setHeader('Content-Type', 'text/html; charset=UTF-8', false);
+        E()->Response->setHeader('Content-Type', 'text/html; charset=UTF-8', false);
         return $result;
     }
 }

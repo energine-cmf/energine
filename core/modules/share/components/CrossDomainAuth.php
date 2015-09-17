@@ -28,6 +28,6 @@ class CrossDomainAuth extends Component {
     public function __construct($name,  array $params = null) {
         parent::__construct($name, $params);
         $this->setProperty('authURL', 'http://'.$this->getConfigValue('site.domain').'/a.php');
-        $this->setProperty('returnURL', E()->getSiteManager()->getCurrentSite()->base.'a.php');
+        $this->setProperty('returnURL', E()->SiteManager->getCurrentSite()->base.'a.php');
     }
 }

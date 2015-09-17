@@ -119,12 +119,12 @@ class Builder extends XMLBuilder {
 
         if (in_array($fieldInfo->getType(), [FieldDescription::FIELD_TYPE_FILE])) {
             if (
-                (E()->getDocument()->getRights() > ACCESS_READ)
+                (E()->Document->getRights() > ACCESS_READ)
                 &&
                 ($fieldInfo->getMode() > ACCESS_READ)
             ) {
-                E()->getDocument()->addTranslation('TXT_CLEAR');
-                E()->getDocument()->addTranslation('BTN_QUICK_UPLOAD');
+                E()->Document->addTranslation('TXT_CLEAR');
+                E()->Document->addTranslation('BTN_QUICK_UPLOAD');
 
                 $quick_upload_path = $this->getConfigValue('repositories.quick_upload_path', 'uploads/public');
                 $quick_upload_pid = $this->dbh->getScalar('SELECT upl_id FROM share_uploads WHERE upl_path=%s LIMIT 1', $quick_upload_path);
@@ -167,7 +167,7 @@ class Builder extends XMLBuilder {
                 }
             }
         } elseif (($fieldInfo->getType() == FieldDescription::FIELD_TYPE_SMAP_SELECTOR) && $fieldValue) {
-            $result->setAttribute('smap_name', E()->getSiteManager()->getSiteByPage($fieldValue)->name . ' : ' . $this->dbh->getScalar('share_sitemap_translation', 'smap_name', ['smap_id' => $fieldValue, 'lang_id' => E()->getLanguage()->getCurrent()]));
+            $result->setAttribute('smap_name', E()->SiteManager->getSiteByPage($fieldValue)->name . ' : ' . $this->dbh->getScalar('share_sitemap_translation', 'smap_name', ['smap_id' => $fieldValue, 'lang_id' => E()->Language->getCurrent()]));
         } elseif ($fieldInfo->getType() == FieldDescription::FIELD_TYPE_CAPTCHA) {
             $fieldValue = $this->getConfigValue('recaptcha.public');
         } elseif ($fieldInfo->getType() == FieldDescription::FIELD_TYPE_LOOKUP && $fieldValue) {

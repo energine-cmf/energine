@@ -67,7 +67,7 @@ class NewsRepository extends NewsEditor {
                 $result = [0];
             }
         } else {
-            foreach (E()->getSiteManager() as $site) {
+            foreach (E()->SiteManager as $site) {
                 $result[] = $site->id;
             }
         }
@@ -85,7 +85,7 @@ class NewsRepository extends NewsEditor {
 
         if(isset($sp['smap_id'])){
             $n++;
-            $siteID = E()->getSiteManager()->getSiteByPage($sp['smap_id'])->id;
+            $siteID = E()->SiteManager->getSiteByPage($sp['smap_id'])->id;
             if($siteID){
                 //$params['smap_id'] = $sp['smap_id'];
                 $params['site'] = $siteID;
@@ -126,7 +126,7 @@ class NewsRepository extends NewsEditor {
     protected function edit() {
         parent::edit();
         $smapField = $this->getData()->getFieldByName('smap_id');
-        for ($i = 0; $i < sizeof(E()->getLanguage()->getLanguages()); $i++) {
+        for ($i = 0; $i < sizeof(E()->Language->getLanguages()); $i++) {
             $smapField->setRowProperty($i, 'smap_name', $this->dbh->getScalar(
                 'SELECT CONCAT(site_name, ":", smap_name) as smap_name FROM share_sitemap sm LEFT JOIN share_sitemap_translation smt USING(smap_id) LEFT JOIN share_sites_translation s ON (s.site_id = sm.site_id) AND (s.lang_id = %s) WHERE sm.smap_id = %s AND smt.lang_id= %1$s', $this->document->getLang(), $smapField->getRowData(0)
             ));

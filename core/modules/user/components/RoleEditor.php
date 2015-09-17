@@ -116,11 +116,11 @@ class RoleEditor extends Grid {
                 'select s.smap_id as Id, smap_pid as Pid, site_id as Site, smap_name as Name ' .
                 'from share_sitemap s ' .
                 'left join share_sitemap_translation st on st.smap_id = s.smap_id ' .
-                'where lang_id=%s', E()->getLanguage()->getCurrent()), 'Id');
+                'where lang_id=%s', E()->Language->getCurrent()), 'Id');
 
         foreach ($data as $smapID => $smapInfo) {
             $data[$smapID]['RightsId'] = E()->getMap($smapInfo['Site'])->getDocumentRights($smapID, $id);
-            $data[$smapID]['Site'] = E()->getSiteManager()->getSiteByID($smapInfo['Site'])->name;
+            $data[$smapID]['Site'] = E()->SiteManager->getSiteByID($smapInfo['Site'])->name;
         }
 
         $dataObject = new Data();

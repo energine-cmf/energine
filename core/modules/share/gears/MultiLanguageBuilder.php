@@ -28,7 +28,7 @@ class MultiLanguageBuilder extends Builder {
      * @copydoc Builder::run
      */
     protected function run() {
-        $lang = E()->getLanguage();
+        $lang = E()->Language;
 
         $records = array();
         $correlation = array();

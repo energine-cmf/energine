@@ -127,10 +127,10 @@ final class Document extends Primitive implements IDocument {
     public function __construct() {
         parent::__construct();
         $this->user = E()->getUser();
-        $this->language = E()->getLanguage();
+        $this->language = E()->Language;
         $this->lang = $this->language->getCurrent();
         $this->sitemap = E()->getMap();
-        $this->request = E()->getRequest();
+        $this->request = E()->Request;
         $segments = $this->request->getPath();
         $this->componentManager = new ComponentManager($this);
         // получаем идентификатор документа
@@ -157,8 +157,8 @@ final class Document extends Primitive implements IDocument {
         }
         //Если URL редиректа не пустой  - осуществляем редирект по нему
         if (!empty($this->documentInfo['RedirectUrl'])) {
-            E()->getResponse()->setStatus('301');
-            E()->getResponse()->setRedirect($this->documentInfo['RedirectUrl']);
+            E()->Response->setStatus('301');
+            E()->Response->setRedirect($this->documentInfo['RedirectUrl']);
         }
         // загружаем компоненты страницы
         //$this->loadComponents($this->documentInfo['templateID']);
@@ -177,7 +177,7 @@ final class Document extends Primitive implements IDocument {
             $this->sitemap->getDefault() == $this->getID());
 
         //Если сайт - индексируемый
-        $currentSite = E()->getSiteManager()->getCurrentSite();
+        $currentSite = E()->SiteManager->getCurrentSite();
         if ($currentSite->isIndexed) {
             //и сущестует код гугловерификации
             if (($verifyCode = $this->getConfigValue('google.verify')) &&
@@ -263,25 +263,25 @@ final class Document extends Primitive implements IDocument {
 
         //Дополнительные свойства, имеющие параметры
         $prop = $this->doc->createElement('property', (
-        $baseURL = E()->getSiteManager()->getCurrentSite()->base));
+        $baseURL = E()->SiteManager->getCurrentSite()->base));
         $prop->setAttribute('name', 'base');
         $prop->setAttribute('static', (($staticURL =
             $this->getConfigValue('site.static') ? $staticURL : $baseURL)));
         $prop->setAttribute('media', (($mediaURL =
             $this->getConfigValue('site.media')) ? $mediaURL : $baseURL));
         $prop->setAttribute('resizer', (($resizerURL =
-            $this->getConfigValue('site.resizer')) ? $resizerURL : (E()->getSiteManager()->getDefaultSite()->base . 'resizer/')));
-        $prop->setAttribute('folder', E()->getSiteManager()->getCurrentSite()->folder);
-        $prop->setAttribute('default', E()->getSiteManager()->getDefaultSite()->base);
+            $this->getConfigValue('site.resizer')) ? $resizerURL : (E()->SiteManager->getDefaultSite()->base . 'resizer/')));
+        $prop->setAttribute('folder', E()->SiteManager->getCurrentSite()->folder);
+        $prop->setAttribute('default', E()->SiteManager->getDefaultSite()->base);
         $prop->setAttribute('favicon',
-            ($favicon = E()->getSiteManager()->getCurrentSite()->faviconFile) ? $favicon : E()->getSiteManager()->getDefaultSite()->faviconFile);
+            ($favicon = E()->SiteManager->getCurrentSite()->faviconFile) ? $favicon : E()->SiteManager->getDefaultSite()->faviconFile);
         $dom_documentProperties->appendChild($prop);
 
         $prop = $this->doc->createElement('property', $this->getLang());
         $prop->setAttribute('name', 'lang');
         $prop->setAttribute('abbr', $this->request->getLangSegment());
-        $prop->setAttribute('default', E()->getLanguage()->getDefault());
-        $prop->setAttribute('real_abbr', E()->getLanguage()->getAbbrByID($this->getLang()));
+        $prop->setAttribute('default', E()->Language->getDefault());
+        $prop->setAttribute('real_abbr', E()->Language->getAbbrByID($this->getLang()));
         $dom_documentProperties->appendChild($prop);
 
         if (($docVars = $this->getConfigValue('site.vars')) && is_array($docVars)) {
@@ -513,7 +513,7 @@ final class Document extends Primitive implements IDocument {
             if (
                 !$this->user->isAuthenticated()
                 &&
-                (strpos(E()->getSiteManager()->getCurrentSite()->host, $this->getConfigValue('site.domain')) === false)
+                (strpos(E()->SiteManager->getCurrentSite()->host, $this->getConfigValue('site.domain')) === false)
             ) {
                 $this->componentManager->add(
                     $this->componentManager->createComponent('cdAuth', 'Energine\share\components\CrossDomainAuth')

@@ -36,7 +36,7 @@ class ComponentProxyBuilder extends XMLBuilder implements IBuilder {
      */
     public function setComponent($name, $class, $params = [], $filter = NULL) {
         $this->filter = $filter;
-        $this->component = E()->getDocument()->componentManager->createComponent($name, $class, $params);
+        $this->component = E()->Document->componentManager->createComponent($name, $class, $params);
     }
 
     /**

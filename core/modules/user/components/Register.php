@@ -162,7 +162,7 @@ class Register extends DBDataSet {
                     'user_login' => $this->user->getValue('u_name'),
                     'user_name' => $this->user->getValue('u_fullname'),
                     'user_password' => $password,
-                    'site_url' => E()->getSiteManager()->getCurrentSite()->base,
+                    'site_url' => E()->SiteManager->getCurrentSite()->base,
                     'site_name' => $this->translate('TXT_SITE_NAME')
                 ]
             );

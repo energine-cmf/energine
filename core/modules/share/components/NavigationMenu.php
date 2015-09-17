@@ -136,7 +136,7 @@ final class NavigationMenu extends DataSet {
 				    SELECT s.smap_id, s.smap_pid
 				    FROM share_sitemap s
 				    LEFT JOIN share_sitemap_translation st ON s.smap_id=st.smap_id
-				    WHERE smap_pid  = ' . $nodeID . ' AND smap_is_disabled = 0 AND lang_id = ' . E()->getLanguage()->getCurrent() . '
+				    WHERE smap_pid  = ' . $nodeID . ' AND smap_is_disabled = 0 AND lang_id = ' . E()->Language->getCurrent() . '
 				    ORDER BY smap_order_num ASC
 				');
 

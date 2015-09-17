@@ -114,11 +114,11 @@ class NewsFeed extends ExtendedFeed {
             if ($additionalURL) {
                 unset($ap['pageNumber']);
                 $pageTitle = $this->translate('TXT_NEWS_BY_DATE') . ': ' . implode('/', array_reverse($ap));
-                $breadCrumbs = E()->getDocument()->componentManager->getBlockByName('breadCrumbs');
+                $breadCrumbs = E()->Document->componentManager->getBlockByName('breadCrumbs');
                 if ($breadCrumbs) {
                     $breadCrumbs->addCrumb(null, $pageTitle);
                 }
-                E()->getDocument()->setProperty('title', $pageTitle);
+                E()->Document->setProperty('title', $pageTitle);
                 $additionalURL = implode('/', $additionalURL) . '/';
                 $this->pager->setProperty('additional_url', $additionalURL);
             }
@@ -148,7 +148,7 @@ class NewsFeed extends ExtendedFeed {
         $this->setData($this->createData());
         if (!$this->getData()->isEmpty()) {
             list($newsTitle) = $this->getData()->getFieldByName('news_title')->getData();
-            $breadCrumbs = E()->getDocument()->componentManager->getBlockByName('breadCrumbs');
+            $breadCrumbs = E()->Document->componentManager->getBlockByName('breadCrumbs');
             if ($breadCrumbs) {
                 $breadCrumbs->addCrumb('', $newsTitle);
             }
@@ -182,8 +182,8 @@ class NewsFeed extends ExtendedFeed {
             $this->addFilterCondition(array($this->getTableName() . '.news_id' => $newsIDs));
             $tagName = $this->dbh->getScalar('SELECT tag_name FROM share_tags LEFT JOIN share_tags_translation USING(tag_id) WHERE (lang_id = %s) AND (tag_id = %s)', $this->document->getLang(), $tagID);
             $pageTitle = $this->translate('TXT_NEWS_BY_TAG') . ': ' . $tagName;
-            E()->getDocument()->componentManager->getBlockByName('breadCrumbs')->addCrumb(null, $pageTitle);
-            E()->getDocument()->setProperty('title', $pageTitle);
+            E()->Document->componentManager->getBlockByName('breadCrumbs')->addCrumb(null, $pageTitle);
+            E()->Document->setProperty('title', $pageTitle);
         }
         $this->main();
         if ($newsIDs === true) {
@@ -288,6 +288,6 @@ class NewsFeed extends ExtendedFeed {
         $this->pager->setRecordsCount(self::RECORD_PER_PAGE);
 
         E()->getController()->getTransformer()->setFileName('core/modules/apps/transformers/rss.xslt', true);
-        E()->getResponse()->setHeader('Content-Type', 'text/xml; charset=utf-8');
+        E()->Response->setHeader('Content-Type', 'text/xml; charset=utf-8');
     }
 }

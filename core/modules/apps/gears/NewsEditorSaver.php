@@ -50,7 +50,7 @@ class NewsEditorSaver extends ExtendedSaver {
             }
 
             $translitedTitle = $tempTitle;
-            for ($i = 0, $l = sizeof(E()->getLanguage()->getLanguages()); $i < $l; $i++)
+            for ($i = 0, $l = sizeof(E()->Language->getLanguages()); $i < $l; $i++)
                 $f->setRowData($i, $translitedTitle);
 
             $data->addField($f);

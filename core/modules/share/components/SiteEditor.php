@@ -197,6 +197,6 @@ class SiteEditor extends Grid {
         ) {
             throw new SystemException('ERR_BAD_URL', SystemException::ERR_CRITICAL, $this->dbh->getLastRequest());
         }
-        E()->getResponse()->setRedirect($url);
+        E()->Response->setRedirect($url);
     }
 }

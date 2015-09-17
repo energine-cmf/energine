@@ -54,7 +54,7 @@ class SimilarNews extends DataSet {
         parent::__construct($name, $params);
         $bindComponentName = ($this->getParam('bind')) ? $this->getParam('bind') : self::DEFAULT_LINK_TO;
         $this->cp =
-            E()->getDocument()->componentManager->getBlockByName($bindComponentName);
+            E()->Document->componentManager->getBlockByName($bindComponentName);
         if (!$this->cp || ($this->cp && $this->cp->getState() != 'view')) {
             $this->disable();
         }

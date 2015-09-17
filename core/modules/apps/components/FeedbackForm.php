@@ -129,7 +129,7 @@ class FeedbackForm extends DBDataSet {
     protected function send() {
 
         if(!isset($_POST[$this->getTableName()])){
-            E()->getResponse()->redirectToCurrentSection();
+            E()->Response->redirectToCurrentSection();
         }
         try {
             $data[$this->getTableName()] = $_POST[$this->getTableName()];

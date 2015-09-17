@@ -16,7 +16,7 @@ class MailTemplate {
 
     public function __construct($name, $data = [], $lang_id = null) {
         $this->name = $name;
-        $this->lang_id = ($lang_id) ? $lang_id : E()->getLanguage()->getCurrent();
+        $this->lang_id = ($lang_id) ? $lang_id : E()->Language->getCurrent();
         $this->loadTemplate();
         $this->data = $data;
     }

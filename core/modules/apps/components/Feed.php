@@ -60,7 +60,7 @@ class Feed extends DBDataSet {
                 $filters = $this->filterID;
 
                 foreach ($filters as $filterID) {
-                    $par = E()->getMap(E()->getSiteManager()->getSiteByPage($filterID)->id)->getTree()->getNodeById($filterID);
+                    $par = E()->getMap(E()->SiteManager->getSiteByPage($filterID)->id)->getTree()->getNodeById($filterID);
                     if ($par) {
                         $this->filterID = array_merge($this->filterID, array_keys(
                             $par->getDescendants()->asList(false)
@@ -144,7 +144,7 @@ class Feed extends DBDataSet {
         parent::main();
         if ($f = $this->getData()->getFieldByName('smap_id')) {
             foreach ($f as $key => $value) {
-                $site = E()->getSiteManager()->getSiteByPage($value);
+                $site = E()->SiteManager->getSiteByPage($value);
                 $f->setRowProperty($key, 'url', E()->getMap($site->id)->getURLByID($value));
                 $f->setRowProperty($key, 'base', $site->base);
             }

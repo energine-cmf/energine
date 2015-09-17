@@ -114,18 +114,18 @@ class DocumentController extends Primitive {
      * -# Transform XML-document
      */
     public function run() {
-        $language = E()->getLanguage();
-        $language->setCurrent($language->getIDByAbbr(E()->getRequest()->getLang(), true));
+        $language = E()->Language;
+        $language->setCurrent($language->getIDByAbbr(E()->Request->getLang(), true));
         unset($language);
 
         try {
-            $document = E()->getDocument();
+            $document = E()->Document;
             $document->loadComponents([$this, 'getXMLStructure']);
             $document->runComponents();
 
-            if (($p = sizeof($path = E()->getRequest()->getPath())) != ($o = E()->getRequest()->getUsedSegments())) {
+            if (($p = sizeof($path = E()->Request->getPath())) != ($o = E()->Request->getUsedSegments())) {
 //                dump_log('URL: '.implode('/', $path). ' Path: '.$p.' Offset: '.$o, true);
-                throw new SystemException('ERR_404', SystemException::ERR_404, (string)E()->getRequest()->getURI());
+                throw new SystemException('ERR_404', SystemException::ERR_404, (string)E()->Request->getURI());
             }
 
             $document->build();
@@ -141,7 +141,7 @@ class DocumentController extends Primitive {
             $document->attachException($e);
             $document->build();
         }
-        E()->getResponse()->write($this->transform($document));
+        E()->Response->write($this->transform($document));
     }
 
     public function getXMLStructure($documentID) {

@@ -176,7 +176,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
 
         $field = new Field('page_rights');
         for ($i = 0;
-             $i < count(E()->getLanguage()->getLanguages()); $i++) {
+             $i < count(E()->Language->getLanguages()); $i++) {
             $field->addRowData(
                 $builder->getResult()
             );
@@ -285,7 +285,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
                     $row['data-layout'] = $attr;
                 }
                 if ($d->documentElement->hasAttribute('unique')) {
-                    if($this->dbh->getScalar('share_sitemap', 'count(*)', ['smap_content' => $shortPath, 'site_id' => E()->getSiteManager()->getCurrentSite()->id])>0){
+                    if($this->dbh->getScalar('share_sitemap', 'count(*)', ['smap_content' => $shortPath, 'site_id' => E()->SiteManager->getCurrentSite()->id])>0){
                         $row['disabled'] = 'disabled';
                         $row['unique'] = 'unique';
                     }
@@ -327,7 +327,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
                 function ($val) use ($params) {
                     $val["smap_segment"] = E()->getMap($params['site_id'])->getURLByID($val["smap_id"]);
                     if ($this->getDataDescription()->getFieldDescriptionByName('site')) {
-                        $val["site"] = E()->getSiteManager()->getSiteByID($params['site_id'])->base;
+                        $val["site"] = E()->SiteManager->getSiteByID($params['site_id'])->base;
                     }
                     return $val;
                 }, $result);
@@ -370,7 +370,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
         if (in_array($this->getState(), ['add', 'edit'])) {
             $this->addTranslation('ERR_NO_DIV_NAME');
             list($pageID) = $this->getStateParams();
-            $this->getDataDescription()->getFieldDescriptionByName('smap_pid')->setProperty('base', E()->getSiteManager()->getSiteByPage($pageID)->base);
+            $this->getDataDescription()->getFieldDescriptionByName('smap_pid')->setProperty('base', E()->SiteManager->getSiteByPage($pageID)->base);
         }
     }
 
@@ -397,7 +397,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
             $url = $_POST[$this->getTableName()]['smap_segment'] . '/';
             if ($smapPID) {
                 $url = E()->getMap(
-                        E()->getSiteManager()->getSiteByPage($smapPID)->id
+                        E()->SiteManager->getSiteByPage($smapPID)->id
                     )->getURLByID($smapPID) . $url;
             }
         } else {
@@ -405,7 +405,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
             $id = $this->getFilter();
             $id = $id['smap_id'];
             $url =
-                E()->getMap(E()->getSiteManager()->getSiteByPage($id)->id)->getURLByID($id);
+                E()->getMap(E()->SiteManager->getSiteByPage($id)->id)->getURLByID($id);
         }
 
         //Ads
@@ -434,7 +434,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
         $this->buildRightsTab($actionParams['pid']);
 
         $this->getDataDescription()->getFieldDescriptionByName('smap_segment')->removeProperty('nullable');
-        $site = E()->getSiteManager()->getSiteByPage($actionParams['pid']);
+        $site = E()->SiteManager->getSiteByPage($actionParams['pid']);
         $sitemap = E()->getMap($site->id);
 
         $this->getData()->getFieldByName('site_id')->setData($site->id, true);
@@ -461,7 +461,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
                 'lang_id' => $this->document->getLang()])
         ) {
             for ($i = 0,
-                 $langCount = count(E()->getLanguage()->getLanguages());
+                 $langCount = count(E()->Language->getLanguages());
                  $i < $langCount; $i++) {
                 $field->setRowData($i, $actionParams['pid']);
                 $field->setRowProperty($i, 'data_name', $name);
@@ -492,7 +492,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
         //Выводим УРЛ в поле сегмента
         $field = $this->getData()->getFieldByName('smap_pid');
         $site =
-            E()->getSiteManager()->getSiteByID($this->getData()->getFieldByName('site_id')->getRowData(0));
+            E()->SiteManager->getSiteByID($this->getData()->getFieldByName('site_id')->getRowData(0));
 
         foreach ([Document::TMPL_CONTENT, Document::TMPL_LAYOUT] as $type)
             if ($f = $this->getDataDescription()->getFieldDescriptionByName(
@@ -565,7 +565,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
         $smapName = $this->dbh->getScalar($this->getTranslationTableName(), 'smap_name', ['smap_id' => $field->getRowData(0), 'lang_id' => $this->document->getLang()]);
 
         for ($i = 0; $i < (
-        $langs = count(E()->getLanguage()->getLanguages())); $i++) {
+        $langs = count(E()->Language->getLanguages())); $i++) {
             $field->setRowProperty($i, 'data_name', $smapName);
             $field->setRowProperty($i, 'segment', $smapSegment);
         }
@@ -599,7 +599,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
         if ($params) {
             $siteID = $params['site_id'];
         } else {
-            $siteID = E()->getSiteManager()->getCurrentSite()->id;
+            $siteID = E()->SiteManager->getCurrentSite()->id;
         }
 
         $this->setProperty('site', $siteID);
@@ -779,7 +779,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
         if ($params) {
             $siteID = $params['site_id'];
         } else {
-            $siteID = E()->getSiteManager()->getCurrentSite()->id;
+            $siteID = E()->SiteManager->getCurrentSite()->id;
         }
 
         $this->setProperty('site', $siteID);

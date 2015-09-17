@@ -59,7 +59,7 @@ class SiteList extends DataSet {
             $filteredIDs = TagManager::getFilter($this->getParam('tags'), 'share_sites');
 
         if (!empty($filteredIDs))
-            foreach (E()->getSiteManager() as $siteID => $site) {
+            foreach (E()->SiteManager as $siteID => $site) {
                 if (
                     ($filteredIDs !== true) && in_array($siteID, $filteredIDs)
                     ||

@@ -152,8 +152,8 @@ class Filter extends Primitive {
             $filterElem->setAttribute('title', translate('TXT_FILTER'));
             $filterElem->setAttribute('apply', translate('BTN_APPLY_FILTER'));
             $filterElem->setAttribute('reset', translate('TXT_RESET_FILTER'));
-            E()->getDocument()->addTranslation('TXT_AND');
-            E()->getDocument()->addTranslation('TXT_OR');
+            E()->Document->addTranslation('TXT_AND');
+            E()->Document->addTranslation('TXT_OR');
 
             if (!empty($this->properties)) {
                 $props = $this->doc->createElement('properties');

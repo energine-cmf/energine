@@ -68,7 +68,7 @@ class AdsManager extends Primitive {
             //Тут как всегда проблема с загрузкой значений в мультиязычный билдер
             foreach($data[0] as $fieldName => $fieldData){
                 $f = new Field($fieldName);
-                for($i=0, $l=sizeof(E()->getLanguage()->getLanguages()); $i<$l; $i++) {
+                for($i=0, $l=sizeof(E()->Language->getLanguages()); $i<$l; $i++) {
                     $f->setRowData($i, $fieldData);
                 }
                 $d->addField($f);

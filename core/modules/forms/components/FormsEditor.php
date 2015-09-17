@@ -64,7 +64,7 @@ class FormsEditor extends Grid {
      */
     protected function editForm() {
         list($formID) = $this->getStateParams();
-        E()->getRequest()->shiftPath(2);
+        E()->Request->shiftPath(2);
         $this->form = $this->document->componentManager->createComponent('form', 'Energine\forms\components\FormEditor', array('form_id' => $formID));
         $this->form->run();
     }
@@ -74,7 +74,7 @@ class FormsEditor extends Grid {
      */
     protected function showResult() {
         list($formID) = $this->getStateParams();
-        E()->getRequest()->shiftPath(2);
+        E()->Request->shiftPath(2);
         $this->results = $this->document->componentManager->createComponent('form', 'Energine\forms\components\FormResults', array('form_id' => $formID));
         $this->results->run();
     }

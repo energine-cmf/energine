@@ -161,7 +161,7 @@ final class Mail extends Primitive {
             if (is_array($data)) {
                 extract($data);
             }
-            $host = E()->getSiteManager()->getDefaultSite()->base;
+            $host = E()->SiteManager->getDefaultSite()->base;
             $errorLevel = error_reporting(E_ERROR);
             $text = addslashes($text);
             eval("\$text = \"$text\";");

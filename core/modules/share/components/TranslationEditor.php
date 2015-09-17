@@ -50,7 +50,7 @@ class TranslationEditor extends Grid {
         //обрезаем лишние незначащие пробелы и прочее в самих тегах и в переводах
         //в переводах - сделано на случай вывода в джаваскрипт
         $_POST[$this->getTableName()]['ltag_name'] = strtoupper(trim($_POST[$this->getTableName()]['ltag_name']));
-        foreach (array_keys(E()->getLanguage()->getLanguages()) as $langID) {
+        foreach (array_keys(E()->Language->getLanguages()) as $langID) {
             if (isset($_POST[$this->getTranslationTableName()][$langID]['ltag_value_rtf'])) {
                 $_POST[$this->getTranslationTableName()][$langID]['ltag_value_rtf'] = trim($_POST[$this->getTranslationTableName()][$langID]['ltag_value_rtf']);
             }

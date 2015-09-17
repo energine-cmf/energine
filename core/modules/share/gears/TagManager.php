@@ -121,7 +121,7 @@ class TagManager extends Primitive {
                     $this->data->addField($field);
                 }
             } else {
-                for ($i = 0; $i < count(E()->getLanguage()->getLanguages()); $i++) {
+                for ($i = 0; $i < count(E()->Language->getLanguages()); $i++) {
                     $field->setRowData($i, (is_array($initialValue)) ? $initialValue : [$initialValue]);
                 }
                 $this->data->addField($field);
@@ -162,7 +162,7 @@ class TagManager extends Primitive {
         if (!empty($tags)) {
             foreach ($tags as $tag) {
                 try {
-                    $tag_id = $this->dbh->getScalar(self::TAG_TABLENAME_TRANSLATION, 'tag_id', ['tag_name' => $tag, 'lang_id' => E()->getLanguage()->getCurrent()]);
+                    $tag_id = $this->dbh->getScalar(self::TAG_TABLENAME_TRANSLATION, 'tag_id', ['tag_name' => $tag, 'lang_id' => E()->Language->getCurrent()]);
                     if (!$tag_id) {
                         $tag_id = self::insert($tag);
                     }
@@ -252,7 +252,7 @@ class TagManager extends Primitive {
                     'SELECT t.tag_id, tr.tag_name FROM ' . self::TAG_TABLENAME . ' as t ' .
                     'JOIN ' . self::TAG_TABLENAME_TRANSLATION . ' as tr ON t.tag_id = tr.tag_id AND tr.lang_id = %s ' .
                     'WHERE ' . $fieldName . ' IN (%s)',
-                    E()->getLanguage()->getCurrent(), $data
+                    E()->Language->getCurrent(), $data
                 );
                 foreach ($res as $row) {
                     $result[$row['tag_id']] = $row['tag_name'];
@@ -276,7 +276,7 @@ class TagManager extends Primitive {
             'WHERE tr.tag_name LIKE ' . E()->getDB()->quote(trim($str) . '%%') . ' ' .
             'ORDER BY tr.tag_name DESC ' .
             (($limit) ? 'LIMIT ' . (int)$limit : ''),
-            E()->getLanguage()->getCurrent()
+            E()->Language->getCurrent()
         );
     }
 
@@ -303,7 +303,7 @@ class TagManager extends Primitive {
             'SELECT t.tag_id, tr.tag_name FROM ' . self::TAG_TABLENAME . ' as t ' .
             'JOIN ' . self::TAG_TABLENAME_TRANSLATION . ' as tr ON t.tag_id = tr.tag_id AND tr.lang_id = %s ' .
             'WHERE tr.tag_id IN (%s)',
-            E()->getLanguage()->getCurrent(), $tagID
+            E()->Language->getCurrent(), $tagID
         );
 
         foreach ($res as $resVal) {
@@ -348,7 +348,7 @@ class TagManager extends Primitive {
      */
     public static function insert($tag) {
         $tag_id = E()->getDB()->modify(QAL::INSERT, self::TAG_TABLENAME, ['tag_code' => $tag]);
-        $langs = E()->getLanguage()->getLanguages();
+        $langs = E()->Language->getLanguages();
         if ($langs && $tag_id) {
             foreach ($langs as $lang_id => $lang_info) {
                 E()->getDB()->modify(QAL::INSERT_IGNORE, self::TAG_TABLENAME_TRANSLATION,

@@ -120,7 +120,7 @@ class Grid extends DBDataSet {
         if (!$this->params['config']) {
             $fileName = simplifyClassName(get_class($this)) . '.component.xml';
             $fileConf =
-                sprintf(SITE_DIR . ComponentConfig::SITE_CONFIG_DIR, E()->getSiteManager()->getCurrentSite()->folder) .
+                sprintf(SITE_DIR . ComponentConfig::SITE_CONFIG_DIR, E()->SiteManager->getCurrentSite()->folder) .
                 $fileName;
             $coreConf =
                 sprintf(CORE_DIR . ComponentConfig::CORE_CONFIG_DIR, $this->module) .
@@ -269,7 +269,7 @@ class Grid extends DBDataSet {
     protected function getDataLanguage() {
         if (isset($_POST['languageID']) && $this->getState() == 'getRawData') {
             $langID = $_POST['languageID'];
-            if (!E()->getLanguage()->isValidLangID($langID)) {
+            if (!E()->Language->isValidLangID($langID)) {
                 throw new SystemException('ERR_BAD_LANG_ID', SystemException::ERR_WARNING);
             }
             $result = $langID;

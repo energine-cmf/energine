@@ -164,14 +164,14 @@ final class ComponentManager extends Primitive implements \Iterator {
             case 'translations':
                 foreach ($blockDescription as $tagName => $tag) {
                     if ($tagName == 'translation' && isset($tag['const'])) {
-                        E()->getDocument()->addTranslation((string)$tag['const']);
+                        E()->Document->addTranslation((string)$tag['const']);
                     }
                 }
                 break;
             case 'javascript':
                 foreach ($blockDescription as $tagName => $tag) {
                     if ($tagName == 'behavior') {
-                        E()->getDocument()->addJSBehavior($tag);
+                        E()->Document->addJSBehavior($tag);
                     }
                 }
                 break;

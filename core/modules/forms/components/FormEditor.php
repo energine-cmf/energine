@@ -148,7 +148,7 @@ class FormEditor extends DataSet {
      */
     protected function createData() {
         return $this->constructor->getData((isset($_POST['languageID'])) ? $_POST['languageID']
-            : E()->getLanguage()->getDefault());
+            : E()->Language->getDefault());
     }
 
     //todo VZ: Where is return?
@@ -211,7 +211,7 @@ class FormEditor extends DataSet {
 
         //Create field FIELD_TYPE.
         $f = new Field('field_type');
-        for ($i = 0, $l = sizeof(E()->getLanguage()->getLanguages()); $i < $l; $i++) {
+        for ($i = 0, $l = sizeof(E()->Language->getLanguages()); $i < $l; $i++) {
             $f->setRowData($i, $this->translate($fieldInfo));
         }
         $this->getData()->addField($f);
@@ -226,7 +226,7 @@ class FormEditor extends DataSet {
         if (!is_array($result)) {
             $result = array();
             $ltagID = $this->dbh->modify(QAL::INSERT, 'share_lang_tags', array('ltag_name' => $ltagName));
-            foreach (array_keys(E()->getLanguage()->getLanguages()) as $langID) {
+            foreach (array_keys(E()->Language->getLanguages()) as $langID) {
                 $this->dbh->modify(QAL::INSERT, 'share_lang_tags_translation', array('lang_id' => $langID, 'ltag_id' => $ltagID, 'ltag_value_rtf' => $ltagName));
                 $result[] = array('ltag_id' => $ltagID, 'lang_id' => $langID, 'ltag_value_rtf' => $ltagName, 'ltag_name' => $ltagName);
             }
@@ -299,7 +299,7 @@ class FormEditor extends DataSet {
      */
     protected function editSelector() {
         list($fieldIndex) = $this->getStateParams();
-        E()->getRequest()->shiftPath(2);
+        E()->Request->shiftPath(2);
         $fieldInfo = $this->getFieldInfoByIndex($fieldIndex, true);
         $fieldName = key($fieldInfo);
         $tableName = current($fieldInfo);

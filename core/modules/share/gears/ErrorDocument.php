@@ -48,21 +48,21 @@ class ErrorDocument extends Primitive implements IDocument {
         $this->doc = new \DOMDocument('1.0', 'UTF-8');
         $dom_root = $this->doc->createElement('document');
         $dom_root->setAttribute('debug', $this->getConfigValue('site.debug'));
-        $dom_root->setAttribute('url', (string)E()->getRequest()->getURI());
+        $dom_root->setAttribute('url', (string)E()->Request->getURI());
         $this->doc->appendChild($dom_root);
         $dom_documentProperties = $this->doc->createElement('properties');
         $dom_root->appendChild($dom_documentProperties);
         $prop =
-            $this->doc->createElement('property', E()->getSiteManager()->getCurrentSite()->base);
+            $this->doc->createElement('property', E()->SiteManager->getCurrentSite()->base);
         $prop->setAttribute('name', 'base');
-        $prop->setAttribute('folder', E()->getSiteManager()->getCurrentSite()->folder);
+        $prop->setAttribute('folder', E()->SiteManager->getCurrentSite()->folder);
         $dom_documentProperties->appendChild($prop);
 
         $prop = $this->doc->createElement('property',
-            $langID = E()->getLanguage()->getCurrent());
+            $langID = E()->Language->getCurrent());
         $prop->setAttribute('name', 'lang');
-        $prop->setAttribute('abbr', E()->getRequest()->getLangSegment());
-        $prop->setAttribute('real_abbr', E()->getLanguage()->getAbbrByID($langID));
+        $prop->setAttribute('abbr', E()->Request->getLangSegment());
+        $prop->setAttribute('real_abbr', E()->Language->getAbbrByID($langID));
         $dom_documentProperties->appendChild($prop);
         unset($prop);
 

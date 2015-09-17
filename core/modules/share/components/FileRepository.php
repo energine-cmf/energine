@@ -82,8 +82,8 @@ class FileRepository extends Grid implements SampleFileRepository {
                 || (isset($d->upl_path) && ($uplPID = ($this->dbh->getScalar($this->getTableName(), 'upl_pid',
                         ['upl_path' => $d->upl_path]))))
             ) {
-                $this->response->addCookie(self::STORED_PID, $uplPID, 0, E()->getSiteManager()->getCurrentSite()->host,
-                    E()->getSiteManager()->getCurrentSite()->root);
+                $this->response->addCookie(self::STORED_PID, $uplPID, 0, E()->SiteManager->getCurrentSite()->host,
+                    E()->SiteManager->getCurrentSite()->root);
             }
         }
     }

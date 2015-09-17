@@ -142,7 +142,7 @@ class Component extends Primitive implements IBlock {
         list(, $this->module) = explode('\\', get_called_class());
 
         $this->name = $name;
-        $this->document = E()->getDocument();
+        $this->document = E()->Document;
         $this->params = $this->defineParams();
         if (is_array($params)) {
             foreach ($params as $name => $value) {
@@ -150,8 +150,8 @@ class Component extends Primitive implements IBlock {
             }
         }
         $this->rights = $this->getParam('rights');
-        $this->response = E()->getResponse();
-        $this->request = E()->getRequest();
+        $this->response = E()->Response;
+        $this->request = E()->Request;
 
         $this->doc = new \DOMDocument('1.0', 'UTF-8');
         $this->document->componentManager->register($this);

@@ -195,7 +195,7 @@ class AttachmentManager extends Primitive {
                     'FROM ' . self::ATTACH_TABLENAME . ' su ' .
                     'LEFT JOIN `' . $mapTableName .
                     '` spu ON spu.upl_id = su.upl_id ' .
-                    (($langMapTableName && $lang_pk) ? 'LEFT JOIN `' . $langMapTableName . '` spt ON spu.' . $lang_pk . ' = spt.' . $lang_pk . ' AND spt.lang_id = ' . E()->getDocument()->getLang() : '') .
+                    (($langMapTableName && $lang_pk) ? 'LEFT JOIN `' . $langMapTableName . '` spt ON spu.' . $lang_pk . ' = spt.' . $lang_pk . ' AND spt.lang_id = ' . E()->Document->getLang() : '') .
                     ' WHERE ' . $mapFieldName . ' IN (' .
                     implode(',', $filteredMapValue) .
                     ') AND (su.upl_is_ready=1) AND (su.upl_is_active = 1)';

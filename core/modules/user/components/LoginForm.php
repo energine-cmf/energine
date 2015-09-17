@@ -30,15 +30,15 @@ class LoginForm extends DataSet implements SampleLoginForm {
      * @copydoc DataSet::__construct
      */
     public function __construct($name, array $params = null) {
-        $params['state'] = E()->getDocument()->user->isAuthenticated() ? 'showLogoutForm' : 'showLoginForm';
+        $params['state'] = E()->Document->user->isAuthenticated() ? 'showLogoutForm' : 'showLoginForm';
         parent::__construct($name, $params);
         $this->setTitle($this->translate('TXT_LOGIN_FORM'));
-        $base = E()->getSiteManager()->getCurrentSite()->base;
-        if (strpos($currDomain = E()->getSiteManager()->getCurrentSite()->host, Primitive::getConfigValue('site.domain')) === false) {
+        $base = E()->SiteManager->getCurrentSite()->base;
+        if (strpos($currDomain = E()->SiteManager->getCurrentSite()->host, Primitive::getConfigValue('site.domain')) === false) {
             $base = 'http://' . Primitive::getConfigValue('site.domain') . '/';
         }
 
-        $this->setAction($base . 'auth.php' . ((isset($_SERVER['HTTP_REFERER'])) ? '' : '?return=' . (($return = $this->getParam('successAction')) ? $return : E()->getRequest()->getURI())), true);
+        $this->setAction($base . 'auth.php' . ((isset($_SERVER['HTTP_REFERER'])) ? '' : '?return=' . (($return = $this->getParam('successAction')) ? $return : E()->Request->getURI())), true);
     }
 
     /**
@@ -68,7 +68,7 @@ class LoginForm extends DataSet implements SampleLoginForm {
             $messageField = new Field('message');
             $messageField->addRowData($this->translate('ERR_BAD_LOGIN'));
             $this->getData()->addField($messageField);
-            E()->getResponse()->deleteCookie(UserSession::FAILED_LOGIN_COOKIE_NAME);
+            E()->Response->deleteCookie(UserSession::FAILED_LOGIN_COOKIE_NAME);
         }
 
         //Во избежание появления empty рекордсета
@@ -95,10 +95,10 @@ class LoginForm extends DataSet implements SampleLoginForm {
      * Show logout form.
      */
     public function showLogoutForm() {
-        //$request = E()->getRequest();
+        //$request = E()->Request;
         //$this->setTitle($this->translate('TXT_LOGOUT'));
         $this->addTranslation('TXT_USER_GREETING', 'TXT_USER_NAME', 'TXT_ROLE_TEXT');
-        //$this->setAction(E()->getSiteManager()->getCurrentSite()->base, true);
+        //$this->setAction(E()->SiteManager->getCurrentSite()->base, true);
         $this->prepare();
         /*foreach (E()->UserGroup->getUserGroups($this->document->user->getID()) as $roleID) {
             $tmp = E()->UserGroup->getInfo($roleID);

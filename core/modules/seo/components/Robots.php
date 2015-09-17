@@ -32,7 +32,7 @@ class Robots extends DataSet {
      */
     public function __construct($name,  array $params = null) {
         parent::__construct($name, $params);
-        E()->getResponse()->setHeader('Content-Type', 'text/plain; charset=utf-8');
+        E()->Response->setHeader('Content-Type', 'text/plain; charset=utf-8');
     }
 
     /**
@@ -150,7 +150,7 @@ class Robots extends DataSet {
      */
     protected function loadData() {
         $entries = [];
-        $site = E()->getSiteManager()->getCurrentSite();
+        $site = E()->SiteManager->getCurrentSite();
         if (!$this->isSeoConfigured() || !$site->isIndexed) {
             array_push($entries, ['entry' => 'User-agent: *' . PHP_EOL . 'Disallow: /']);
         } else {

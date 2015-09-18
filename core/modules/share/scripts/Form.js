@@ -124,7 +124,7 @@ var Form = new Class(/** @lends Form# */{
          * State of the form.
          * @type {string}
          */
-        this.state = this.form.getElementById('componentAction').get('value');
+        this.state = (this.form.getElementById('componentAction'))?this.form.getElementById('componentAction').get('value'):null;
 
         /**
          * Tab panels.

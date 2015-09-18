@@ -333,7 +333,6 @@ Array.implement({
 });
 
 Object.extend({
-
 	keys: function(object){
 		var keys = [];
 		for (var k in object){
@@ -348,7 +347,7 @@ Object.extend({
 	},
 
 	forEach: function(object, fn, bind){
-		Object.keys(object || []).forEach(function(key){
+		Object.keys(object).forEach(function(key){
 			fn.call(bind, object[key], key, object);
 		});
 	}

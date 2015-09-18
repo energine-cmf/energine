@@ -40,6 +40,15 @@ Asset = Object.append(Asset, {
     }
 });
 
+Object.extend({
+    forEach: function(object, fn, bind){
+        Object.keys(object || []).forEach(function(key){
+            fn.call(bind, object[key], key, object);
+        });
+    }
+});
+Object.each = Object.forEach;
+
 /*Element.implement({
     getComputedStyle: function (p) {
         var f = (document.html.style.cssFloat == null) ? 'styleFloat' : 'cssFloat',

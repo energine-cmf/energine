@@ -517,7 +517,7 @@
     <!-- для любого поля, на которое права только чтение -->
     <xsl:template match="field[@mode='1'][ancestor::component[@type='form']]" mode="field_input_readonly">
         <div class="control">
-            <xsl:value-of select="." disable-output-escaping="yes"/>
+            <span id="{@name}_read"><xsl:value-of select="." disable-output-escaping="yes"/></span>
             <input>
                 <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES_READONLY"/>
             </input>

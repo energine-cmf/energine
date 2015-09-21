@@ -159,7 +159,7 @@ class DBDataSet extends DataSet {
      * @param array $data Data.
      * @return array|false
      */
-    private function modify($data) {
+    protected function modify($data) {
         if (!is_array($data)) {
             return $data;
         }

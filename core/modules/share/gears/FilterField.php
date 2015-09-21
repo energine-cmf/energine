@@ -203,6 +203,11 @@ class FilterField extends Primitive {
         return $this;
     }
 
+    public function setOperator($operator) {
+        $this->operator = $operator;
+        return $this;
+    }
+
     /**
      * @return mixed
      */

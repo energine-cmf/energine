@@ -1,4 +1,3 @@
-/* MooTools: the javascript framework. license: MIT-style license. copyright: Copyright (c) 2006-2015 [Valerio Proietti](http://mad4milk.net/).*/ 
 /*
 Web Build: http://mootools.net/more/builder/3cab1031cad4a5ee0980f28a1e9a2d2e
 */
@@ -334,7 +333,6 @@ Array.implement({
 });
 
 Object.extend({
-
 	keys: function(object){
 		var keys = [];
 		for (var k in object){

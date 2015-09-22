@@ -743,6 +743,10 @@ final class QAL extends Primitive {
         return call_user_func_array([$this, 'query'], $this->buildSQL(func_get_args()))->fetchColumn();
     }
 
+    public function getRow() {
+        return call_user_func_array([$this, 'query'], $this->buildSQL(func_get_args()))->fetch(\PDO::FETCH_ASSOC);
+    }
+
     /**
      * Get column values from the table.
      *

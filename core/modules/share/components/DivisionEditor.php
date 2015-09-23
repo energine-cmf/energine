@@ -65,7 +65,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
      * Language editor.
      * @var LanguageEditor $langEditor
      */
-    private $langEditor;
+    protected $langEditor;
     /**
      * Widget editor.
      * @var WidgetsRepository $widgetEditor

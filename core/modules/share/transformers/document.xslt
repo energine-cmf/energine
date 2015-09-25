@@ -164,7 +164,8 @@
         <script type="text/javascript">
             var componentToolbars = [];
             <xsl:if test="count($COMPONENTS[recordset]/javascript/behavior[(@name!='PageEditor')]) &gt; 0">
-                var <xsl:for-each select="$COMPONENTS[recordset]/javascript[behavior[(@name!='PageEditor')]]"><xsl:value-of select="generate-id(../recordset)"/><xsl:if test="position() != last()">,</xsl:if></xsl:for-each>;
+                var <xsl:for-each select="$COMPONENTS[recordset]/javascript[behavior[(@name!='PageEditor')]]"><xsl:for-each select="behavior"><xsl:if
+                    test="@use='jquery'">jquery_</xsl:if><xsl:value-of select="generate-id(../../recordset)"/><xsl:if test="position() != last()">,</xsl:if></xsl:for-each><xsl:if test="position() != last()">,</xsl:if></xsl:for-each>;
             </xsl:if>
             window.addEvent('domready', function () {
                 <xsl:if test="$COMPONENTS[@componentAction='showPageToolbar']">
@@ -218,7 +219,9 @@
                 // Listen for the jQuery ready event on the document
                 $(function() {
             <xsl:for-each select="//javascript/behavior[@use='jquery']">
-                <xsl:call-template name="INIT_JS"/>
+                <xsl:call-template name="INIT_JS">
+                    <xsl:with-param name="PREFIX">jquery_</xsl:with-param>
+                </xsl:call-template>
             </xsl:for-each>
                 });
                 }(window.jQuery, window, document));
@@ -228,11 +231,12 @@
     </xsl:template>
 
     <xsl:template name="INIT_JS">
+        <xsl:param name="PREFIX"></xsl:param>
         <xsl:variable name="objectID" select="generate-id(../../recordset[not(@name)])"/>
         <xsl:choose>
             <xsl:when test="$objectID!=''">
                 if(document.getElementById('<xsl:value-of select="$objectID"/>')){
-                    <xsl:value-of select="$objectID"/> = new <xsl:value-of select="@name"/>('<xsl:value-of select="$objectID"/>');
+                    <xsl:value-of select="$PREFIX"/><xsl:value-of select="$objectID"/> = new <xsl:value-of select="@name"/>('<xsl:value-of select="$objectID"/>');
                 }
             </xsl:when>
             <xsl:otherwise>

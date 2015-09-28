@@ -210,3 +210,6 @@ form div.richEditor ol, form div.richEditor ul { margin-left: 2em; }
 .checkbox_set label {
     padding-left: 5px;
 }
+#ltag_name.inp_string {
+    text-transform: uppercase;
+}

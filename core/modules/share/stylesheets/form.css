@@ -213,3 +213,6 @@ form div.richEditor ol, form div.richEditor ul { margin-left: 2em; }
 #ltag_name.inp_string {
     text-transform: uppercase;
 }
+.field .read {
+    white-space: pre;
+}

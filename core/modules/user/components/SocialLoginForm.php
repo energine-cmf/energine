@@ -49,7 +49,7 @@ class SocialLoginForm extends LoginForm {
         $f->setData('');
         $this->getData()->addField($f);
         //Если есть информация о авторизации через соц. сети
-        foreach (['fb', 'vk', 'ok'] as $socialType) {
+        foreach (['fb', 'vk', 'ok', 'goo'] as $socialType) {
             foreach (array_values($this->getToolbar()) as $tbr) {
                 if ($ctrl = $tbr->getControlByID('auth.' . $socialType)) {
                     $ctrl->disable();

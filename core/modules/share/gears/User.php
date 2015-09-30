@@ -302,6 +302,19 @@ class User extends Primitive {
         }
         return $result;
     }
+    /**
+     * Get user by his ID in <a href="http://www.odnoklassniki.ru">Одноклассники</a>.
+     *
+     * @param string $okID User ID in Одноклассники.
+     * @return bool|User
+     */
+    public static function getGOOUser($gooID) {
+        $result = false;
+        if ($UID = E()->getDB()->getScalar(self::USER_TABLE_NAME, 'u_id', ['u_gooid' => $gooID, 'u_is_active' => 1])) {
+            return new User($UID);
+        }
+        return $result;
+    }
 
     /**
      * Generate random password with specific length from numbers and latin characters.

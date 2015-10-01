@@ -18,6 +18,7 @@ namespace Energine\user\components;
 use Energine\share\gears\Field;
 use Energine\share\gears\FieldDescription;
 use Energine\share\gears\UserSession;
+use Energine\user\gears\IOAuth;
 
 /**
  * Show authorization form with possibility to authorize over social networks.
@@ -59,6 +60,9 @@ class SocialLoginForm extends LoginForm {
                         && ($secretKey = $this->getConfigValue('auth.' . $socialType . '.appID'))
                     ) {
                         $authClassName = 'Energine\\user\\gears\\' . strtoupper($socialType) . 'OAuth';
+                        /**
+                         * @var $auth IOAuth
+                         */
                         $auth = new $authClassName([
                             'appId' => $appID,
                             'secret' => $secretKey,

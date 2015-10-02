@@ -496,9 +496,9 @@ class FieldDescription extends Primitive implements \Iterator {
                 break;
             case  self::FIELD_TYPE_PHONE:
                 if ($this->getPropertyValue('nullable') === false || is_null($this->getPropertyValue('nullable'))) {
-                    $regexp = '/^[0-9\(\)\+\-\. ]{5,25}$/';
+                    $regexp = '/^[0-9\(\)\+\-\. ]{9,12}$/';
                 } else {
-                    $regexp = '/^([0-9\(\)\+\-\. ]{5,25})?$/';
+                    $regexp = '/^([0-9\(\)\+\-\. ]{9,12})?$/';
                 }
                 $this->setProperty('sort', 1);
                 $this->setProperty('pattern', $regexp);

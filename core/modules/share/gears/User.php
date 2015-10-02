@@ -184,6 +184,10 @@ class User extends Primitive {
         $this->info = $data;
         //$this->info['u_password'] = $data['u_password'];
         $data['u_password'] = password_hash($data['u_password'], PASSWORD_DEFAULT);
+        //Check if user exists
+        if($this->dbh->getScalar('user_users', 'COUNT(*)', ['u_name' => $data['u_name']])){
+            throw new \InvalidArgumentException(E()->Utils->translate('ERR_USER_EXISTS').': '.$data['u_name']);
+        }
         $this->id = $this->dbh->modify(QAL::INSERT, self::USER_TABLE_NAME, $data);
         $this->setGroups([$this->userGroup->getDefaultUserGroup()]);
     }

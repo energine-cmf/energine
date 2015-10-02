@@ -40,7 +40,7 @@ class SocialLoginForm extends LoginForm {
             $messageField->setRights(FieldDescription::FIELD_MODE_READ);
 
             $messageField = new Field('message');
-            $messageField->addRowData($this->translate('ERR_BAD_LOGIN'));
+            $messageField->addRowData($_COOKIE[UserSession::FAILED_LOGIN_COOKIE_NAME]);
             $this->getData()->addField($messageField);
             E()->getResponse()->deleteCookie(UserSession::FAILED_LOGIN_COOKIE_NAME);
         }

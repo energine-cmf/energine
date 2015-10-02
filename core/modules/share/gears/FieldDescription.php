@@ -495,12 +495,14 @@ class FieldDescription extends Primitive implements \Iterator {
                 //$this->setProperty('outputFormat', '%s');
                 break;
             case  self::FIELD_TYPE_PHONE:
+                $this->length = 18;
                 if ($this->getPropertyValue('nullable') === false || is_null($this->getPropertyValue('nullable'))) {
-                    $regexp = '/^[0-9\(\)\+\-\. ]{9,12}$/';
+                    $regexp = '/^[0-9\(\)\+\-\. ]{10,'.$this->length.'}$/';
                 } else {
-                    $regexp = '/^([0-9\(\)\+\-\. ]{9,12})?$/';
+                    $regexp = '/^([0-9\(\)\+\-\. ]{10,'.$this->length.'})?$/';
                 }
                 $this->setProperty('sort', 1);
+
                 $this->setProperty('pattern', $regexp);
                 $this->setProperty('message', 'MSG_BAD_PHONE_FORMAT');
                 break;

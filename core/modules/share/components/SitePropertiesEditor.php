@@ -47,6 +47,8 @@ class SitePropertiesEditor extends Grid {
             if($this->getState() == 'edit') {
                 $dd->getFieldDescriptionByName('prop_name')->setMode(FieldDescription::FIELD_MODE_READ);
             }
+            $dd->getFieldDescriptionByName('prop_name')->setProperty('pattern', '/^[A-Za-z0-9_\\.]+$/');
+            $dd->getFieldDescriptionByName('prop_name')->setProperty('message', 'ERR_BAD_PROPERTY_NAME');
         }
         /*if(in_array($this->getState(), array('getRawData', 'main'))) {
             $fd = new FieldDescription('prop_is_default');

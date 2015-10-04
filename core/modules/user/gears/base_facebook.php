@@ -494,6 +494,7 @@ abstract class BaseFacebook
       array_merge(array(
                     'client_id' => $this->getAppId(),
                     'redirect_uri' => $currentUrl, // possibly overwritten
+                    'display' => 'page',
                     'state' => $this->state),
                   $params));
   }

@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
-
     <state name="main">
         <javascript>
             <behavior name="GridManager"/>
         </javascript>
+        <fields>
+            <field name="domain_id"/>
+            <field name="domain_url" type="string" title="FIELD_DOMAIN_URL"/>
+            <field name="domain_protocol" type="hidden"/>
+            <field name="domain_port" type="hidden"/>
+            <field name="domain_host" type="hidden"/>
+            <field name="domain_root" type="hidden"/>
+        </fields>
         <toolbar>
             <control id="add" title="BTN_ADD" type="button" onclick="add"/>
             <control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>

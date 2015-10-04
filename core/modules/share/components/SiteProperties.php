@@ -16,29 +16,31 @@
  */
 namespace Energine\share\components;
 
-class SiteProperties extends Component {
-    protected function defineParams() {
+class SiteProperties extends Component
+{
+    protected function defineParams()
+    {
         return array_merge(
             parent::defineParams(),
             array(
-                'id' => false
+                'var' => false
             )
         );
     }
 
-    public function build() {
+    public function build()
+    {
         $result = parent::build();
         try {
-            if (!$this->getParam('id')) {
+            if (!$this->getParam('var')) {
                 throw new \InvalidArgumentException();
             }
-            $code = E()->getSiteManager()->getCurrentSite()->{$this->getParam('id')};
+            $code = E()->getSiteManager()->getCurrentSite()->{$this->getParam('var')};
             if (!$code) {
                 throw new \InvalidArgumentException();
             }
             $result->documentElement->appendChild(new \DOMText($code));
-        }
-        catch(\InvalidArgumentException $e){
+        } catch (\InvalidArgumentException $e) {
             $result = false;
         }
         return $result;

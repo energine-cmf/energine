@@ -175,23 +175,6 @@ final class Document extends Primitive implements IDocument {
         $this->setProperty('ID', $this->getID());
         $this->setProperty('default',
             $this->sitemap->getDefault() == $this->getID());
-
-        //Если сайт - индексируемый
-        $currentSite = E()->getSiteManager()->getCurrentSite();
-        if ($currentSite->isIndexed) {
-            //и сущестует код гугловерификации
-            if (($verifyCode = $this->getConfigValue('google.verify')) &&
-                !empty($verifyCode)
-            ) {
-                //то выводим его
-                $this->setProperty('google_verify', $verifyCode);
-            }
-            if (($analyticsCode = $currentSite->gaCode) || (($analyticsCode = $this->getConfigValue('google.analytics')) &&
-                    !empty($analyticsCode))
-            ) {
-                $this->setProperty('google_analytics', $analyticsCode);
-            }
-        }
     }
 
     /**

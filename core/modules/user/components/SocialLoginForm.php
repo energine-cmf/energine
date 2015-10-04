@@ -18,6 +18,7 @@ namespace Energine\user\components;
 use Energine\share\gears\Field;
 use Energine\share\gears\FieldDescription;
 use Energine\share\gears\UserSession;
+use Energine\user\gears\IOAuth;
 
 /**
  * Show authorization form with possibility to authorize over social networks.
@@ -39,7 +40,7 @@ class SocialLoginForm extends LoginForm {
             $messageField->setRights(FieldDescription::FIELD_MODE_READ);
 
             $messageField = new Field('message');
-            $messageField->addRowData($this->translate('ERR_BAD_LOGIN'));
+            $messageField->addRowData($_COOKIE[UserSession::FAILED_LOGIN_COOKIE_NAME]);
             $this->getData()->addField($messageField);
             E()->getResponse()->deleteCookie(UserSession::FAILED_LOGIN_COOKIE_NAME);
         }
@@ -49,7 +50,7 @@ class SocialLoginForm extends LoginForm {
         $f->setData('');
         $this->getData()->addField($f);
         //Если есть информация о авторизации через соц. сети
-        foreach (['fb', 'vk', 'ok'] as $socialType) {
+        foreach (['fb', 'vk', 'ok', 'goo'] as $socialType) {
             foreach (array_values($this->getToolbar()) as $tbr) {
                 if ($ctrl = $tbr->getControlByID('auth.' . $socialType)) {
                     $ctrl->disable();
@@ -59,6 +60,9 @@ class SocialLoginForm extends LoginForm {
                         && ($secretKey = $this->getConfigValue('auth.' . $socialType . '.appID'))
                     ) {
                         $authClassName = 'Energine\\user\\gears\\' . strtoupper($socialType) . 'OAuth';
+                        /**
+                         * @var $auth IOAuth
+                         */
                         $auth = new $authClassName([
                             'appId' => $appID,
                             'secret' => $secretKey,

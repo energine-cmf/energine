@@ -3,11 +3,7 @@
 namespace Energine\mail\components;
 
 use Energine\share\components\Grid,
-    Energine\share\gears\SystemException,
-    Energine\share\gears\QAL,
-    Energine\share\gears\JSONCustomBuilder,
-    Energine\share\gears\FieldDescription,
-    Energine\share\gears\Field;
+    Energine\share\gears\SystemException;
 
 class MailTemplateEditor extends Grid {
 

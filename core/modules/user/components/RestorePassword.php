@@ -70,9 +70,11 @@ class RestorePassword extends DataSet {
             } else {
                 $password = User::generatePassword();
                 $this->dbh->modify(QAL::UPDATE, 'user_users', array('u_password' => password_hash($password, PASSWORD_DEFAULT)), array('u_id' => $UID));
+                $user = new User($UID);
 
                 $template = new MailTemplate('user_restore_password', [
                     'user_login' => $uName,
+                    'user_name' => $user->getValue('u_fullname'),
                     'user_password' => $password,
                     'site_url' => E()->getSiteManager()->getCurrentSite()->base,
                     'site_name' => $this->translate('TXT_SITE_NAME')

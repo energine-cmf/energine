@@ -184,6 +184,10 @@ class User extends Primitive {
         $this->info = $data;
         //$this->info['u_password'] = $data['u_password'];
         $data['u_password'] = password_hash($data['u_password'], PASSWORD_DEFAULT);
+        //Check if user exists
+        if($this->dbh->getScalar('user_users', 'COUNT(*)', ['u_name' => $data['u_name']])){
+            throw new \InvalidArgumentException(E()->Utils->translate('ERR_USER_EXISTS').': '.$data['u_name']);
+        }
         $this->id = $this->dbh->modify(QAL::INSERT, self::USER_TABLE_NAME, $data);
         $this->setGroups([$this->userGroup->getDefaultUserGroup()]);
     }
@@ -298,6 +302,19 @@ class User extends Primitive {
     public static function getOKUser($okID) {
         $result = false;
         if ($UID = E()->getDB()->getScalar(self::USER_TABLE_NAME, 'u_id', ['u_okid' => $okID, 'u_is_active' => 1])) {
+            return new User($UID);
+        }
+        return $result;
+    }
+    /**
+     * Get user by his ID in <a href="http://www.odnoklassniki.ru">Одноклассники</a>.
+     *
+     * @param string $okID User ID in Одноклассники.
+     * @return bool|User
+     */
+    public static function getGOOUser($gooID) {
+        $result = false;
+        if ($UID = E()->getDB()->getScalar(self::USER_TABLE_NAME, 'u_id', ['u_gooid' => $gooID, 'u_is_active' => 1])) {
             return new User($UID);
         }
         return $result;

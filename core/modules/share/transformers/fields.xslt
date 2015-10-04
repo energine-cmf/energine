@@ -547,7 +547,7 @@
 
     <!-- для полей HTMLBLOCK и TEXT на которые права только чтение -->
     <xsl:template match="field[@type='htmlblock' or @type='text'][@mode='1'][ancestor::component[@type='form']]" mode="field_input_readonly">
-        <div class="read"><xsl:value-of select="." disable-output-escaping="yes"/></div>
+        <div class="read control"><xsl:value-of select="." disable-output-escaping="yes"/></div>
         <input>
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES_READONLY"/>
         </input>
@@ -927,7 +927,7 @@
             <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
             <xsl:attribute name="id"><xsl:value-of select="@name"/></xsl:attribute>
             <xsl:attribute name="name"><xsl:choose>
-                <xsl:when test="@tableName"><xsl:value-of select="@tableName"/>[<xsl:value-of select="@name"/>]</xsl:when>
+                <xsl:when test="@tableName"><xsl:value-of select="@tableName"/><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name"/>]</xsl:when>
                 <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
             </xsl:choose></xsl:attribute>
         </xsl:template>

@@ -130,9 +130,6 @@
                 <!--<script type="text/javascript">window.singleMode = true;</script>-->
             </xsl:otherwise>
         </xsl:choose>
-        <xsl:if test="$DOC_PROPS[@name='google_verify']">
-            <meta name="google-site-verification" content="{$DOC_PROPS[@name='google_verify']}"/>
-        </xsl:if>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <xsl:if test="$DOC_PROPS[@name='keywords']">
             <meta name="keywords" content="{$DOC_PROPS[@name='keywords']}"/>
@@ -164,7 +161,8 @@
         <script type="text/javascript">
             var componentToolbars = [];
             <xsl:if test="count($COMPONENTS[recordset]/javascript/behavior[(@name!='PageEditor')]) &gt; 0">
-                var <xsl:for-each select="$COMPONENTS[recordset]/javascript[behavior[(@name!='PageEditor')]]"><xsl:value-of select="generate-id(../recordset)"/><xsl:if test="position() != last()">,</xsl:if></xsl:for-each>;
+                var <xsl:for-each select="$COMPONENTS[recordset]/javascript[behavior[(@name!='PageEditor')]]"><xsl:for-each select="behavior"><xsl:if
+                    test="@use='jquery'">jquery_</xsl:if><xsl:value-of select="generate-id(../../recordset)"/><xsl:if test="position() != last()">,</xsl:if></xsl:for-each><xsl:if test="position() != last()">,</xsl:if></xsl:for-each>;
             </xsl:if>
             window.addEvent('domready', function () {
                 <xsl:if test="$COMPONENTS[@componentAction='showPageToolbar']">
@@ -201,9 +199,6 @@
             });
         </script>
         <xsl:apply-templates select="document/translations"/>
-        <xsl:if test="$DOC_PROPS[@name='google_analytics'] and ($DOC_PROPS[@name='google_analytics'] != '')">
-            <xsl:value-of select="$DOC_PROPS[@name='google_analytics']" disable-output-escaping="yes"/>
-        </xsl:if>
         <xsl:if test="count(//javascript/behavior[@use='jquery']) &gt; 0">
             <script src="{/document/javascript/@jquery}"></script>
             <script type="text/javascript">
@@ -218,7 +213,9 @@
                 // Listen for the jQuery ready event on the document
                 $(function() {
             <xsl:for-each select="//javascript/behavior[@use='jquery']">
-                <xsl:call-template name="INIT_JS"/>
+                <xsl:call-template name="INIT_JS">
+                    <xsl:with-param name="PREFIX">jquery_</xsl:with-param>
+                </xsl:call-template>
             </xsl:for-each>
                 });
                 }(window.jQuery, window, document));
@@ -228,11 +225,12 @@
     </xsl:template>
 
     <xsl:template name="INIT_JS">
+        <xsl:param name="PREFIX"></xsl:param>
         <xsl:variable name="objectID" select="generate-id(../../recordset[not(@name)])"/>
         <xsl:choose>
             <xsl:when test="$objectID!=''">
                 if(document.getElementById('<xsl:value-of select="$objectID"/>')){
-                    <xsl:value-of select="$objectID"/> = new <xsl:value-of select="@name"/>('<xsl:value-of select="$objectID"/>');
+                    <xsl:value-of select="$PREFIX"/><xsl:value-of select="$objectID"/> = new <xsl:value-of select="@name"/>('<xsl:value-of select="$objectID"/>');
                 }
             </xsl:when>
             <xsl:otherwise>

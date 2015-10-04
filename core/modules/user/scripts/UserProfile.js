@@ -40,7 +40,7 @@ var UserProfile = new Class(/** @lends UserProfile# */{
         var field = $('u_password');
         var field2 = $('u_password2');
 
-        if (field.value != field2.value) {
+        if (field && field2 && field.value != field2.value) {
             this.validator.showError(field, field.getProperty('nrgn:message2'));
             event.stop();
         } else {

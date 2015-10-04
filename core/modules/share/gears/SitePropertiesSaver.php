@@ -26,7 +26,7 @@ class SitePropertiesSaver extends ExtendedSaver {
         parent::setData($data);
         if($fPropName = $this->getData()->getFieldByName('prop_name')) {
             $name = Translit::transliterate($fPropName->getRowData(0), '_');
-            $fPropName->setData(preg_replace("/[^A-Za-z0-9_]/", '', $name), true);
+            $fPropName->setData(preg_replace("/[^A-Za-z0-9_\\.]/", '', $name), true);
         }
     }
 

@@ -130,9 +130,6 @@
                 <!--<script type="text/javascript">window.singleMode = true;</script>-->
             </xsl:otherwise>
         </xsl:choose>
-        <xsl:if test="$DOC_PROPS[@name='google_verify']">
-            <meta name="google-site-verification" content="{$DOC_PROPS[@name='google_verify']}"/>
-        </xsl:if>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <xsl:if test="$DOC_PROPS[@name='keywords']">
             <meta name="keywords" content="{$DOC_PROPS[@name='keywords']}"/>
@@ -202,9 +199,6 @@
             });
         </script>
         <xsl:apply-templates select="document/translations"/>
-        <xsl:if test="$DOC_PROPS[@name='google_analytics'] and ($DOC_PROPS[@name='google_analytics'] != '')">
-            <xsl:value-of select="$DOC_PROPS[@name='google_analytics']" disable-output-escaping="yes"/>
-        </xsl:if>
         <xsl:if test="count(//javascript/behavior[@use='jquery']) &gt; 0">
             <script src="{/document/javascript/@jquery}"></script>
             <script type="text/javascript">

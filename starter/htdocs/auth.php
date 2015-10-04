@@ -7,7 +7,7 @@ use
     Energine\user\gears\VKOAuth;
 
 //на всякий пожарный проверяем реферрера
-if (!isset($_SERVER['HTTP_REFERER']) && (!isset($_GET['return']))) {
+if (!isset($_SERVER['HTTP_REFERER']) /*&& (!isset($_GET['return']))*/) {
     //не местных  - в сад
     exit;
 }
@@ -27,6 +27,8 @@ if (
     ($fbAuth = isset($_GET['fbAuth']))
     ||
     ($vkAuth = isset($_GET['vkAuth']))
+    ||
+    ($gooAuth = ((isset($_GET['state'])) && ($_GET['state'] == 'gooAuth')))
 ) {
     if ($login) {
         if ($UID = Energine\share\gears\AuthUser::authenticate(
@@ -36,10 +38,12 @@ if (
         ) {
             E()->UserSession->start($UID);
         } else {
-            $response->addCookie(UserSession::FAILED_LOGIN_COOKIE_NAME, 'bad auth data', time() + 60);
+            $response->addCookie(UserSession::FAILED_LOGIN_COOKIE_NAME, E()->Utils->translate('ERR_BAD_AUTH'), time() + 60);
         }
         //о том прошла ли аутентификация успешноыны LoginForm узнает из куков
     } elseif ($logout) {
+        $_GET['return'] = '/';
+
         E()->UserSession->kill();
     } elseif (
         $fbAuth
@@ -57,7 +61,7 @@ if (
             if (is_array($userInfo) && !isset($_REQUEST['error'])) {
                 //Смотрим есть ли такой юзер в списке зарегистрированных
                 if (!($user = User::getFBUser($userInfo['id']))
-                    && !($user = User::linkFBUserByEmail($userInfo['email'], $userInfo['id']))
+                    /*&& !($user = User::linkFBUserByEmail($userInfo['email'], $userInfo['id']))*/
                 ) {
                     //Если нет - создаем
                     $userData = [
@@ -121,12 +125,46 @@ if (
                     }
 
                 }
-                E()->UserSession->start($UID);
+                E()->UserSession->start($user->getID());
             }
         } catch (\Exception $e) {
             $response->addCookie(UserSession::FAILED_LOGIN_COOKIE_NAME, $e->getMessage(), time() + 60);
             goto escape;
         }
+    } elseif (
+        $gooAuth
+        &&
+        ($appID = Primitive::getConfigValue('auth.goo.appID'))
+        &&
+        ($secretKey = Primitive::getConfigValue('auth.goo.secretKey'))
+    ) {
+        $goo = new \Energine\user\gears\GOOOAuth([
+            'appId' => $appID,
+            'secret' => $secretKey
+        ]);
+        try {
+            if (!($user = User::getGOOUser($goo->user->id))) {
+                //Если нет - создаем
+                $user = new User();
+
+                $userInfo = [
+                    'u_name' => $goo->user->email,
+                    'u_gooid' => $goo->user->id,
+                    'u_password' => User::generatePassword(),
+                    'u_fullname' => $goo->user->name,
+                    'u_avatar_img' => $goo->user->picture,
+                ];
+
+                $user->create($userInfo);
+            }
+            E()->UserSession->start($user->getID());
+        } catch
+        (Exception $e) {
+            $response->addCookie(UserSession::FAILED_LOGIN_COOKIE_NAME, $e->getMessage(), time() + 60);
+            goto escape;
+        }
+
+
     }
 }
 escape:

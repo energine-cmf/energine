@@ -133,13 +133,6 @@ return array(
         // адрес для сообщений обратной связи
         'feedback' => 'demo@energine.org'
     ),
-
-    // настройки google
-    'google' => array(
-        'verify' => '',
-        'analytics' => ''
-    ),
-
     // настройки recaptcha
     'recaptcha' => array(
         'public' => '6LfkCeASAAAAALl-av9HM_RG1AU-tcta3teX7Z2u',

@@ -67,10 +67,7 @@ class PageInfo extends DataSet {
 
         $this->js = $this->buildJS();
 
-        $toolbars = $this->createToolbar();
-        if (!empty($toolbars)) {
-            $this->addToolbar($toolbars);
-        }
+        $this->addToolbar($this->loadToolbar());
 
         $this->setData($d);
         $d->load($this->dbh->select($query, $this->document->getID(), $this->document->getLang()));

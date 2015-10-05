@@ -103,7 +103,7 @@ class Calendar;
     /**
       * @copydoc DataSet::createToolbar
       */
-    protected function createToolbar(){
+    protected function loadToolbar(){
         $toolbar = new Toolbar('navigation');
         foreach(array(
             CalendarObject::PERIOD_CURRENT, CalendarObject::PERIOD_PREVIOUS, CalendarObject::PERIOD_NEXT

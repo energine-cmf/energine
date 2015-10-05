@@ -156,7 +156,7 @@ class NewsFeed extends ExtendedFeed {
             throw new SystemException('ERR_404', SystemException::ERR_404);
         }
 
-        $this->addToolbar($this->createToolbar());
+        $this->addToolbar($this->loadToolbar());
         $this->js = $this->buildJS();
 
         foreach ($this->getDataDescription() as $fieldDescription) {

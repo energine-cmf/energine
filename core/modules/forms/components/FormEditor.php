@@ -177,10 +177,7 @@ class FormEditor extends DataSet {
         $this->setBuilder($this->createBuilder());
         $this->setDataDescription($this->createDataDescription());
         $this->setData(new Data());
-        $toolbars = $this->createToolbar();
-        if (!empty($toolbars)) {
-            $this->addToolbar($toolbars);
-        }
+        $this->addToolbar($this->loadToolbar());
         $this->js = $this->buildJS();
     }
 
@@ -238,14 +235,8 @@ class FormEditor extends DataSet {
             //Load field translations, translation tag and ID.
             $this->getData()->load($result);
         }
-
-        //Create toolbar and JS.
-        $toolbars = $this->createToolbar();
-        if (!empty($toolbars)) {
-            $this->addToolbar($toolbars);
-        }
+        $this->addToolbar($this->loadToolbar());
         $this->js = $this->buildJS();
-        //inspect($this->getDataDescription());
     }
 
     /**
@@ -256,12 +247,8 @@ class FormEditor extends DataSet {
         $this->setDataDescription($this->createDataDescription());
         $this->createPager();
         $this->setData(new Data());
-        $toolbars = $this->createToolbar();
-        if (!empty($toolbars)) {
-            $this->addToolbar($toolbars);
-        }
+        $this->addToolbar($this->loadToolbar());
         $this->js = $this->buildJS();
-        //$this->addTranslation('TXT_FILTER', 'BTN_APPLY_FILTER', 'TXT_RESET_FILTER', 'TXT_FILTER_SIGN_BETWEEN', 'TXT_FILTER_SIGN_CONTAINS', 'TXT_FILTER_SIGN_NOT_CONTAINS');
     }
 
     //todo VZ: What up?

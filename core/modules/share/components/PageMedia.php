@@ -86,10 +86,7 @@ class PageMedia extends DataSet {
         );
         $m->createFieldDescription();
         $m->createField('smap_id', false, $id);
-        $toolbars = $this->createToolbar();
-        if (!empty($toolbars)) {
-            $this->addToolbar($toolbars);
-        }
+        $this->addToolbar($this->loadToolbar());
         $this->js = $this->buildJS();
 
     }

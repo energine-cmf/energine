@@ -51,10 +51,7 @@ class MailEmailSubscription extends DataSet {
         $this->setData(new Data());
 
         $this->js = $this->buildJS();
-        $toolbars = $this->createToolbar();
-        if (!empty($toolbars)) {
-            $this->addToolbar($toolbars);
-        }
+        $this->addToolbar($this->loadToolbar());
     }
 
     protected function subscribe() {

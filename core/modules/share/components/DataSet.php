@@ -30,7 +30,8 @@ abstract class DataSet;
  *
  * @abstract
  */
-abstract class DataSet extends Component {
+abstract class DataSet extends Component
+{
     /**
      * File library.
      * @var FileRepository $fileLibrary
@@ -123,7 +124,8 @@ abstract class DataSet extends Component {
     /**
      * @copydoc Component::__construct
      */
-    public function __construct($name, array $params = NULL) {
+    public function __construct($name, array $params = NULL)
+    {
         parent::__construct($name, $params);
         $this->setType(self::COMPONENT_TYPE_FORM);
         //if (!$this->getParam('recordsPerPage')) $this->setParam('recordsPerPage', self::RECORD_PER_PAGE);
@@ -140,7 +142,8 @@ abstract class DataSet extends Component {
     /**
      * @copydoc Component::defineParams
      */
-    protected function defineParams() {
+    protected function defineParams()
+    {
         $this->setProperty('state', '');
         return array_merge(
             parent::defineParams(),
@@ -157,7 +160,8 @@ abstract class DataSet extends Component {
      * @param Data $data
      * @final
      */
-    final protected function setData(Data $data) {
+    final protected function setData(Data $data)
+    {
         $this->data = $data;
     }
 
@@ -167,7 +171,8 @@ abstract class DataSet extends Component {
      * @return Data
      *
      */
-    public function getData() {
+    public function getData()
+    {
 
         return $this->data;
     }
@@ -178,7 +183,8 @@ abstract class DataSet extends Component {
      * @param string|bool $toolbarName Toolbar name.
      * @return Toolbar|array
      */
-    protected function getToolbar($toolbarName = false) {
+    protected function getToolbar($toolbarName = false)
+    {
         $result = [];
         if (!$toolbarName) {
             $result = $this->toolbar;
@@ -196,16 +202,19 @@ abstract class DataSet extends Component {
      *
      * @throws SystemException 'ERR_BAD_TOOLBAR'
      */
-    protected function addToolbar($toolbar) {
-        if (!is_array($toolbar)) {
-            $toolbar = [$toolbar];
-        }
-        foreach ($toolbar as $tb)
-            if ($tb instanceof Toolbar) {
-                $this->toolbar[$tb->getName()] = $tb;
-            } else {
-                throw new SystemException('ERR_BAD_TOOLBAR', SystemException::ERR_DEVELOPER);
+    protected function addToolbar($toolbar)
+    {
+        if (!empty($toolbar)) {
+            if (!is_array($toolbar)) {
+                $toolbar = [$toolbar];
             }
+            foreach ($toolbar as $tb)
+                if ($tb instanceof Toolbar) {
+                    $this->toolbar[$tb->getName()] = $tb;
+                } else {
+                    throw new SystemException('ERR_BAD_TOOLBAR', SystemException::ERR_DEVELOPER);
+                }
+        }
     }
 
     /**
@@ -216,7 +225,8 @@ abstract class DataSet extends Component {
      * @final
      * @return DataDescription
      */
-    protected function setDataDescription(DataDescription $dataDescription) {
+    protected function setDataDescription(DataDescription $dataDescription)
+    {
         return $this->dataDescription = $dataDescription;
     }
 
@@ -228,7 +238,8 @@ abstract class DataSet extends Component {
      *
      * @throws SystemException 'ERR_DEV_NO_DATA_DESCRIPTION'
      */
-    final protected function getDataDescription() {
+    final protected function getDataDescription()
+    {
         // Существует ли описание данных?
         // Без описания данных компонент не сможет нормально работать.
         if (!$this->dataDescription) {
@@ -246,16 +257,13 @@ abstract class DataSet extends Component {
     /**
      * @copydoc Component::prepare
      */
-    protected function prepare() {
+    protected function prepare()
+    {
         $this->setBuilder($this->createBuilder());
         $this->setDataDescription($this->createDataDescription());
         $this->createPager();
         $this->setData($this->createData());
-
-        $toolbars = $this->createToolbar();
-        if (!empty($toolbars)) {
-            $this->addToolbar($toolbars);
-        }
+        $this->addToolbar($this->loadToolbar());
         $this->js = $this->buildJS();
 
     }
@@ -265,7 +273,8 @@ abstract class DataSet extends Component {
      *
      * @return AbstractBuilder
      */
-    protected function createBuilder() {
+    protected function createBuilder()
+    {
         if (!isset($this->builder) || !$this->builder)
             return new Builder($this->getTitle());
         else return $this->builder;
@@ -278,7 +287,8 @@ abstract class DataSet extends Component {
      *
      * @throws SystemException 'ERR_DEV_LOAD_DATA_DESCR_IS_FUNCTION'
      */
-    protected function createDataDescription() {
+    protected function createDataDescription()
+    {
         // описание данных из конфигурации
         $configDataDescriptionObject = new DataDescription();
         if ($this->getConfig()->getCurrentStateConfig()) {
@@ -308,7 +318,8 @@ abstract class DataSet extends Component {
      *
      * @return Toolbar|Toolbar[]
      */
-    protected function createToolbar() {
+    protected function loadToolbar()
+    {
         $result = [];
         if ($config = $this->getConfig()->getCurrentStateConfig()) {
             foreach ($config->toolbar as $toolbarDescription) {
@@ -331,7 +342,8 @@ abstract class DataSet extends Component {
     /**
      * Create pager.
      */
-    protected function createPager() {
+    protected function createPager()
+    {
         $recordsPerPage = intval($this->getParam('recordsPerPage'));
         if ($recordsPerPage > 0) {
             $this->pager = new Pager($recordsPerPage);
@@ -356,7 +368,8 @@ abstract class DataSet extends Component {
      *
      * @return mixed
      */
-    protected function loadData() {
+    protected function loadData()
+    {
         return false;
     }
 
@@ -366,7 +379,8 @@ abstract class DataSet extends Component {
      *
      * @return mixed
      */
-    protected function loadDataDescription() {
+    protected function loadDataDescription()
+    {
         return false;
     }
 
@@ -375,7 +389,8 @@ abstract class DataSet extends Component {
      *
      * @throws SystemException
      */
-    public function build() {
+    public function build()
+    {
         if ($this->getState() == 'fileLibrary') {
             $result = $this->fileLibrary->build();
         } elseif ($this->getState() == 'imageManager') {
@@ -437,7 +452,8 @@ abstract class DataSet extends Component {
     /**
      * @copydoc DBDataSet::getConfig
      */
-    protected function getConfig() {
+    protected function getConfig()
+    {
         if (!$this->config) {
             $this->config = new DataSetConfig(
                 $this->getParam('config'),
@@ -455,7 +471,8 @@ abstract class DataSet extends Component {
      *
      * @throws SystemException 'ERR_DEV_LOAD_DATA_IS_FUNCTION'
      */
-    protected function createData() {
+    protected function createData()
+    {
         $data = $this->loadData();
         if (is_null($data)) {
             throw new SystemException('ERR_DEV_LOAD_DATA_IS_FUNCTION', SystemException::ERR_DEVELOPER);
@@ -473,7 +490,8 @@ abstract class DataSet extends Component {
      *
      * @return DOMNode
      */
-    protected function buildJS() {
+    protected function buildJS()
+    {
         $result = false;
         if (($config = $this->getConfig()->getCurrentStateConfig()) &&
             $config->javascript
@@ -481,8 +499,8 @@ abstract class DataSet extends Component {
             $result = $this->doc->createElement('javascript');
             foreach ($config->javascript->behavior as $value) {
                 $JSObjectXML = $this->doc->createElement('behavior');
-                foreach($value->attributes() as $attrName => $attrValue){
-                    if($attrName == 'path'){
+                foreach ($value->attributes() as $attrName => $attrValue) {
+                    if ($attrName == 'path') {
                         $attrValue .= '/';
                     }
                     $JSObjectXML->setAttribute($attrName, $attrValue);
@@ -491,9 +509,9 @@ abstract class DataSet extends Component {
             }
             foreach ($config->javascript->variable as $value) {
                 $JSObjectXML = $this->doc->createElement('variable');
-                foreach($value->attributes() as $attrName => $attrValue){
-                    if($attrName == 'type'){
-                        $attrValue = ($attrValue) ?$attrValue : 'string';
+                foreach ($value->attributes() as $attrName => $attrValue) {
+                    if ($attrName == 'type') {
+                        $attrValue = ($attrValue) ? $attrValue : 'string';
                     }
                     $JSObjectXML->setAttribute($attrName, $attrValue);
                 }
@@ -512,7 +530,8 @@ abstract class DataSet extends Component {
      *
      * @final
      */
-    final protected function setAction($action, $isFullURI = false) {
+    final protected function setAction($action, $isFullURI = false)
+    {
         // если у нас не полностью сформированный путь, то добавляем информацию о языке + путь к шаблону
         if (!$isFullURI) {
             $action = $this->request->getLangSegment() .
@@ -534,7 +553,8 @@ abstract class DataSet extends Component {
      *
      * @final
      */
-    final protected function setType($type) {
+    final protected function setType($type)
+    {
         $this->type = $type;
         if (in_array($type, [self::COMPONENT_TYPE_FORM_ADD, self::COMPONENT_TYPE_FORM_ALTER])) {
             $type = self::COMPONENT_TYPE_FORM;
@@ -549,7 +569,8 @@ abstract class DataSet extends Component {
      *
      * @final
      */
-    final protected function getType() {
+    final protected function getType()
+    {
         return $this->type;
     }
 
@@ -560,7 +581,8 @@ abstract class DataSet extends Component {
      *
      * @final
      */
-    final protected function setTitle($title) {
+    final protected function setTitle($title)
+    {
         if (!empty($title))
             $this->setProperty('title', $title);
     }
@@ -572,7 +594,8 @@ abstract class DataSet extends Component {
      *
      * @final
      */
-    final protected function getTitle() {
+    final protected function getTitle()
+    {
         return $this->getProperty('title');
     }
 
@@ -581,7 +604,8 @@ abstract class DataSet extends Component {
      *
      * @final
      */
-    final protected function addTranslation() {
+    final protected function addTranslation()
+    {
         foreach (func_get_args() as $tag) {
             $this->document->addTranslation($tag, $this);
         }
@@ -597,7 +621,8 @@ abstract class DataSet extends Component {
      *
      * @final
      */
-    final protected function downloadFile($data, $MIMEType, $fileName) {
+    final protected function downloadFile($data, $MIMEType, $fileName)
+    {
         $this->response->setHeader('Content-Type', $MIMEType);
         $this->response->setHeader('Content-Disposition',
             ': attachment; filename="' . $fileName . '"');
@@ -608,7 +633,8 @@ abstract class DataSet extends Component {
     /**
      * Clean up.
      */
-    protected function cleanup() {
+    protected function cleanup()
+    {
         $data = isset($_POST['data']) ? $_POST['data'] : '';
         $data = self::cleanupHTML($data);
         $this->response->setHeader('Content-Type', 'text/html; charset=utf-8');
@@ -623,7 +649,8 @@ abstract class DataSet extends Component {
      *
      * @final
      */
-    final protected function addWYSIWYGTranslations() {
+    final protected function addWYSIWYGTranslations()
+    {
         $translations = [
             'BTN_ITALIC',
             'BTN_HREF',
@@ -659,7 +686,8 @@ abstract class DataSet extends Component {
     /**
      * Get file library.
      */
-    protected function fileLibrary() {
+    protected function fileLibrary()
+    {
         $this->request->shiftPath(1);
 
         $this->fileLibrary = $this->document->componentManager->createComponent('filelibrary', 'Energine\share\components\FileRepository', ['config' => 'core/modules/share/config/FileRepositorySelect.component.xml']);
@@ -670,7 +698,8 @@ abstract class DataSet extends Component {
     /**
      * Run source.
      */
-    protected function source() {
+    protected function source()
+    {
         $this->source = $this->document->componentManager->createComponent('textblocksource', 'Energine\share\components\TextBlockSource', NULL);
         $this->source->run();
     }
@@ -678,7 +707,8 @@ abstract class DataSet extends Component {
     /**
      * Show image manager.
      */
-    protected function imageManager() {
+    protected function imageManager()
+    {
         $this->imageManager = $this->document->componentManager->createComponent('imagemanager', 'Energine\share\components\ImageManager', NULL);
         $this->imageManager->run();
     }
@@ -686,7 +716,8 @@ abstract class DataSet extends Component {
     /**
      * Player for embedding in text areas
      */
-    protected function embedPlayer() {
+    protected function embedPlayer()
+    {
         $sp = $this->getStateParams();
         list($uplId) = $sp;
         $fileInfo = $this->dbh->select(
@@ -752,7 +783,8 @@ abstract class DataSet extends Component {
      * @param string $data Data.
      * @return string
      */
-    public static function cleanupHTML($data) {
+    public static function cleanupHTML($data)
+    {
         $aggressive = Primitive::getConfigValue('site.aggressive_cleanup', false);
 
         //Если подключено расширение tidy

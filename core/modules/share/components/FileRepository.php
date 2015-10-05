@@ -172,10 +172,7 @@ class FileRepository extends Grid implements SampleFileRepository {
 
         $this->setDataDescription($dd);
         $this->setData($this->createData());
-        $toolbars = $this->createToolbar();
-        if (!empty($toolbars)) {
-            $this->addToolbar($toolbars);
-        }
+        $this->addToolbar($this->loadToolbar());
         $this->js = $this->buildJS();
         $this->setAction('save-dir/');
     }
@@ -202,10 +199,7 @@ class FileRepository extends Grid implements SampleFileRepository {
 
         $this->setData($this->createData());
 
-        $toolbars = $this->createToolbar();
-        if (!empty($toolbars)) {
-            $this->addToolbar($toolbars);
-        }
+        $this->addToolbar($this->loadToolbar());
         $this->js = $this->buildJS();
         $this->setAction('save/');
 
@@ -426,10 +420,7 @@ class FileRepository extends Grid implements SampleFileRepository {
         $f->setData($uplPID);
         $this->getData()->addField($f);
 
-        $toolbars = $this->createToolbar();
-        if (!empty($toolbars)) {
-            $this->addToolbar($toolbars);
-        }
+        $this->addToolbar($this->loadToolbar());
         $this->js = $this->buildJS();
         $this->setAction('save/');
 
@@ -556,10 +547,7 @@ class FileRepository extends Grid implements SampleFileRepository {
         $this->addFilterCondition(['upl_id' => $uplID]);
         $this->setData($this->createData());
 
-        $toolbars = $this->createToolbar();
-        if (!empty($toolbars)) {
-            $this->addToolbar($toolbars);
-        }
+        $this->addToolbar($this->loadToolbar());
         $this->js = $this->buildJS();
         $this->setAction('save/');
     }
@@ -647,10 +635,7 @@ class FileRepository extends Grid implements SampleFileRepository {
         $f->setData($uplPID);
         $this->getData()->addField($f);
 
-        $toolbars = $this->createToolbar();
-        if (!empty($toolbars)) {
-            $this->addToolbar($toolbars);
-        }
+        $this->addToolbar($this->loadToolbar());
         $this->js = $this->buildJS();
         $this->setAction('save-dir/');
     }

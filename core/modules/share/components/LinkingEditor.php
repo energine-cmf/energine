@@ -60,7 +60,7 @@ class LinkingEditor extends Grid {
             E()->getResponse()->addCookie(md5($this->getName()), convert_uuencode($this->document->componentManager->getBlockByName(
                    $this->getParam('bind')
                 )->getFilter()));
-        $this->addToolbar($this->createToolbar());
+        $this->addToolbar($this->loadToolbar());
         $this->js = $this->buildJS();
     }
 

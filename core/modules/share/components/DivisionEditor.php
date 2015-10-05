@@ -760,7 +760,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
         if (!$this->getConfig()->getCurrentStateConfig()) {
             throw new SystemException('ERR_DEV_TOOLBAR_MUST_HAVE_CONFIG', SystemException::ERR_DEVELOPER);
         }
-        $this->addToolbar($this->createToolbar());
+        $this->addToolbar($this->loadToolbar());
 
         if ($this->document->isEditable())
             $this->getToolbar('main_toolbar')->getControlByID('editMode')->setState(1);

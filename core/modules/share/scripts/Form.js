@@ -131,7 +131,7 @@ var Form = new Class(/** @lends Form# */{
          * @type {TabPane}
          */
         this.tabPane = new TabPane(this.element, {
-            onTabChange: this.onTabChange
+            onTabChange: this.onTabChange.bind(this)
         });
 
         /**
@@ -146,10 +146,11 @@ var Form = new Class(/** @lends Form# */{
 
         this.form.getElements('textarea.code').each(function (textarea) {
             this.codeEditors.push(CodeMirror.fromTextArea(textarea, {
-                mode: "text/html",
+                mode: "htmlmixed",
                 tabMode: "indent",
                 lineNumbers: true,
-                theme: 'elegant'
+                theme: 'elegant',
+                autofocus: false
             }));
         }, this);
 
@@ -259,10 +260,12 @@ var Form = new Class(/** @lends Form# */{
      * Create required IFrame by tab changing.
      */
     onTabChange: function () {
-        if (this.currentTab.getProperty('data-src') && !this.currentTab.loaded) {
-            this.currentTab.pane.empty();
-            this.currentTab.pane.grab(new Element('iframe', {
-                src: Energine['base'] + this.currentTab.getProperty('data-src'),
+        var currentTab = this.tabPane.currentTab;
+
+        if (currentTab.getProperty('data-src') && !currentTab.loaded) {
+            currentTab.pane.empty();
+            currentTab.pane.grab(new Element('iframe', {
+                src: Energine['base'] + currentTab.getProperty('data-src'),
                 frameBorder: 0,
                 scrolling: 'no',
                 styles: {
@@ -270,7 +273,12 @@ var Form = new Class(/** @lends Form# */{
                     height: '99%'
                 }
             }));
-            this.currentTab.loaded = true;
+            currentTab.loaded = true;
+        }
+        else {
+            this.codeEditors.each(function(ce){
+                ce.refresh();
+            });
         }
     },
 

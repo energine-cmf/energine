@@ -27,7 +27,7 @@
 			<field name="template_name"/>
 			<field name="template_subject"/>
 			<field name="template_body"/>
-			<field name="template_body_rtf"/>
+			<field name="template_body_rtf" type="code"/>
 			<field name="template_hints" mode="1"/>
 			<field name="template_is_active"/>
 		</fields>
@@ -57,7 +57,7 @@
 			<field name="template_name"/>
 			<field name="template_subject"/>
 			<field name="template_body"/>
-			<field name="template_body_rtf"/>
+			<field name="template_body_rtf" type="code"/>
             <field name="template_hints" mode="1"/>
 			<field name="template_is_active"/>
 		</fields>

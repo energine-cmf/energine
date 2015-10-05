@@ -98,7 +98,7 @@ class WidgetsRepository extends Grid {
             $f->setRowData(0, $param);
             $d->addField($f);
         }
-        $this->addToolbar($this->createToolbar());
+        $this->addToolbar($this->loadToolbar());
     }
 
     /**

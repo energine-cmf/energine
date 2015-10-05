@@ -180,7 +180,7 @@ class TextBlock extends DataSet implements SampleTextBlock{
     /**
      * @copydoc DataSet::createToolbar
      */
-    protected function createToolbar() {
+    protected function loadToolbar() {
         return false;
     }
 

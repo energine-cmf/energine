@@ -3121,8 +3121,8 @@ INSERT INTO `share_lang_tags_translation` (`ltag_id`, `lang_id`, `ltag_value_rtf
 (2059, 2, 'Коментарі до статей');
 
 
-INSERT INTO `share_sites` (`site_id`, `site_is_active`, `site_is_indexed`, `site_is_default`, `site_folder`, `site_order_num`, `site_meta_robots`, `site_ga_code`) VALUES
-(1, 1, 1, 1, 'main', 2, NULL, NULL);
+INSERT INTO `share_sites` (`site_id`, `site_is_active`, `site_is_indexed`, `site_is_default`, `site_folder`, `site_order_num`, `site_meta_robots`) VALUES
+(1, 1, 1, 1, 'main', 2, NULL);
 
 --
 -- Dumping data for table `share_sites_translation`

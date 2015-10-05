@@ -692,7 +692,6 @@ CREATE TABLE IF NOT EXISTS `share_sites` (
   `site_folder` char(20) NOT NULL DEFAULT 'main',
   `site_order_num` int(10) unsigned DEFAULT '1',
   `site_meta_robots` text,
-  `site_ga_code` text,
   PRIMARY KEY (`site_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 

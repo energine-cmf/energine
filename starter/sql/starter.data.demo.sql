@@ -3507,8 +3507,8 @@ INSERT INTO `share_sitemap_translation` (`smap_id`, `lang_id`, `smap_name`, `sma
 -- Дамп данных таблицы `share_sites`
 --
 
-INSERT INTO `share_sites` (`site_id`, `site_is_active`, `site_is_indexed`, `site_is_default`, `site_folder`, `site_order_num`, `site_meta_robots`, `site_ga_code`) VALUES
-(1, 1, 1, 1, 'main', 2, NULL, NULL);
+INSERT INTO `share_sites` (`site_id`, `site_is_active`, `site_is_indexed`, `site_is_default`, `site_folder`, `site_order_num`, `site_meta_robots`) VALUES
+(1, 1, 1, 1, 'main', 2, NULL);
 
 --
 -- Дамп данных таблицы `share_sites_translation`

@@ -408,7 +408,7 @@ class FilterConditionConverter implements \ArrayAccess, \Iterator {
                 'condition' => '= 1',
             ],
             'unchecked' => [
-                'title'     => translate('TXT_FILTER_SIGN_UNCHEKED'),
+                'title'     => translate('TXT_FILTER_SIGN_UNCHECKED'),
                 'type'      => [FieldDescription::FIELD_TYPE_BOOL],
                 'condition' => '!=1'
             ],

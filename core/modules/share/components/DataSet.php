@@ -316,7 +316,7 @@ abstract class DataSet extends Component
     /**
      * Create toolbar
      *
-     * @return Toolbar|Toolbar[]
+     * @return Toolbar[]
      */
     protected function loadToolbar()
     {

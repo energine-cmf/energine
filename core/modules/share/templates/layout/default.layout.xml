@@ -9,7 +9,7 @@
     <component name="adminPanel" class="Energine\share\components\DivisionEditor">
         <params>
             <param name="state">showPageToolbar</param>
-            <param name="rights">3</param> 
+            <param name="rights">3</param>
         </params>
     </component>
 </page>

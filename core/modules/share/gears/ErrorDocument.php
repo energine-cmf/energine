@@ -36,12 +36,14 @@ class ErrorDocument extends Primitive implements IDocument {
     /**
      * Attach exception.
      *
-     * @param SystemException $e Exception.
+     * @param \Exception $e
      *
      * @see ErrorDocument::$e
+     * @return ErrorDocument
      */
-    public function attachException(SystemException $e) {
+    public function attachException(\Exception $e) {
         $this->e = $e;
+        return $this;
     }
 
     public function build() {
@@ -73,10 +75,6 @@ class ErrorDocument extends Primitive implements IDocument {
         $vm = E()->getController()->getViewMode();
         if ($vm == DocumentController::TRANSFORM_JSON) {
             $errors = [['message' => $this->e->getMessage()]];
-            $customMessages = $this->e->getCustomMessage();
-            if (is_array($customMessages) && !empty($customMessages)) {
-                array_push($errors, $customMessages);
-            }
             $data = [
                 'result' => false,
                 'errors' => $errors
@@ -89,18 +87,9 @@ class ErrorDocument extends Primitive implements IDocument {
             $error->appendChild($this->doc->createElement('message', $this->e->getMessage()));
             $error->setAttribute('file', $this->e->getFile());
             $error->setAttribute('line', $this->e->getLine());
-            $customMessages = $this->e->getCustomMessage();
-            if (is_array($customMessages) && !empty($customMessages)) {
-                foreach ($customMessages as $message) {
-                    if (is_array($message)) {
-                        $message = implode(', ', $message);
-                    }
-                    $error->appendChild($this->doc->createElement('customMessage', $message));
-                }
-            }
 
             $bktrace = $this->doc->createElement('backtrace');
-            $dbgObj = $this->e->getBacktrace();
+            $dbgObj = debug_backtrace(!DEBUG_BACKTRACE_PROVIDE_OBJECT, 5);
             array_walk($dbgObj, function ($callable) use ($bktrace) {
                 $bktrace->appendChild($call = $this->doc->createElement('call'));
                 array_walk($callable, function ($value, $key) use ($call) {

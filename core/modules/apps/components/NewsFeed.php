@@ -152,6 +152,15 @@ class NewsFeed extends ExtendedFeed {
             if ($breadCrumbs) {
                 $breadCrumbs->addCrumb('', $newsTitle);
             }
+
+            if ($f = $this->getData()->getFieldByName('smap_id')) {
+                foreach ($f as $key => $value) {
+                    $site = E()->getSiteManager()->getSiteByPage($value);
+                    $f->setRowProperty($key, 'url', E()->getMap($site->id)->getURLByID($value));
+                    $f->setRowProperty($key, 'base', $site->base);
+                }
+            }
+
         } else {
             throw new SystemException('ERR_404', SystemException::ERR_404);
         }
@@ -165,7 +174,6 @@ class NewsFeed extends ExtendedFeed {
         $am = new AttachmentManager($this->getDataDescription(), $this->getData(), $this->getTableName(), true);
         $am->createFieldDescription();
         $am->createField();
-
     }
 
     /**

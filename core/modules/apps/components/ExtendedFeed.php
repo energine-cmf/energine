@@ -89,14 +89,14 @@ class ExtendedFeed extends Feed {
             $res->addField($categoryField);
         }
 
-        if ($f = $res->getFieldByName('smap_id')) {
+        /*if ($f = $res->getFieldByName('smap_id')) {
             $map = E()->getMap();
             foreach ($f as $i => $row) {
                 $catInfo = $map->getDocumentInfo($row);
-                $categoryField->setRowData($i, $catInfo['Name']);
-                $categoryField->setRowProperty($i, 'url', $map->getURLByID($row));
+                $f->setRowData($i, $catInfo['Name']);
+                $f->setRowProperty($i, 'url', $map->getURLByID($row));
             }
-        }
+        }*/
         return $res;
     }
 
@@ -132,5 +132,12 @@ class ExtendedFeed extends Feed {
         $am = new AttachmentManager($this->getDataDescription(), $this->getData(), $this->getTableName(), true);
         $am->createFieldDescription();
         $am->createField();
+        if ($f = $this->getData()->getFieldByName('smap_id')) {
+            foreach ($f as $key => $value) {
+                $site = E()->getSiteManager()->getSiteByPage($value);
+                $f->setRowProperty($key, 'url', E()->getMap($site->id)->getURLByID($value));
+                $f->setRowProperty($key, 'base', $site->base);
+            }
+        }
     }
 }

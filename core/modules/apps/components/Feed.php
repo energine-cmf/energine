@@ -160,6 +160,13 @@ class Feed extends DBDataSet {
         parent::view();
         $this->addFilterCondition(['smap_id' => $this->document->getID()]);
         $this->document->componentManager->getBlockByName('breadCrumbs')->addCrumb();
+        if ($f = $this->getData()->getFieldByName('smap_id')) {
+            foreach ($f as $key => $value) {
+                $site = E()->getSiteManager()->getSiteByPage($value);
+                $f->setRowProperty($key, 'url', E()->getMap($site->id)->getURLByID($value));
+                $f->setRowProperty($key, 'base', $site->base);
+            }
+        }
     }
 
     /**

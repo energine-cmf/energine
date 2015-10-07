@@ -273,5 +273,8 @@ class FeedbackForm extends DBDataSet {
 
         $this->setDataDescription($dataDescription);
         $this->setData($data);
+
+        $this->setAction('');
+        $this->addToolbar($this->loadToolbar());
     }
 }

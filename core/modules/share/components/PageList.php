@@ -53,6 +53,9 @@ class PageList extends DataSet {
         } elseif ($this->getParam('site') == 'current') {
             $this->setParam('site', E()->getSiteManager()->getCurrentSite()->id);
         }
+        if($this->getParam('id') == self::ALL_PAGES){
+            $this->setParam('recursive', false);
+        }
     }
 
     /**

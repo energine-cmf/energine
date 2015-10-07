@@ -149,13 +149,13 @@ class DocumentController extends Primitive {
                 $document =E()->getDocument();
                 //$document = new Document();
 
-                $document->loadComponents(function () {
+                $document->loadComponents(function () use ($e){
                     if (
                         !file_exists($errorPageFile = Document::TEMPLATES_DIR . implode(DIRECTORY_SEPARATOR, [Document::TMPL_LAYOUT, E()->getSiteManager()->getCurrentSite()->folder, self::ERROR_PAGE_FILE]))
                         &&
                         !file_exists($errorPageFile = Document::TEMPLATES_DIR . implode(DIRECTORY_SEPARATOR, [Document::TMPL_LAYOUT, self::ERROR_PAGE_FILE]))
                     ) {
-                        throw new \RuntimeException('ERR_NO_ERROR_FILE');
+                        throw $e;
                     }
 
                     if (!($resultDoc = simplexml_load_file($errorPageFile))) {

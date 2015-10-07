@@ -83,7 +83,8 @@ class PageList extends DataSet {
                 'tags' => '',
                 'id' => false,
                 'site' => false,
-                'recursive' => false
+                'recursive' => false,
+                'allAttachments' => false
             ]);
         return $result;
     }
@@ -121,7 +122,7 @@ class PageList extends DataSet {
             );
             $am->createFieldDescription();
             if ($f = $this->getData()->getFieldByName('Id'))
-                $am->createField('smap_id', true, $f->getData());
+                $am->createField('smap_id', !$this->getParam('allAttachments'), $f->getData());
         }
         if ($this->getDataDescription()->getFieldDescriptionByName('tags')) {
             $m = new TagManager(
@@ -200,8 +201,8 @@ class PageList extends DataSet {
                     unset($data[$key]);
                     continue;
                 }
-                if ($key == $sitemap->getDefault()) {
-                    unset($data[$key]);
+                if (($key == $sitemap->getDefault()) && ($this->getParam('id') != self::ALL_PAGES)) {
+                        unset($data[$key]);
                 } else {
                     $data[$key]['Id'] = $key;
                     $data[$key]['Segment'] = $value['Segment'];

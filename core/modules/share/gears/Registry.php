@@ -38,8 +38,9 @@ namespace Energine\share\gears {
      * @property-read \Energine\share\gears\Utils $Utils
      * @property-read \Energine\share\gears\UserSession $UserSession
      * @property-read \Energine\share\gears\Request $Request
-     * @property-read \Energine\share\gears\Response $Response
-     * @property-read \Energine\share\gears\ErrorDocument $ErrorDocument
+     * @property \Energine\share\gears\Response $Response
+     * @property \Energine\share\gears\ErrorDocument $ErrorDocument
+     * @property \Energine\share\gears\PageStructureDocument $PageStructureDocument
      *
      *
      * Such Registry & Service Locator hybrid.

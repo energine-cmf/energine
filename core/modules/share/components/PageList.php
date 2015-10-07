@@ -204,7 +204,7 @@ class PageList extends DataSet {
                     unset($data[$key]);
                 } else {
                     $data[$key]['Id'] = $key;
-                    $data[$key]['Segment'] = $value['Segment'];
+                    $data[$key]['Segment'] = E()->getMap($data[$key]['Site'])->getURLByID($key);
                     $data[$key]['Name'] = $value['Name'];
                     $data[$key]['Redirect'] = Response::prepareRedirectURL($value['RedirectUrl']);
                     $data[$key]['Site'] =

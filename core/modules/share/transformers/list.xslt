@@ -187,7 +187,7 @@
 		                                <!--<div class="filter_divider"></div>-->
 		                            </div>
 	                                <a href="#" class="filter_toggle">
-		                                <i class="fa fa-angle-down"></i>
+		                                <i class="fa"></i>
 	                                </a>
                                 </div>
 

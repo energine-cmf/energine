@@ -92,10 +92,12 @@ div.grid div.filters_block .filters_block_inner .filter_divider {
     display:block;
 }
 
-div.grid div.filters_block .filters_block_inner.toggled + .filter_toggle .fa-caret-up:before {
-    content: "\f0d7";
+div.grid div.filters_block .filters_block_inner + .filter_toggle .fa:before {
+    content: "\f106";
 }
-
+div.grid div.filters_block .filters_block_inner.toggled + .filter_toggle .fa:before {
+    content: "\f107";
+}
 /*a.filter_toggle:hover {*/
 /*transform:          scale(1.2);*/
 /*-webkit-transform:  scale(1.2);*/

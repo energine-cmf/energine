@@ -495,11 +495,11 @@ class FieldDescription extends Primitive implements \Iterator {
                 //$this->setProperty('outputFormat', '%s');
                 break;
             case  self::FIELD_TYPE_PHONE:
-                $this->length = 18;
+                $this->length = 19;
                 if ($this->getPropertyValue('nullable') === false || is_null($this->getPropertyValue('nullable'))) {
-                    $regexp = '/^[0-9\(\)\+\-\. ]{10,'.$this->length.'}$/';
+                    $regexp = '/^[0-9\(\)\+\-\. ]{15,'.$this->length.'}$/';
                 } else {
-                    $regexp = '/^([0-9\(\)\+\-\. ]{10,'.$this->length.'})?$/';
+                    $regexp = '/^([0-9\(\)\+\-\. ]{15,'.$this->length.'})?$/';
                 }
                 $this->setProperty('sort', 1);
 

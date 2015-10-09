@@ -16,6 +16,7 @@ class DocumentController;
  * @version 1.0.0
  */
 namespace Energine\share\gears;
+use Energine\share\components\ErrorComponent;
 
 /**
  * Transformer interface.
@@ -70,6 +71,8 @@ class DocumentController;
  * @endcode
  */
 class DocumentController extends Primitive {
+
+    const ERROR_PAGE_FILE = 'error.layout.xml';
     /**
      * Constant string for transforming into the HTML.
      * @var string TRANSFORM_HTML
@@ -114,32 +117,81 @@ class DocumentController extends Primitive {
      * -# Transform XML-document
      */
     public function run() {
-        $language = E()->getLanguage();
-        $language->setCurrent($language->getIDByAbbr(E()->getRequest()->getLang(), true));
-        unset($language);
-
         try {
-            $document = E()->getDocument();
-            $document->loadComponents([$this, 'getXMLStructure']);
-            $document->runComponents();
+            $language = E()->getLanguage();
+            $language->setCurrent($language->getIDByAbbr(E()->getRequest()->getLang(), true));
+            unset($language);
 
-            if (($p = sizeof($path = E()->getRequest()->getPath())) != ($o = E()->getRequest()->getUsedSegments())) {
-//                dump_log('URL: '.implode('/', $path). ' Path: '.$p.' Offset: '.$o, true);
-                throw new SystemException('ERR_404', SystemException::ERR_404, (string)E()->getRequest()->getURI());
+            try {
+                $document = E()->getDocument();
+                $document->loadComponents([$this, 'getXMLStructure']);
+                $document->runComponents();
+
+                if (($p = sizeof($path = E()->getRequest()->getPath())) != ($o = E()->getRequest()->getUsedSegments())) {
+                    throw new SystemException('ERR_404', SystemException::ERR_404, (string)E()->getRequest()->getURI());
+                }
+
+                $document->build();
+            } catch (IRQ $int) {
+                /**
+                 * @var PageStructureDocument $document
+                 */
+                $document = E()->PageStructureDocument;
+                $document->setStructure($int->getStructure());
+                $document->build();
+            } catch (SystemException $e) {
+                if (!in_array($e->getCode(), [SystemException::ERR_403, SystemException::ERR_404])) {
+                    throw $e;
+                }
+                /**
+                 * Errors 404 & 403 goes here
+                 */
+                $document =E()->getDocument();
+                //$document = new Document();
+
+                $document->loadComponents(function () use ($e){
+                    if (
+                        !file_exists($errorPageFile = Document::TEMPLATES_DIR . implode(DIRECTORY_SEPARATOR, [Document::TMPL_LAYOUT, E()->getSiteManager()->getCurrentSite()->folder, self::ERROR_PAGE_FILE]))
+                        &&
+                        !file_exists($errorPageFile = Document::TEMPLATES_DIR . implode(DIRECTORY_SEPARATOR, [Document::TMPL_LAYOUT, self::ERROR_PAGE_FILE]))
+                    ) {
+                        throw $e;
+                    }
+
+                    if (!($resultDoc = simplexml_load_file($errorPageFile))) {
+                        throw new \RuntimeException('ERR_BAD_ERROR_DOCUMENT');
+                    }
+                    $resultDoc = trim(preg_replace('/<\?xml\s.+?>/sm', '', $resultDoc->asXML()));
+                    $result = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><structure>' . $resultDoc . '</structure>');
+
+                    return $result;
+
+                });
+
+                /**
+                 * if there is no error component on page - add it
+                 */
+                /**
+                 * @var ErrorComponent $ec
+                 */
+                if (!($ec = $document->componentManager->getBlockByName('error'))) {
+
+                    $ec = $document->componentManager->createComponent(
+                        'error',
+                        'Energine\share\components\ErrorComponent'
+                    );
+                    $document->componentManager->add($ec);
+                }
+                $ec->setError($e);
+
+                $document->runComponents();
+
+                $this->getTransformer()->setFileName($this->getConfigValue('document.errorTransformer', $this->getConfigValue('document.transformer')));
+                $document->build();
             }
-
-            $document->build();
-        } catch (IRQ $int) {
-            /**
-             * @var PageStructureDocument $document
-             */
-            $document = E()->PageStructureDocument;
-            $document->setStructure($int->getStructure());
-            $document->build();
-        } catch (SystemException $e) {
+        } catch (\Exception $e) {
             $document = E()->ErrorDocument;
-            $document->attachException($e);
-            $document->build();
+            $document->attachException($e)->build();
         }
         E()->getResponse()->write($this->transform($document));
     }

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page>
+	<component name="langSwitcher" class="Energine\share\components\LangSwitcher"/>
+    <content/>
+	<component name="footerTextBlock" class="Energine\share\components\TextBlock">
+		<params>
+			<param name="num">footerTextBlock</param>
+		</params>
+	</component>    
+</page>

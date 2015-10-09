@@ -203,6 +203,9 @@
             <script src="{/document/javascript/@jquery}"></script>
             <script type="text/javascript">
                 jQuery.noConflict();
+                jQuery.ajaxPrefilter(function( options, originalOptions, jqXHR ) {
+                  options['headers'] = {'X-Request': options.dataType};
+                });
             </script>
             <xsl:apply-templates select="/" mode="jquery_scripts"/>
         </xsl:if>

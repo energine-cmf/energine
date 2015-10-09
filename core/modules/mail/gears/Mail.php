@@ -253,7 +253,11 @@ final class Mail extends Primitive {
         $message .= "--".$MIMEBoundary2.self::EOL;
         $message .= "Content-Type: text/html; charset=UTF-8".self::EOL;
         $message .= "Content-Transfer-Encoding: 8bit".self::EOL.self::EOL;
-        $message .= '<HTML><HEAD><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></HEAD><BODY>'.$this->html_text.'</BODY></HTML>'.self::EOL.self::EOL;
+        if (strpos($this->html_text, '<html') === false) {
+            $message .= '<HTML><HEAD><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></HEAD><BODY>' . $this->html_text . '</BODY></HTML>' . self::EOL . self::EOL;
+        } else {
+            $message .= $this->html_text . self::EOL . self::EOL;
+        }
 
         # Finished
         $message .= "--".$MIMEBoundary2."--".self::EOL.self::EOL;  // finish with two eol's for better security. see Injection.

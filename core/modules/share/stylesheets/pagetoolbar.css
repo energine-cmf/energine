@@ -1,14 +1,14 @@
 /*@import url("controls.css");*/
 /*
-    Ð­Ñ‚Ð¾Ñ‚ Ñ„Ð°Ð¹Ð» ÑÐ¾Ð´ÐµÑ€Ð¶Ð¸Ñ‚ Ð¿Ñ€Ð°Ð²Ð¸Ð»Ð° Ð´Ð»Ñ Ñ€Ð°Ð·Ð¼ÐµÑ‰ÐµÐ½Ð¸Ñ Ð½Ð° ÑÑ‚Ñ€Ð°Ð½Ð¸Ñ†Ðµ Ð±Ð»Ð¾ÐºÐ¾Ð²-ÐºÐ¾Ð½Ñ‚ÐµÐ¹Ð½ÐµÑ€Ð¾Ð² Ð°Ð´Ð¼Ð¸Ð½Ð¸ÑÑ‚Ñ€Ð°Ñ‚Ð¸Ð²Ð½Ð¾Ð¹ Ñ‡Ð°ÑÑ‚Ð¸.
-    ÐŸÐ¾ ÑÑƒÑ‚Ð¸ ÑÑ‚Ð¸ Ð±Ð»Ð¾ÐºÐ¸ Ð¸Ð¼Ð¸Ñ‚Ð¸Ñ€ÑƒÑŽÑ‚ Ð¿Ð¾Ð²ÐµÐ´ÐµÐ½Ð¸Ðµ frameset Ñ Ñ‚Ñ€ÐµÐ¼Ñ Ñ„Ñ€ÐµÐ¹Ð¼Ð°Ð¼Ð¸.
-    Ð¡Ð¿Ð¸ÑÐ¾Ðº Ð±Ð»Ð¾ÐºÐ¾Ð² Ð¸ Ð¸Ñ… Ð½Ð°Ð·Ð½Ð°Ñ‡ÐµÐ½Ð¸Ðµ: 
-    1) .e-topframe - Ð±Ð»Ð¾Ðº Ð´Ð»Ñ Ñ€Ð°Ð·Ð¼ÐµÑ‰ÐµÐ½Ð¸Ðµ Ñ‚ÑƒÐ»Ð±Ð°Ñ€Ð¾Ð² energine (Ð³Ð»Ð°Ð²Ð½Ð¾Ð³Ð¾, Ñ‚ÑƒÐ»Ð±Ð°Ñ€Ð° Ñ€ÐµÐ¶Ð¸Ð¼Ð° Ñ€ÐµÐ´Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ñ ÑÑ‚Ñ€Ð°Ð½Ð¸Ñ†Ñ‹ Ð¸ Ñ‚ÑƒÐ»Ð±Ð°Ñ€Ð¾Ð² Ñ„Ð¸Ð´Ð¾Ð²)
-    2) .e-mainframe - Ð±Ð»Ð¾Ðº Ð´Ð»Ñ Ð²Ñ‹Ð²Ð¾Ð´Ð° ÑÑ‚Ñ€Ð°Ð½Ð¸Ñ†Ñ‹ ÑÐ°Ð¹Ñ‚Ð°
-    3) .e-sideframe - Ð±Ð¾ÐºÐ¾Ð²Ð¾Ð¹ Ð±Ð»Ð¾Ðº Ð´Ð»Ñ Ñ€Ð°Ð·Ð¼ÐµÑ‰ÐµÐ½Ð¸Ðµ ÑÑ‚Ñ€ÑƒÐºÑ‚ÑƒÑ€Ñ‹ (Ð´ÐµÑ€ÐµÐ²Ð° Ð¿Ð¾Ð´Ñ€Ð°Ð·Ð´ÐµÐ»Ð¾Ð²) ÑÐ°Ð¹Ñ‚Ð° Ð¸ Ñ‚ÑƒÐ»Ð±Ð°Ñ€Ð° Ð´Ð»Ñ Ñ€Ð°Ð±Ð¾Ñ‚Ñ‹ ÑÐ¾ ÑÑ‚Ñ€ÑƒÐºÑ‚ÑƒÑ€Ð¾Ð¹ ÑÐ°Ð¹Ñ‚Ð°    
+    Этот файл содержит правила для размещения на странице блоков-контейнеров административной части.
+    По сути эти блоки имитируют поведение frameset с тремя фреймами.
+    Список блоков и их назначение:
+    1) .e-topframe - блок для размещение тулбаров energine (главного, тулбара режима редактирования страницы и тулбаров фидов)
+    2) .e-mainframe - блок для вывода страницы сайта
+    3) .e-sideframe - боковой блок для размещение структуры (дерева подразделов) сайта и тулбара для работы со структурой сайта
 */
 /* ----- base ---- */
-html, body {    
+html, body {
     height: 100%;
     margin: 0;
     padding: 0;
@@ -16,44 +16,50 @@ html, body {
 }
 
 html {
-    /* 
-        Ð”Ð»Ñ ÑÑ‚Ð¾Ð³Ð¾ Ð±Ð»Ð¾ÐºÐ° Ð¿Ñ€Ð¸Ð¼ÐµÐ½ÑÐµÑ‚ÑÑ Ð¼ÐµÑ‚Ð¾Ð´ Ð¿ÐµÑ€ÐµÐ²Ð¾Ð´Ð° Ð±Ð¾ÐºÑÐ¾Ð²Ð¾Ð¹ Ð¼Ð¾Ð´ÐµÐ»Ð¸ Ð² Ð¼Ð¾Ð´ÐµÐ»ÑŒ border-box, 
-        Ñ‡Ñ‚Ð¾ Ð´Ð°ÐµÑ‚ Ð²Ð¾Ð·Ð¼Ð¾Ð¶Ð½Ð¾ÑÑ‚ÑŒ Ð·Ð°Ð´Ð°Ð²Ð°Ñ‚ÑŒ Ð²Ð½ÑƒÑ‚Ñ€Ð¸ Ð±Ð»Ð¾ÐºÐ° Ð¾Ñ‚ÑÑ‚ÑƒÐ¿Ñ‹ Ð¿Ñ€Ð¸ 100% ÑˆÐ¸Ñ€Ð¸Ð½Ðµ Ð¸ Ð²Ñ‹ÑÐ¾Ñ‚Ðµ Ð±Ð»Ð¾ÐºÐ°.
-        Ð’ IE6-7 Ð´Ð»Ñ html Ð¾Ñ‚ÑÑ‚ÑƒÐ¿ Ð½Ðµ Ð´Ð¾Ð±Ð°Ð²Ð»ÑÐµÑ‚ÑÑ Ðº Ð²Ñ‹ÑÐ¾Ñ‚Ðµ, Ð¿Ð¾ÑÑ‚Ð¾Ð¼Ñƒ Ð´Ð»Ñ Ð½Ð¸Ñ… Ð½Ð¸Ñ‡ÐµÐ³Ð¾ Ð¾Ñ‚Ð´ÐµÐ»ÑŒÐ½Ð¾ Ð´ÐµÐ»Ð°Ñ‚ÑŒ Ð½Ðµ Ð½ÑƒÐ¶Ð½Ð¾. 
+    /*
+        Для этого блока применяется метод перевода боксовой модели в модель border-box,
+        что дает возможность задавать внутри блока отступы при 100% ширине и высоте блока.
+        В IE6-7 для html отступ не добавляется к высоте, поэтому для них ничего отдельно делать не нужно.
     */
     -moz-box-sizing: border-box; /* Firefox 2+ */
     -ms-box-sizing: border-box; /* IE 8 */
     -khtml-box-sizing: border-box; /* Konquerror */
     -webkit-box-sizing: border-box; /* Safari 3+ */
-    box-sizing: border-box;  /* Opera 8+, Chrome, Ð±Ñ€Ð°ÑƒÐ·ÐµÑ€Ñ‹ Ñ Ð¿Ð¾Ð´Ð´ÐµÑ€Ð¶ÐºÐ¾Ð¹ CSS3 */    
+    box-sizing: border-box; /* Opera 8+, Chrome, браузеры с поддержкой CSS3 */
     overflow: hidden;
 }
-html.e-has-topframe1 {           
-    padding-top: 31px; /* Ð¾Ñ‚ÑÑ‚ÑƒÐ¿ Ð´Ð»Ñ Ñ€Ð°Ð·Ð¼ÐµÑ‰ÐµÐ½Ð¸Ñ Ð²ÐµÑ€Ñ…Ð½ÐµÐ¹ Ð¿Ð°Ð½ÐµÐ»Ð¸ (Ñ Ð¾Ð´Ð½Ð¸Ð¼ Ñ‚ÑƒÐ»Ð±Ð°Ñ€Ð¾Ð¼), Ð¾Ð³Ñ€Ð°Ð½Ð¸Ñ‡ÐµÐ½Ð¸Ðµ - Ñ„Ð¸ÐºÑÐ¸Ñ€Ð¾Ð²Ð°Ð½Ð½Ð°Ñ Ð²Ñ‹ÑÐ¾Ñ‚Ð° Ð¿Ð°Ð½ÐµÐ»Ð¸ */
+
+html.e-has-topframe1 {
+    padding-top: 31px; /* отступ для размещения верхней панели (с одним тулбаром), ограничение - фиксированная высота панели */
 }
-html.e-has-topframe2 {              
-    padding-top: 62px; /* Ð¾Ñ‚ÑÑ‚ÑƒÐ¿ Ð´Ð»Ñ Ñ€Ð°Ð·Ð¼ÐµÑ‰ÐµÐ½Ð¸Ñ Ð²ÐµÑ€Ñ…Ð½ÐµÐ¹ Ð¿Ð°Ð½ÐµÐ»Ð¸ (Ñ Ð´Ð²ÑƒÐ¼Ñ Ñ‚ÑƒÐ»Ð±Ð°Ñ€Ð°Ð¼Ð¸), Ð¾Ð³Ñ€Ð°Ð½Ð¸Ñ‡ÐµÐ½Ð¸Ðµ - Ñ„Ð¸ÐºÑÐ¸Ñ€Ð¾Ð²Ð°Ð½Ð½Ð°Ñ Ð²Ñ‹ÑÐ¾Ñ‚Ð° Ð¿Ð°Ð½ÐµÐ»Ð¸ */
+
+html.e-has-topframe2 {
+    padding-top: 62px; /* отступ для размещения верхней панели (с двумя тулбарами), ограничение - фиксированная высота панели */
 }
-html.e-has-topframe3 {              
-    padding-top: 62px; /* Ð¾Ñ‚ÑÑ‚ÑƒÐ¿ Ð´Ð»Ñ Ñ€Ð°Ð·Ð¼ÐµÑ‰ÐµÐ½Ð¸Ñ Ð²ÐµÑ€Ñ…Ð½ÐµÐ¹ Ð¿Ð°Ð½ÐµÐ»Ð¸ (Ñ Ñ‚Ñ€ÐµÐ¼Ñ Ñ‚ÑƒÐ»Ð±Ð°Ñ€Ð°Ð¼Ð¸), Ð¾Ð³Ñ€Ð°Ð½Ð¸Ñ‡ÐµÐ½Ð¸Ðµ - Ñ„Ð¸ÐºÑÐ¸Ñ€Ð¾Ð²Ð°Ð½Ð½Ð°Ñ Ð²Ñ‹ÑÐ¾Ñ‚Ð° Ð¿Ð°Ð½ÐµÐ»Ð¸ */
+
+html.e-has-topframe3 {
+    padding-top: 62px; /* отступ для размещения верхней панели (с тремя тулбарами), ограничение - фиксированная высота панели */
 }
-.e-has-sideframe body {             
-    padding-left: 300px; /* ÑÑ‚Ð¾Ñ‚ Ð¾Ñ‚ÑÑ‚ÑƒÐ¿ ÑÐ¾Ð·Ð´Ð°ÐµÑ‚ Ð½ÑƒÐ¶Ð½Ñ‹Ðµ Ð´Ð²Ðµ ÐºÐ¾Ð»Ð¾Ð½ÐºÐ¸, Ð¿Ñ€Ð°Ð²Ð°Ñ Ð¸Ð· ÐºÐ¾Ñ‚Ð¾Ñ€Ñ‹Ñ… Ñ„Ð¸ÐºÑÐ¸Ñ€Ð¾Ð²Ð°Ð½Ð½Ð°Ñ, Ð° Ð»ÐµÐ²Ð°Ñ - Ñ€Ð°ÑÑ‚ÑÐ³Ð¸Ð²Ð°ÐµÑ‚ÑÑ Ð½Ð° Ð¾ÑÑ‚Ð°Ð²ÑˆÑƒÑŽÑÑ ÑˆÐ¸Ñ€Ð¸Ð½Ñƒ Ð¾ÐºÐ½Ð° */
+
+.e-has-sideframe body {
+    padding-left: 300px; /* этот отступ создает нужные две колонки, правая из которых фиксированная, а левая - растягивается на оставшуюся ширину окна */
 }
+
 /* ----- /base ---- */
-         
-/* ----- e-frames ----- */          
+
+/* ----- e-frames ----- */
 .e-topframe {
     display: none;
     position: absolute;
     top: 0;
-    left: 0;    
+    left: 0;
     width: 100%;
     height: 31px;
     min-height: 31px;
     font-family: Tahoma, sans-serif;
     z-index: 3;
 }
+
 .e-has-topframe1 .e-topframe, .e-has-topframe2 .e-topframe, .e-has-topframe3 .e-topframe {
     display: block;
 }
@@ -62,7 +68,7 @@ html.e-has-topframe3 {
     position: relative;
     float: left;
     width: 100%;
-    height: 100%;               
+    height: 100%;
     overflow: auto;
     margin-right: -100%;
 }
@@ -74,7 +80,7 @@ html.e-has-topframe3 {
     -ms-box-sizing: border-box; /* IE 8 */
     -khtml-box-sizing: border-box; /* Konquerror */
     -webkit-box-sizing: border-box; /* Safari 3+ */
-    box-sizing: border-box;  /* Opera 8+, Chrome, Ð±Ñ€Ð°ÑƒÐ·ÐµÑ€Ñ‹ Ñ Ð¿Ð¾Ð´Ð´ÐµÑ€Ð¶ÐºÐ¾Ð¹ CSS3 */
+    box-sizing: border-box; /* Opera 8+, Chrome, браузеры с поддержкой CSS3 */
     top: 0;
     left: 0;
     float: left;
@@ -84,40 +90,47 @@ html.e-has-topframe3 {
     font-family: Tahoma, sans-serif;
     z-index: 2;
 }
+
 .e-has-sideframe .e-sideframe {
     display: block;
 }
+
 .e-has-topframe3 .e-sideframe {
 
 }
+
 .e-sideframe-content {
     width: 297px;
     height: 100%;
     overflow: auto;
 }
+
 .e-sideframe-border {
     position: absolute;
     right: 0;
-    top: 0; 
+    top: 0;
     width: 1px;
-    height: 100%;        
+    height: 100%;
     border-left: 1px solid #eeeedd;
     border-right: 1px solid #aaaaaa;
     background: #eeeedd;
 }
+
 .e-sideframe iframe {
     display: block;
     width: 100%;
     height: 100%;
     overflow: auto;
     border: 0;
-}      
+}
+
 /* ----- /e-frames ----- */
 
 /* ----- page toolbars ----- */
 .e-topframe {
     font-family: Tahoma, sans-serif;
 }
+
 ul.docked_toolbar {
     position: relative;
     z-index: 10;
@@ -137,6 +150,7 @@ ul.docked_toolbar {
     /*filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0,startColorstr='#f5f5f5',endColorstr='#cfd1cf');*/
     z-index: 10;
 }
+
 .pagetb_logo {
     position: absolute;
     top: -10px;
@@ -147,12 +161,14 @@ ul.docked_toolbar {
     transition: transform 2s;
     -webkit-transition: -webkit-transform 2s;
 }
+
 .pagetb_logo:hover,
 .pagetb_logo:active {
     transform: rotate(90deg);
     -ms-transform: rotate(90deg);
     -webkit-transform: rotate(90deg);
 }
+
 ul.docked_toolbar li {
     min-height: 30px;
     height: 30px;
@@ -165,12 +181,17 @@ ul.docked_toolbar li {
     /* border-radius: 4px; */
     box-shadow: none;
 }
+
 ul.docked_toolbar li.icon {
     height: 30px;
     padding: 0 15px !important;
     background: 50% 50% no-repeat;
 }
-ul.docked_toolbar li.highlighted { background-color: #ecf3f8 !important; }
+
+ul.docked_toolbar li.highlighted {
+    background-color: #ecf3f8 !important;
+}
+
 ul.docked_toolbar li.pressed {
     padding: 0 19px !important;
     min-height: 24px;
@@ -183,22 +204,36 @@ ul.docked_toolbar li.pressed {
     /*-moz-box-shadow: inset rgb(192, 192, 192) 0px 0px 6px 3px;*/
     /*box-shadow: inset rgb(192, 192, 192) 0px 0px 6px 3px;*/
 }
-ul.docked_toolbar li.highlighted.add_btn { background-color: #5cb85c !important; }
-ul.docked_toolbar li.highlighted.edit_btn { background-color: #f0ad4e !important; }
-ul.docked_toolbar li.highlighted.delete_btn { background-color: #d9534f !important; }
+
+ul.docked_toolbar li.highlighted.add_btn {
+    background-color: #5cb85c !important;
+}
+
+ul.docked_toolbar li.highlighted.edit_btn {
+    background-color: #f0ad4e !important;
+}
+
+ul.docked_toolbar li.highlighted.delete_btn {
+    background-color: #d9534f !important;
+}
+
 ul.main_toolbar {
     padding-left: 30px !important;
 }
-.e-has-sideframe ul.wysiwyg_toolbar, .e-has-sideframe ul.feed_toolbar { 
+
+.e-has-sideframe ul.wysiwyg_toolbar, .e-has-sideframe ul.feed_toolbar {
     margin-left: 300px !important;
 }
+
 ul.docked_toolbar.block_management_toolbar,
 ul.docked_toolbar.block_management_toolbar li {
     color: #000;
 }
+
 ul.docked_toolbar.block_management_toolbar li.save_btn {
     background: none;
 }
+
 ul.docked_toolbar.block_management_toolbar:hover,
 ul.docked_toolbar.block_management_toolbar li:hover,
 ul.docked_toolbar.block_management_toolbar:focus,
@@ -207,12 +242,15 @@ ul.docked_toolbar.block_management_toolbar:active,
 ul.docked_toolbar.block_management_toolbar li:active {
     color: #000;
 }
-ul.toolbar.docked_toolbar.block_management_toolbar li select {
+
+ul.toolbar.docked_toolbar /*.block_management_toolbar*/ li select {
     min-height: 20px;
     height: 20px;
-    margin-top: -6px;
+    margin-top: -5px;
     padding: 0;
+    padding-left: 6px;
 }
+
 /* ----- /page toolbars ----- */
 /* --- media queries --- */
 
@@ -220,9 +258,11 @@ ul.toolbar.docked_toolbar.block_management_toolbar li select {
     html.e-has-topframe2 {
         padding-top: 62px;
     }
+
     html.e-has-sideframe.e-has-topframe2 {
         padding-top: 92px;
     }
+
     .e-has-sideframe ul.toolbar.block_management_toolbar.docked_toolbar li.save_btn,
     ul.toolbar.block_management_toolbar.docked_toolbar li.save_btn,
     .e-has-sideframe ul.toolbar.block_management_toolbar.docked_toolbar li.reset_btn,
@@ -236,47 +276,59 @@ ul.toolbar.docked_toolbar.block_management_toolbar li select {
         padding: 0 17px !important;
         line-height: 24px;
     }
+
     ul.toolbar.block_management_toolbar.docked_toolbar li.separator {
         display: none;
     }
+
     ul.toolbar.block_management_toolbar.docked_toolbar li.save_btn {
         clear: left;
     }
 
 }
+
 @media screen and  (max-width: 1200px) {
     html.e-has-sideframe.e-has-topframe2 {
         padding-top: 122px;
     }
 }
+
 @media screen and  (max-width: 1185px) {
     ul.toolbar.block_management_toolbar.docked_toolbar li.save_btn {
         clear: left;
     }
+
     html.e-has-topframe2 {
         padding-top: 92px;
     }
+
     html.e-has-sideframe.e-has-topframe2 {
         padding-top: 122px;
     }
+
     ul.toolbar li.separator {
         display: none;
     }
 }
+
 @media screen and  (max-width: 1000px) {
     html.e-has-topframe1 {
         padding-top: 61px;
     }
+
     html.e-has-topframe2 {
         padding-top: 122px;
     }
+
     html.e-has-sideframe.e-has-topframe2 {
         padding-top: 152px;
     }
+
     .e-sideframe,
     .e-has-topframe2 .e-sideframe {
         padding-top: 31px;
     }
+
     ul.toolbar li {
         border-bottom: 1px solid #ccc;
         border-right: 1px solid #ccc;
@@ -288,6 +340,7 @@ ul.toolbar.docked_toolbar.block_management_toolbar li select {
         padding: 0 17px !important;
         line-height: 24px;
     }
+
     ul.toolbar.block_management_toolbar.docked_toolbar li {
         border: 0;
         background: none;
@@ -298,60 +351,73 @@ ul.toolbar.docked_toolbar.block_management_toolbar li select {
         line-height: 30px;
     }
 }
+
 @media screen and  (max-width: 980px) {
     html.e-has-topframe2 {
         padding-top: 152px;
     }
 }
+
 @media screen and  (max-width: 860px) {
     html.e-has-topframe2.e-has-sideframe {
         padding-top: 182px;
     }
 }
-/* Ð² Ð¿Ð¾Ñ€Ñ‚Ñ€ÐµÑ‚Ð½Ð¾Ð¹ Ð¾Ñ€Ð¸ÐµÐ½Ñ‚Ð°Ñ†Ð¸Ð¸ ipad Ð±Ð¾ÐºÐ¾Ð²Ð°Ñ Ð¿Ð°Ð½ÐµÐ»ÑŒ ÑÑ‚Ð°Ð½Ð¾Ð²Ð¸Ñ‚ÑÑ Ð½Ð° Ð²ÐµÑÑŒ ÑÐºÑ€Ð°Ð½,
-ÐºÐ¾Ð½Ñ‚ÐµÐ½Ñ‚ ÑÐ»ÐµÐ´ÑƒÐµÑ‚ Ð·Ð° Ð½ÐµÐ¹ Ð²Ð½Ð¸Ð·Ñƒ
- ÐºÐ¾Ð³Ð´Ð° Ð¾Ñ‚ÐºÑ€Ñ‹Ð²Ð°ÐµÑ‚ÑÑ Ð¿Ð°Ð½ÐµÐ»ÑŒ ÑƒÐ¿Ñ€Ð°Ð²Ð»ÐµÐ½Ð¸Ñ Ð±Ð»Ð¾ÐºÐ°Ð¼Ð¸, Ð±Ð¾ÐºÐ¾Ð²Ð°Ñ Ð¿Ð°Ð½ÐµÐ»ÑŒ Ñ‚Ð°ÐºÐ¶Ðµ ÑÐºÑ€Ñ‹Ð²Ð°ÐµÑ‚ÑÑ */
+
+/* в портретной ориентации ipad боковая панель становится на весь экран,
+контент следует за ней внизу
+ когда открывается панель управления блоками, боковая панель также скрывается */
 @media screen and  (max-width: 768px) {
     .e-has-sideframe body {
         padding-left: 0;
     }
+
     .e-has-sideframe .e-sideframe {
         -webkit-box-shadow: 0 2px 3px #777;
         box-shadow: 0 2px 3px #777;
     }
+
     .e-has-sideframe .e-sideframe,
     .e-has-sideframe .e-sideframe-content {
         width: 100%;
         height: 100%;
     }
+
     .e-has-sideframe .e-mainframe {
         height: auto;
         position: relative;
         top: 100%;
     }
+
     .editMode_btn,
     .editBlocks_btn {
         display: none;
     }
+
     .e-sideframe {
         padding-top: 0;
     }
+
     html.e-has-topframe1 {
         padding-top: 31px;
     }
 }
+
 @media screen and  (max-width: 646px) {
     html.e-has-topframe1 {
         padding-top: 61px;
     }
+
     .e-sideframe {
         padding-top: 31px;
     }
 }
+
 @media screen and  (max-width: 370px) {
     html.e-has-topframe1 {
         padding-top: 91px;
     }
+
     .e-sideframe {
         padding-top: 61px;
     }

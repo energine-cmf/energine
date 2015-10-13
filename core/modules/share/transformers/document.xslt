@@ -172,9 +172,12 @@
                     <xsl:for-each select="$PAGE_TOOLBAR/toolbar/control">
                         {
                         <xsl:for-each select="@*[name()!='mode']">
-                            '<xsl:value-of select="name()"/>':'<xsl:value-of select="."/>'
-                            <xsl:if test="position()!=last()">,</xsl:if>
-                        </xsl:for-each>
+                            '<xsl:value-of select="name()"/>':'<xsl:value-of select="."/>'<xsl:if test="position()!=last()">,</xsl:if>
+                        </xsl:for-each><xsl:if test="options">, 'options':{
+                            <xsl:for-each select="options/option">'<xsl:value-of select="@id"/>':'<xsl:value-of select="."/>'<xsl:if test="position()!=last()">,</xsl:if>
+                            </xsl:for-each>},
+                        'initialValue':'<xsl:value-of select="options/option[@selected]/@id"/>'
+                        </xsl:if>
                         }<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>
                     ]<xsl:if test="$PAGE_TOOLBAR/toolbar/properties/property">, <xsl:for-each select="$PAGE_TOOLBAR/toolbar/properties/property">{'<xsl:value-of select="@name"/>':'<xsl:value-of select="."/>'<xsl:if test="position()!=last()">,</xsl:if>}</xsl:for-each></xsl:if>);
                     }

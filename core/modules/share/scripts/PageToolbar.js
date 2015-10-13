@@ -108,7 +108,9 @@ var PageToolbar = new Class(/** @lends PageToolbar# */{
         }
 
     },
-
+    jumpSite: function(control){
+        document.location.href = control.select.options[control.select.selectedIndex].value;
+    },
     // Actions:
     /**
      * Edit mode action.

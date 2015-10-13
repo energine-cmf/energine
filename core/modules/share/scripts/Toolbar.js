@@ -738,6 +738,12 @@ Toolbar.Select = new Class(/** @lends Toolbar.Select# */{
 
     // constructor
     initialize: function (properties, options, initialValue) {
+        if(properties.options && !options){
+            options = properties.options;
+        }
+        if(properties.initialValue && !initialValue){
+            initialValue = properties.initialValue;
+        }
         Object.append(this.properties, properties);
 
         /**

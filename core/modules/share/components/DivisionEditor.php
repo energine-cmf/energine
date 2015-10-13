@@ -765,6 +765,18 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
         if ($this->document->isEditable())
             $this->getToolbar('main_toolbar')->getControlByID('editMode')->setState(1);
 
+        foreach($this->getToolbar('main_toolbar')->getControls() as $control){
+            if($control->getAttribute('onclick') == 'jumpSite'){
+                foreach (E()->getSiteManager() as $site) {
+                    $params = [];
+                    if($site == E()->getSiteManager()->getCurrentSite()){
+                        $params['selected'] = 'selected';
+                    }
+                    $control->addItem($site->base, $site->name, $params);
+                }
+                break;
+            }
+        }
     }
 
     /**

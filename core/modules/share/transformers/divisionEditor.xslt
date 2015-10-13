@@ -161,10 +161,10 @@
                             <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
         </xsl:choose></xsl:variable>
        <div>
+            <xsl:if test="@reset"><xsl:attribute name="class">with_append with_link</xsl:attribute></xsl:if>
            <xsl:if test="options/option[@selected]/@unique">
                <input type="hidden" name="{$NAME}" value="{options/option[@selected]/@id}"/>
            </xsl:if>
-            <xsl:if test="@reset"><xsl:attribute name="class">with_append with_link</xsl:attribute></xsl:if>
             <select id="{@name}" name="{$NAME}">
                 <xsl:if test="options/option[@selected]/@unique">
                     <xsl:attribute name="disabled">disabled</xsl:attribute>

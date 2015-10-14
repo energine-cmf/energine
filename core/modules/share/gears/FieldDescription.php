@@ -532,7 +532,7 @@ class FieldDescription extends Primitive implements \Iterator {
                 //$this->setProperty('outputFormat', '%s');
                 break;
             case self::FIELD_TYPE_FLOAT:
-                $this->length = 10;
+                if (!$this->length) $this->length = 10;
                 if (
                     ($this->getPropertyValue('nullable') === false)
                     ||

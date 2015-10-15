@@ -29,6 +29,7 @@ class ImageManager extends DataSet {
     public function __construct($name,  array $params = null) {
         parent::__construct($name, $params);
         $this->setTitle('TXT_IMG_MANAGER');
+        $this->setProperty('exttype', 'grid');
     }
 
     /**

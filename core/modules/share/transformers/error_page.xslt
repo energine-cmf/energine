@@ -63,7 +63,7 @@
             <h1 class="error_name">
                 <xsl:value-of select="message" disable-output-escaping="yes"/>
             </h1>
-            <xsl:if test="$IN_DEBUG_MODE = 1">
+            <xsl:if test="$IN_DEBUG_MODE = '1'">
                 <div class="error_text">
                     <div><strong>File: </strong><xsl:value-of select="@file"/></div>
                     <div><strong>Line: </strong><xsl:value-of select="@line"/></div>

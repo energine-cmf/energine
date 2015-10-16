@@ -215,7 +215,7 @@
             </xsl:choose>
         </xsl:variable>
         <input type="hidden" name="{$FIELD_NAME}" value="0"/>
-        <input class="checkbox" type="checkbox" id="{@name}" name="{$FIELD_NAME}" style="width: seto;" value="1">
+        <input class="checkbox" type="checkbox" id="{@name}" name="{$FIELD_NAME}" style="width: auto;" value="1">
             <xsl:if test=". = 1">
                 <xsl:attribute name="checked">checked</xsl:attribute>
             </xsl:if>

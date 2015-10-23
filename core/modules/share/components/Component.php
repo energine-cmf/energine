@@ -196,7 +196,7 @@ class Component extends Primitive implements IBlock {
      */
     protected function setParam($name, $value) {
         if (!array_key_exists($name, $this->params)) {
-            throw new SystemException('ERR_DEV_NO_PARAM', SystemException::ERR_DEVELOPER, $name);
+            throw new \Exception(E()->Utils->translate('ERR_DEV_NO_PARAM').': '.$name.' @'.$this->getName() , SystemException::ERR_DEVELOPER);
         }
         if ($name == 'active') {
             $value = (bool)$value;

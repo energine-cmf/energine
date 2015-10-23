@@ -421,9 +421,9 @@ var Grid = (function () {
                  */
                 this.gridBodyContainer = this.element.getElement('.gridBodyContainer');
                 this.fitGridFormSize();
-                if (document.getElements('.grid')[0] == this.element) {
+                /*if (document.getElements('.grid')[0] == this.element) {
                     new Fx.Scroll(document.getElement('.e-mainframe') ? document.getElement('.e-mainframe') : window).toElement(this.pane);
-                }
+                }*/
             }
         },
 

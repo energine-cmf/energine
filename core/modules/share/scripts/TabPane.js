@@ -110,6 +110,7 @@ var TabPane = new Class(/** @lends TabPane# */{
      * @param {Element} tab Tab that will be selected.
      */
     selectTab: function (tab) {
+        if(!tab) return;
         this.currentTab.removeClass('current').pane.setStyle('display', 'none');
         tab.addClass('current').pane.setStyle('display', '');
         this.currentTab = tab;

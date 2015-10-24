@@ -244,7 +244,7 @@ class DocumentController extends Primitive {
      * @param Document $document XML-document.
      * @return mixed
      */
-    private function transform($document) {
+    protected function transform($document) {
         $this->getTransformer()->setDocument($document->getResult());
         $result = $this->getTransformer()->transform();
 

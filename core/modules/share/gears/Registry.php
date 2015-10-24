@@ -35,7 +35,7 @@ namespace Energine\share\gears {
     /**
      * Application registry.
      *
-     * @property-read \Energine\share\gears\Utils $Utils
+     * @property \Energine\share\gears\Utils $Utils
      * @property-read \Energine\share\gears\UserSession $UserSession
      * @property-read \Energine\share\gears\Request $Request
      * @property \Energine\share\gears\Response $Response

@@ -21,10 +21,10 @@ use Energine\share\gears\SimpleBuilder, Energine\share\gears\Request, Energine\s
  * language switcher.
  *
  * @code
-final class LangSwitcher;
+class LangSwitcher;
  * @endcode
  */
-final class LangSwitcher extends DataSet {
+class LangSwitcher extends DataSet {
     /**
      * @copydoc DataSet::__construct
      */

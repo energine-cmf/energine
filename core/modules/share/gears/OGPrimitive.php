@@ -182,8 +182,13 @@ class OGPrimitive extends Primitive {
             }
         }
         if (!empty($this->video)) {
-            $prop = $doc->createElement('property', (($url =
-                    $this->getConfigValue('site.media')) ? $url : (E()->getSiteManager()->getDefaultSite()->base)) . $this->video['url']);
+            if (strpos($this->video['url'], 'https://') !== false) {
+                $video_url = $this->video['url'];
+            } else {
+                $video_url = (($url =
+                        $this->getConfigValue('site.media')) ? $url : (E()->getSiteManager()->getDefaultSite()->base)) . $this->video['url'];
+            }
+            $prop = $doc->createElement('property', $video_url);
             $prop->setAttribute('name', 'video');
             $result->appendChild($prop);
             $prop = $doc->createElement('property', $this->video['width']);

@@ -596,7 +596,7 @@
     <!-- read-only поле типа select -->
     <xsl:template match="field[@type='select'][@mode='1'][ancestor::component[@type='form']]">
         <xsl:if test="options/option[@selected='selected']">
-            <div class="field">
+            <div class="field readonly">
                 <xsl:apply-templates select="." mode="field_name_readonly"/>
                 <xsl:apply-templates select="." mode="field_input_readonly"/>
             </div>

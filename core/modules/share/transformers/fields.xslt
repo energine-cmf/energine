@@ -208,14 +208,24 @@
     <xsl:template match="field[@type='boolean'][ancestor::component[@type='form']]" mode="field_input">
         <xsl:variable name="FIELD_NAME">
             <xsl:choose>
-                <xsl:when test="@tableName"><xsl:value-of select="@tableName"/><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name"/>]</xsl:when>
+                <xsl:when test="@tableName">
+                    <xsl:value-of select="@tableName"/>
+                    <xsl:if test="@language">
+                        <xsl:text>[</xsl:text>
+                        <xsl:value-of select="@language"/>
+                        <xsl:text>]</xsl:text>
+                    </xsl:if>
+                    <xsl:text>[</xsl:text>
+                    <xsl:value-of select="@name"/>
+                    <xsl:text>]</xsl:text>
+                </xsl:when>
                 <xsl:otherwise>
                     <xsl:value-of select="@name"/>
                 </xsl:otherwise>
             </xsl:choose>
         </xsl:variable>
         <input type="hidden" name="{$FIELD_NAME}" value="0"/>
-        <input class="checkbox" type="checkbox" id="{@name}" name="{$FIELD_NAME}" style="width: auto;" value="1">
+        <input class="checkbox" type="checkbox" id="{@name}{@language}" name="{$FIELD_NAME}" style="width: auto;" value="1">
             <xsl:if test=". = 1">
                 <xsl:attribute name="checked">checked</xsl:attribute>
             </xsl:if>
@@ -229,7 +239,7 @@
                 </xsl:otherwise>
             </xsl:choose>
         </input>
-        <label for="{@name}">
+        <label for="{@name}{@language}">
             <xsl:value-of select="concat(' ', @title)" disable-output-escaping="yes"/>
         </label>
     </xsl:template>

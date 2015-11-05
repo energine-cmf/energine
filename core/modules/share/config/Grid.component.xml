@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
-    <state name="main" rights="3">
+    <state name="main">
         <javascript>
             <behavior name="GridManager"/>
         </javascript>
@@ -17,7 +17,7 @@
             -->
         </toolbar>
     </state>
-    <state name="add" rights="3">
+    <state name="add">
         <uri_patterns>
             <pattern>/add/</pattern>
         </uri_patterns>
@@ -37,7 +37,7 @@
                      onclick="close"/>
         </toolbar>
     </state>
-    <state name="edit" rights="3">
+    <state name="edit">
         <uri_patterns>
             <pattern>/[int]/edit/</pattern>
         </uri_patterns>
@@ -57,17 +57,17 @@
             <control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
         </toolbar>
     </state>
-    <state name="save" rights="3">
+    <state name="save">
         <uri_patterns>
             <pattern>/save/</pattern>
         </uri_patterns>
     </state>
-    <state name="delete" rights="3">
+    <state name="delete">
         <uri_patterns>
             <pattern>/[int]/delete/</pattern>
         </uri_patterns>
     </state>
-    <state name="getRawData" rights="3">
+    <state name="getRawData">
         <uri_patterns>
             <pattern>/get-data/</pattern>
             <pattern>/get-data/page-[pageNumber]/</pattern>
@@ -75,7 +75,7 @@
             <pattern>/get-data/[sortField]-[sortDir]/page-[pageNumber]/</pattern>
         </uri_patterns>
     </state>
-    <state name="view" rights="3">
+    <state name="view">
         <uri_patterns>
             <pattern>/[int]/</pattern>
         </uri_patterns>
@@ -87,20 +87,20 @@
         </toolbar>
     </state>
     <!--
-    <state name="printData" rights="3">
+    <state name="printData">
             <uri_patterns>
                 <pattern>/print/</pattern>
             </uri_patterns>
     </state>
     -->
     <!--
-    <state name="moveTo" rights="3">
+    <state name="moveTo">
         <uri_patterns>
             <pattern>/move/[fromId]/[direction]/[toId]/</pattern>
             <pattern>/move/[fromId]/[direction]/</pattern>
         </uri_patterns>
     </state>
-    <state name="move" rights="3">
+    <state name="move">
         <uri_patterns>
             <pattern>/move/[fromId]/</pattern>
         </uri_patterns>
@@ -117,12 +117,12 @@
             <control id="close" title="BTN_CANCEL" type="button" onclick="close"/>
         </toolbar>
     </state>
-    <state name="up" rights="3">
+    <state name="up">
         <uri_patterns>
             <pattern>/[int]/up/</pattern>
         </uri_patterns>
     </state>
-    <state name="down" rights="3">
+    <state name="down">
         <uri_patterns>
             <pattern>/[int]/down/</pattern>
         </uri_patterns>

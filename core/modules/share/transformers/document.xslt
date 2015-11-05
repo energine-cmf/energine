@@ -247,29 +247,7 @@
     </xsl:template>
 
     <xsl:template match="document">
-        <xsl:if test="$COMPONENTS[@class='CrossDomainAuth']">
-            <img src="{$COMPONENTS[@class='CrossDomainAuth']/@authURL}?return={$COMPONENTS[@class='CrossDomainAuth']/@returnURL}" width="1" height="1" style="display:none;" alt="" onload="document.location = document.location.href;"/>
-        </xsl:if>
-        <div class="base">
-            <div class="header">
-                <h1 class="logo">
-                    <a>
-                        <xsl:if test="$DOC_PROPS[@name='default']!=1">
-                            <xsl:attribute name="href"><xsl:value-of select="$BASE"/><xsl:value-of select="$LANG_ABBR"/></xsl:attribute>
-                        </xsl:if>
-                        <img src="images/{$FOLDER}/energine_logo.png" width="246" height="64" alt="Energine"/>
-                    </a>
-                </h1>
-                <xsl:apply-templates select="$COMPONENTS[@class='LangSwitcher']"/>
-            </div>
-            <div class="main">
-                <xsl:apply-templates select="$COMPONENTS[@name='breadCrumbs']"/>
-                <xsl:apply-templates select="content"/>
-            </div>
-            <div class="footer">
-                <xsl:apply-templates select="$COMPONENTS[@name='footerTextBlock']"/>
-            </div>
-        </div>
+        <xsl:apply-templates select="layout"/>
     </xsl:template>
 
     <!-- Single mode document -->

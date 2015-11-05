@@ -27,57 +27,6 @@ error_reporting(E_ALL);
 @ini_set('session.use_trans_sid', 0);
 
 @date_default_timezone_set('Europe/Kiev');
-
-/**
- * Path to the site kernel directory.
- * @var string SITE_KERNEL_DIR
- */
-define('SITE_KERNEL_DIR', SITE_DIR . '/kernel');
-
-$openBasedirRestrictionsIteratorFunc = function ($moduleDir, $phpClassType) {
-    return array_map(
-        function ($row) use ($moduleDir, $phpClassType) {
-            return implode(DIRECTORY_SEPARATOR, [$moduleDir, MODULES, $row, $phpClassType]) . DIRECTORY_SEPARATOR;
-        },
-        array_filter(
-            scandir($moduleDir . DIRECTORY_SEPARATOR . MODULES),
-            function ($row) {
-                return strpos($row, '.') === false;
-            }
-        )
-    );
-};
-$dirs = array_merge(
-    ['.'],
-    call_user_func_array('array_merge',
-        array_map(
-            function ($folder) use ($openBasedirRestrictionsIteratorFunc) {
-                return call_user_func_array('array_merge',
-                    array_map(
-                        function ($moduleType) use ($folder, $openBasedirRestrictionsIteratorFunc) {
-                            return $openBasedirRestrictionsIteratorFunc($moduleType, $folder);
-                        },
-                        [CORE_DIR, SITE_DIR]));
-            },
-            ['components', 'gears', 'templates', 'config', 'transformers'])
-    )
-);
-
-if (!($dir = @ini_get('upload_tmp_dir'))) {
-    $dir = '/tmp';
-}
-
-// выключено 03.02.2015 by andy.karpov временно
-// по причине глючности данного решения с модулями сайта (например при вызове file_exists для xml компонента сайта)
-/*array_push($dirs, $dir);
-ini_set('open_basedir',
-    implode(PATH_SEPARATOR,
-        $dirs
-    )
-);*/
-
-unset($openBasedirRestrictionsIteratorFunc, $dirs, $dir);
-
 /*
  * Определяем константы прав доступа
  * они должны иметь те же значения что и в таблице user_group_rights + ACCESS_NONE = 0

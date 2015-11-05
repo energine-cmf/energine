@@ -392,7 +392,7 @@ final class Setup {
         if (($handle = fopen($path, 'r')) !== FALSE) {
             $this->checkDBConnection();
             $langRes = $this->dbConnect->prepare('SELECT lang_id FROM share_languages WHERE lang_abbr= ?', array(PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL));
-            $langTagRes = $this->dbConnect->prepare('INSERT IGNORE INTO share_lang_tags(ltag_name, ltag_module) VALUES (?, ?)');
+            $langTagRes = $this->dbConnect->prepare('INSERT IGNORE INTO share_lang_tags(ltag_name) VALUES (?)');
             $langTransTagRes = $this->dbConnect->prepare('INSERT IGNORE INTO share_lang_tags_translation VALUES (?, ?, ?)');
             $this->dbConnect->beginTransaction();
             $langInfo = array();
@@ -411,7 +411,7 @@ final class Setup {
                         }
                     } else {
 
-                        if ($r = !$langTagRes->execute(array($data[0], $module))) {
+                        if ($r = !$langTagRes->execute(array($data[0]))) {
                             throw new \Exception('Произошла ошибка при вставке в share_lang_tags значения:' . $data[0]);
                         }
                         $ltagID = $this->dbConnect->lastInsertId();
@@ -565,12 +565,24 @@ final class Setup {
         $output = array();
         $result = false;
 
-        $files = array_merge(
-            glob(CORE_COMPONENTS_DIR . '/*.php'),
-            glob(CORE_GEARS_DIR . '/*.php'),
-            glob(SITE_COMPONENTS_DIR . '/*.php'),
-            glob(SITE_GEARS_DIR . '/*.php'),
-            glob(SITE_KERNEL_DIR . '/*.php')
+        $dirIterators = new AppendIterator();
+        $dirIterators->append(new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator(
+                CORE_DIR,
+                \FilesystemIterator::FOLLOW_SYMLINKS
+            )
+        ));
+        $dirIterators->append(new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator(
+                SITE_DIR,
+                \FilesystemIterator::FOLLOW_SYMLINKS
+            )
+        ));
+
+        $files = new RegexIterator(
+            $dirIterators,
+            '/^.+\.php$/i',
+            RecursiveRegexIterator::GET_MATCH
         );
 
         /*
@@ -579,8 +591,9 @@ final class Setup {
          * ->translate('CONST')
          * System Exception('CONST')
          */
-        if ($files)
             foreach ($files as $file) {
+                list($file) = $file;
+
                 $content = file_get_contents($file);
 
                 if (is_array($content))

@@ -13,6 +13,8 @@
             <control id="add" title="BTN_ADD" type="button" onclick="add"/>
             <control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>
             <control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
+            <control type="button" id="up" title="BTN_MOVE_UP" onclick="up" />
+            <control type="button" id="down" title="BTN_MOVE_DOWN" onclick="down" />
         </toolbar>
     </state>
     <state name="add">

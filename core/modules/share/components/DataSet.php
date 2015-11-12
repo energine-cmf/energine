@@ -542,6 +542,7 @@ abstract class DataSet extends Component
             if (substr($action, -1) != '/') {
                 $action .= '/';
             }
+            $action = str_replace('//', '/', $action);
         }
         $this->setProperty('action', $action);
     }

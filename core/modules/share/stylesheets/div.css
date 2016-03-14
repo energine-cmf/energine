@@ -47,22 +47,54 @@ img {
 }
 .treeview a.current, .treeview li.selected li a.current { 
     font-weight: bold;
-    color: green;
+    /*color: green;modbysd*/
+    color:black;
 }
 	
 /* тулбар дерева подразделов в боковой панели */
 .e-divtree-panel .e-divtree-toolbar {
     position: absolute;
-    top: -30px;
+    /*top: -30px;*/
+    top: -33px;
     left: -1px;
     z-index: 1;
     width: 100%;
     margin: 0 !important;
     padding: 2px 0 !important;
     border-radius: 0;
+/*     margin-left: 30px !important; */
+/*     margin-left: 62px !important; */
+    margin-left: -1px !important;
 }
 .e-divtree-panel .e-divtree-toolbar li.icon {
-    margin: 0 2px !important;
+    margin: 1px 2px !important;
+/*     box-shadow: 3px 4px 3px rgba(0, 0, 0, 0.1); */
+/*     border-radius: 13px; */
+/* box-shadow: 0px 0px 1px rgba(0, 0, 0, 1); */
+    border:1px solid #EEEEEE;
+    border:1px solid #EFFFDE;
+    border:1px solid #000000;
+    border:1px solid #BCBCBC;    
+    border-radius: 2px;
+}
+/*.e-divtree-panel .e-divtree-toolbar li.icon.delete_btn{
+  border:1px solid #FAE1E1;
+  border:1px solid #000000;
+}
+.e-divtree-panel .e-divtree-toolbar li.icon.edit_btn{
+  border:1px solid #D4D4D4;
+  border:1px solid #000000;
+}
+*/
+.e-divtree-panel .e-divtree-toolbar li.icon:hover {
+/*     box-shadow: 3px 4px 3px rgba(0, 0, 0, 0.5); */
+    border:1px solid #EFFFDE;
+    border:1px solid #000000;
+/*       border:1px inset #EFFFDE; */
+    margin: 0 1px !important;
+    border:2px solid #FEFF9D;
+/*     border:1px solid #EFFFDE; */
+
 }
 .e-divtree-panel .e-divtree-toolbar li.separator {
     height: 16px !important;

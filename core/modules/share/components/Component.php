@@ -526,7 +526,6 @@ class Component extends Primitive implements IBlock {
                 'trace' => $e->getTraceAsString()
             ]);
         }
-
         return $result;
     }
 

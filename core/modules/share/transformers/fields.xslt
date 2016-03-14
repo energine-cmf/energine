@@ -106,7 +106,7 @@
         В этой секции собраны правила вывода полей формы, которые создают сам html-элемент (input, select, etc.).
     -->
     <!-- строковое поле (string), или поле, к которому не нашлось шаблона -->
-    <xsl:template match="field[ancestor::component[@type='form']]" mode="field_input">
+    <xsl:template match="field[ancestor::component[@type='form']]" mode="field_input">    
         <input class="text inp_string form-control">
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
         </input>

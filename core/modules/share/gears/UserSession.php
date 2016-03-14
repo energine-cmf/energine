@@ -134,7 +134,12 @@ final class UserSession implements \SessionHandlerInterface {
         // устанавливаем время жизни cookie
         if (Primitive::getConfigValue('site.domain')) {
             $path = '/';
-            $domain = '.' . Primitive::getConfigValue('site.domain');
+            // bySD проверка на наличие порта в адресе. не обрабатывает ipv6
+            if (substr_count(Primitive::getConfigValue('site.domain'),":")==1) {
+	      $domain = '';
+	    } else {
+	      $domain = '.' . Primitive::getConfigValue('site.domain');	      
+            }            
         } else {
             $path = E()->getSiteManager()->getCurrentSite()->root;
             $domain = '';

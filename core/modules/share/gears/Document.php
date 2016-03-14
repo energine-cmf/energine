@@ -398,7 +398,12 @@ final class Document extends Primitive implements IDocument {
     public function getLang() {
         return $this->lang;
     }
-
+    /**modbySD
+     * Set language ID.
+     */
+    public function setLang($lang_id) {
+        $this->lang=$lang_id;
+    }
     /**
      * Create unique flat array of connected .js-files and their dependencies.
      * @param array $dependencies Dependencies.

@@ -191,13 +191,11 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
     // Для поля smap_pid формируется Дерево разделов
     protected function createDataDescription() {
         $result = parent::createDataDescription();
-
         //для редактирования и добавления нужно сформировать "красивое дерево разделов"
         if (in_array($this->getState(), ['add', 'edit'])) {
             $fd = $result->getFieldDescriptionByName('smap_pid');
             $fd->setType(FieldDescription::FIELD_TYPE_STRING);
             //$fd->setMode(FieldDescription::FIELD_MODE_READ);
-
             $result->getFieldDescriptionByName('smap_name')->removeProperty('nullable');
             if($this->getState() == 'edit'){
                 $fd = new FieldDescription('smap_last_mod');
@@ -205,12 +203,12 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
                 $fd->setProperty('outputFormat', '%E');
                 $fd->setProperty('tableName', $this->getTableName());
                 $fd->setMode(FieldDescription::FIELD_MODE_READ);
-
                 $result->addFieldDescription($fd, DataDescription::FIELD_POSITION_AFTER, 'smap_id');
+                
             }
         } else {
             //Для режима списка нам нужно выводить не значение а ключ
-            if ($this->getType() == self::COMPONENT_TYPE_LIST) {
+            if ($this->getType() == self::COMPONENT_TYPE_LIST) {            
                 $smapPIDFieldDescription =
                     $result->getFieldDescriptionByName('smap_pid');
                 if ($smapPIDFieldDescription) {

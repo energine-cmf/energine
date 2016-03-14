@@ -2,19 +2,29 @@
 
 a.f_reset,
 a.f_reset:hover,
-a.f_reset:active {
-    font-family: Tahoma, sans-serif;
-    color: #428bca;
+a.f_reset:active {    
+    /*font-family: Tahoma, sans-serif;*/    font-family: 'Roboto', sans-serif;
+    /*color: #428bca;*/
+    color:black;
     text-decoration: none;
 }
-
+div.grid table {
+ border-collapse:collapse; 
+}
 div.grid table tr.highlighted td {
-    background: #ecf3f8;
+    /*background: #ecf3f8;*/
+    /*background:#E6E6E6;*/
+    color:black;/*#93198D;/*#93198d;/*#845282;*/
+    background:#B9B9B9;/*#8E8E8E;*/
+
 }
 
 div.grid table tr.selected td {
-    background: #428bca;
-    color: #fff;
+    /*background: #428bca;
+    color: #fff;*/
+    /*background:#A08A9F;*/
+    background:#737373;/*#505050;/*#363435;*/
+    color:white;
 }
 
 div.grid table tr .firstColumn {
@@ -40,7 +50,7 @@ div.grid div.filters_block {
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
-    font-family: Tahoma, sans-serif;
+    /*font-family: Tahoma, sans-serif;*/    font-family: 'Roboto', sans-serif;
     box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.5);
     -webkit-box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.5);
     -moz-box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.5);
@@ -154,23 +164,54 @@ div.grid div.filters_block .filters .filter_remove_block {
     left: -26px;
 }
 
-div.grid div.filters_block .filters .filter_add_block button,
-div.grid div.filters_block .filters .filter_remove_block button {
+div.grid div.filters_block .filters .filter_add_block button
+ {
     display: block;
     float: left;
-    width: 22px;
-    height: 22px;
+/*    width: 22px;
+    height: 22px;*/
     font-size: 12px;
     padding: 0;
-    border-radius: 50%;
+/*    border-radius: 50%;*/
     text-align: center;
     outline: none;
+    width: 21px;
+    height: 20px;
+    line-height: 1 !important;
+     color: transparent; /* Fix for Firefox */
+    background: url("../../images/webworks/icons.png") no-repeat transparent;
+    border: none !important;
+    box-shadow: none;
+    background-position:-235px -31px;/* -233px -29px;    
+    margin-left: 5px;
+    box-shadow: 0px 0px 23px rgb(134, 134, 134);*/
+}
+div.grid div.filters_block .filters .filter_remove_block button {
+      display: block;
+    float: left;
+/*    width: 22px;
+    height: 22px;*/
+    font-size: 12px;
+    padding: 0;
+/*    border-radius: 50%;*/
+    text-align: center;
+    outline: none;
+    width: 21px;
+    height: 20px;
+    line-height: 1 !important;
+     color: transparent; /* Fix for Firefox */    
+    border: none !important;
+    background: url("../../images/webworks/icons.png") no-repeat transparent;
+    box-shadow: none;
+    background-position: -235px -4px;/*-233px -2px;*/
 }
 
 div.grid div.filters_block .filters .filter_add_block button:disabled,
 div.grid div.filters_block .filters .filter_remove_block button:disabled {
-    background: rgb(150, 150, 150);
-    color: #fff;
+    /*background: rgb(150, 150, 150);color: #fff;*/
+    /*background-color: rgb(110, 110, 110);/*rgb(150, 150, 150);    */
+    line-height: 1 !important;
+    color: transparent; /* Fix for Firefox */
     cursor: not-allowed;
 }
 
@@ -255,7 +296,7 @@ div.grid div.filters.active {
 }
 
 div.grid div.filter select, div.grid div.filter input, div.grid div.filter button {
-    font-family: Tahoma, sans-serif;
+    /*font-family: Tahoma, sans-serif;*/    font-family: 'Roboto', sans-serif;
     font-size: 14px;
     color: #555;
     margin: 0 5px 0 0;
@@ -317,17 +358,17 @@ div.grid div.filter input.small {
 div.grid .f_fields {
     width: 150px;
     height: auto;
-    font-family: Tahoma, sans-serif;
+    /*font-family: Tahoma, sans-serif;*/    font-family: 'Roboto', sans-serif;
 }
 
 div.grid .f_condition {
     height: auto;
-    font-family: Tahoma, sans-serif;
+    /*font-family: Tahoma, sans-serif;*/    font-family: 'Roboto', sans-serif;
 }
 
 div.grid .query {
     height: auto;
-    font-family: Tahoma, sans-serif;
+    /*font-family: Tahoma, sans-serif;*/    font-family: 'Roboto', sans-serif;
 }
 
 .f_datepicker {
@@ -336,7 +377,7 @@ div.grid .query {
     padding-right: 5px;
     position: relative;
     top: 3px;
-    font-family: Tahoma, sans-serif;
+    /*font-family: Tahoma, sans-serif;*/    font-family: 'Roboto', sans-serif;
 }
 
 .grid_breadcrumbs {
@@ -345,7 +386,7 @@ div.grid .query {
     padding: 15px;
     background: #eee;
     font-size: 13px;
-    font-family: Tahoma, sans-serif;
+    /*font-family: Tahoma, sans-serif;*/    font-family: 'Roboto', sans-serif;
 }
 
 .grid_breadcrumbs a {
@@ -355,7 +396,7 @@ div.grid .query {
 .grid {
     background: #fcfcfc;
     color: black;
-    font-family: Tahoma, sans-serif;
+    /*font-family: Tahoma, sans-serif;*/    font-family: 'Roboto', sans-serif;
     font-size: 13px;
     font-size-adjust: none;
     font-stretch: normal;
@@ -370,14 +411,14 @@ div.grid .query {
     border-bottom: 0;
     border-radius: 4px 4px 0 0;
     background: #efefef;
-    font-family: Tahoma, sans-serif;
+    /*font-family: Tahoma, sans-serif;*/    font-family: 'Roboto', sans-serif;
     overflow: hidden;
 }
 
 .gridHeadContainer th {
     background: auto;
     cursor: default;
-    font-family: Tahoma, sans-serif;
+    /*font-family: Tahoma, sans-serif;*/    font-family: 'Roboto', sans-serif;
 }
 
 .gridHeadContainer th.asc {
@@ -394,11 +435,11 @@ div.grid .query {
     overflow: scroll;
     overflow-x: hidden;
     /*border: 1px solid #ddd;*/
-    font-family: Tahoma, sans-serif;
+    /*font-family: Tahoma, sans-serif;*/    font-family: 'Roboto', sans-serif;
 }
 
 table.gridTable, table.gridTable th, table.gridTable td {
-    font-family: Tahoma, sans-serif;
+    /*font-family: Tahoma, sans-serif;*/    font-family: 'Roboto', sans-serif;
 }
 
 table.gridTable {
@@ -421,7 +462,7 @@ table.gridTable {
     background: #eeeeee;
     text-align: left;
     color: #000000;
-    font-family: Tahoma, sans-serif;
+    /*font-family: Tahoma, sans-serif;*/    font-family: 'Roboto', sans-serif;
     font-weight: bold;
     text-align: center;
 }
@@ -432,7 +473,7 @@ table.gridTable {
     border: 0;
     border-right: 1px solid #ddd;
     cursor: default;
-    font-family: Tahoma, sans-serif;
+    /*font-family: Tahoma, sans-serif;*/    font-family: 'Roboto', sans-serif;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;

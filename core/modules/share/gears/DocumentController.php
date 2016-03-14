@@ -157,7 +157,6 @@ class DocumentController extends Primitive {
                     ) {
                         throw $e;
                     }
-
                     if (!($resultDoc = simplexml_load_file($errorPageFile))) {
                         throw new \RuntimeException('ERR_BAD_ERROR_DOCUMENT');
                     }

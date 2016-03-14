@@ -295,6 +295,7 @@ class Grid extends DBDataSet {
         $this->applyUserSort();
 
         $data = $this->createData();
+
         if ($data instanceof Data) {
             $this->setData($data);
         }
@@ -449,6 +450,7 @@ class Grid extends DBDataSet {
      * @throws SystemException 'ERR_VALIDATE_FORM'
      */
     protected function saveData() {
+
         $result = false;
         //если в POST не пустое значение значение первичного ключа - значит мы находимся в режиме редактирования
         if (isset($_POST[$this->getTableName()][$this->getPK()]) &&
@@ -462,7 +464,7 @@ class Grid extends DBDataSet {
 
         //создаем объект описания данных
         $dataDescriptionObject = new DataDescription();
-
+ 
         if (!method_exists($this, $this->getPreviousState())) {
             throw new SystemException('ERR_NO_ACTION', SystemException::ERR_CRITICAL);
         }
@@ -474,7 +476,6 @@ class Grid extends DBDataSet {
         if (isset($configDataDescription->fields)) {
             $dataDescriptionObject->loadXML($configDataDescription->fields);
         }
-
         //Создаем объект описания данных взятых из БД
         $DBDataDescription = new DataDescription();
         //Загружаем в него инфу о колонках
@@ -503,7 +504,6 @@ class Grid extends DBDataSet {
         $saver->setMode($mode);
         $saver->setDataDescription($this->getDataDescription());
         $saver->setData($this->getData());
-
         if ($saver->validate() === true) {
             $saver->setFilter($this->getFilter());
             $saver->save();
@@ -888,6 +888,7 @@ class Grid extends DBDataSet {
             //Если не задана колонка для пользовательской сортировки то на выход
             throw new SystemException('ERR_NO_ORDER_COLUMN', SystemException::ERR_DEVELOPER);
         }
+
         $params = $this->getStateParams();
         list($firstItem, $direction) = $params;
 
@@ -968,6 +969,7 @@ class Grid extends DBDataSet {
     protected function down() {
         $this->changeOrder(Grid::DIR_DOWN);
     }
+
 
     /**
      * Change order.

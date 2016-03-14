@@ -65,6 +65,7 @@ var ModalBox = window.top.ModalBox || /** @lends ModalBox */{
         }
 
         // todo: I think it would better to make AbstractModalBox class. -- try
+
         var box = new Element('div').addClass('e-modalbox').inject(document.body);
         box.options = {
             url: null,
@@ -165,8 +166,11 @@ var ModalBox = window.top.ModalBox || /** @lends ModalBox */{
         if (this.boxes.length == 1) {
             this.overlay.show();
             this.overlay.element.removeEvents('click');
-            this.overlay.element.addEvent('click', function () {
-                this.close();
+	    // modbySD client requested to opt click-close option
+	    this.overlay.element.addEvent('click', function () {	        
+	        //if (confirm('ВЫЙТИ БЕЗ СОХРАНЕНИЯ ИЗМЕНЕНИЙ?')) {
+                //    this.close();
+                //}
             }.bind(this));
         }
     },

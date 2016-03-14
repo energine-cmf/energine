@@ -348,7 +348,7 @@ var Grid = (function () {
          * @function
          * @public
          */
-        build: function () {
+        build: function () {	  
             var preiouslySelectedRecordKey = this.getSelectedRecordKey();
 
             this.selectedItem = new Elements();
@@ -358,7 +358,7 @@ var Grid = (function () {
                     preiouslySelectedRecordKey = false;
                 }
                 this.data.each(function (record, id) {
-                    addRecord.call(this, record, id, preiouslySelectedRecordKey);
+                    addRecord.call(this, record, id, preiouslySelectedRecordKey);		    
                 }, this);
                 if (!this.selectedItem.length && !preiouslySelectedRecordKey) {
                     this.selectItem(this.tbody.getFirst());
@@ -897,14 +897,20 @@ var GridManager = new Class(/** @lends GridManager# */{
          * @type {}
          */
         this.toolbar = toolbar;
-        var toolbarContainer = this.tabPane.element.getElement('.e-pane-b-toolbar');
+        //modBySD move toolbar up var toolbarContainer = this.tabPane.element.getElement('.e-pane-b-toolbar'); .getStyle('border-bottom-width')
+	//var toolbarContainer = this.tabPane.element.getElement('.grid_toolbar');
+	//var toolbarContainer = this.tabPane.element.getElement('.e-pane-toolbar');
+	var toolbarContainer = this.tabPane.element.getElement('.e-pane-t-toolbar');
         if (toolbarContainer) {
-            toolbarContainer.adopt(this.toolbar.getElement());
+            //toolbarContainer.adopt(this.toolbar.getElement());
+	    toolbarContainer.grab(this.toolbar.getElement(),'top');
         } else {
-            this.tabPane.element.adopt(this.toolbar.getElement());
+            //this.tabPane.element.adopt(this.toolbar.getElement());
+	  this.tabPane.element.grab(this.toolbar.getElement(),'top');
         }
         this.toolbar.disableControls();
-        toolbar.bindTo(this);
+        toolbar.bindTo(this);	
+
         /*
          * Панель инструментов прикреплена, загружаем первую страницу.
          *
@@ -1049,8 +1055,8 @@ var GridManager = new Class(/** @lends GridManager# */{
      * @public
      * @param {Object} result Result data from the server.
      */
-    processServerResponse: function (result) {
-        var control = false;
+    processServerResponse: function (result) {	
+        var control = false;console.log(result);
         if (this.toolbar) {
             control = this.toolbar.getControlById('add');
         }
@@ -1158,6 +1164,7 @@ var GridManager = new Class(/** @lends GridManager# */{
      * @param {string|number} [id] ID of the data field. If <tt>id</tt> is not specified it will be get from [getSelectedRecordKey()]{@link Grid#getSelectedRecordKey}.
      */
     move: function (id) {
+        
         if (!parseInt(id)) {
             id = this.grid.getSelectedRecordKey();
         }
@@ -1174,7 +1181,9 @@ var GridManager = new Class(/** @lends GridManager# */{
      * @public
      */
     moveFirst: function () {
-        this.moveTo('first', this.getMvElementId());
+	//modbySD maybeID???
+        //this.moveTo('first', this.getMvElementId());
+	this.moveTo('first', this.grid.getSelectedRecordKey());
     },
 
     /**
@@ -1183,7 +1192,9 @@ var GridManager = new Class(/** @lends GridManager# */{
      * @public
      */
     moveLast: function () {
-        this.moveTo('last', this.getMvElementId());
+	//modbySD maybeID???
+	//this.moveTo('last', this.getMvElementId());
+	this.moveTo('last', this.grid.getSelectedRecordKey());
     },
 
     /**
@@ -1229,7 +1240,7 @@ var GridManager = new Class(/** @lends GridManager# */{
             function () {
                 this.overlay.hide();
                 ModalBox.setReturnValue(true); // reload
-                this.close();
+                this.reload();//modbySD this.close() to fix GroupEditMove window 
             }.bind(this),
             function (responseText) {
                 this.overlay.hide();
@@ -1298,6 +1309,30 @@ var GridManager = new Class(/** @lends GridManager# */{
             this.delConfirmCounter = 0;
         }
     },
+     /**
+     * Copy action.
+     * @function
+     * @public modBySD
+     */
+    copy: function () {
+            this.overlay.show();
+	    //catalogue/single/goodsEditor/16487/copy/ ERR_DEV_NO_BUILDER:GOODSEDITOR: COPY	    
+            Energine.request(this.singlePath + this.grid.getSelectedRecordKey() +
+                '/copy/', null,
+                function () {		  
+                    this.overlay.hide();
+                    this.grid.fireEvent('dirty');
+                    this.loadPage(this.pageList.currentPage);
+                }.bind(this),
+                function (responseText) {
+                    this.overlay.hide();
+                }.bind(this),
+                function (responseText) {
+                    alert(responseText);
+                    this.overlay.hide();
+                }.bind(this)
+            );
+    },   
     /**
      * Use action
      * Return selected record as a result of modal box call

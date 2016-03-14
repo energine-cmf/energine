@@ -49,7 +49,7 @@ class JSONTransformer implements ITransformer {
      * @note This is used for compatibility with debug mode.
      */
     public function setFileName($transformerFilename, $isAbsolutePath = false) {
-        throw new SystemException('ERR_UNIMPLEMENTED', SystemException::ERR_DEVELOPER);
+        //throw new SystemException('ERR_UNIMPLEMENTED', SystemException::ERR_DEVELOPER);
     }
 }
 

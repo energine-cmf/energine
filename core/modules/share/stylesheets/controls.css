@@ -1,10 +1,10 @@
 .e-pane-content {
-    font-family: Tahoma, sans-serif;
+    /*font-family: Tahoma, sans-serif;*/font-family: 'Roboto', sans-serif;
 }
 /* ----- forms ----- */
 .e-pane-content form {
     margin: 0 0 1em 0;
-    font-family: Tahoma, sans-serif;
+    /*font-family: Tahoma, sans-serif;*/font-family: 'Roboto', sans-serif;
 }
 .e-pane-content fieldset {
     padding: 12px;
@@ -22,7 +22,7 @@
     box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
     -webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
     transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;*/
-    font-family: Tahoma, sans-serif;
+    /*font-family: Tahoma, sans-serif;*/font-family: 'Roboto', sans-serif;
     box-sizing: border-box;
     -moz-box-sizing: border-box;
 }
@@ -52,6 +52,7 @@
     background-color: #ebebeb;
     border-color: #adadad;
 }
+
 .e-pane-content div.control > input:focus,
 .e-pane-content div.control > textarea:focus,
 .e-pane-content div.control > select:focus,
@@ -90,7 +91,7 @@
 .e-pane-content .required input,
 .e-pane-content .required select,
 .e-pane-content .required textarea {
-    border-color: #7DC27D;
+    border-color: black;/*#7DC27D;*/
 }
 .e-pane-content input.acpl{
     border: none;

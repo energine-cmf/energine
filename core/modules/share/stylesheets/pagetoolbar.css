@@ -153,20 +153,56 @@ ul.docked_toolbar {
 
 .pagetb_logo {
     position: absolute;
-    top: -10px;
-    left: -10px;
+    top: -0px;
+    left: -0px;
+    /*top: -20px;
+    left: -35px;*/
     z-index: 11;
-    width: 46px;
+    /*width: 46px;56px 84*/
+    width:34px;/*84px;62px;*/
     cursor: pointer;
-    transition: transform 2s;
-    -webkit-transition: -webkit-transform 2s;
+    transition: transform 6s; /* 2s*/
+    -webkit-transition: -webkit-transform 6s;
+    transform-style: preserve-3d; 
+    /*transform: rotate(180deg);*/
+      /*animation: shake 2s infinite;
+      animation-direction: alternate;*/
+    
+}
+@keyframes shake {
+  0% {
+    transform: rotate3d(0,1,0,360deg);    
+  }
+  50% {
+    transform: rotate3d(0,1,0,-180deg);
+  }
+  100% {
+    transform: rotate3d(0,1,0,0deg);;
+  }
 }
 
 .pagetb_logo:hover,
-.pagetb_logo:active {
-    transform: rotate(90deg);
-    -ms-transform: rotate(90deg);
-    -webkit-transform: rotate(90deg);
+.pagetb_logo:active {/*90*/
+    /*animation:none;
+    transition: transform 6s;
+    transform: rotate(3600deg);
+    -ms-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);*/
+      /*-webkit-transform: rotateY(180deg);
+      -webkit-transform: skew(190deg,190deg);*/
+      /*-webkit-transform:translate3d(0, 0, -200px);*/
+      /*-webkit-transform:rotate(360deg) rotate3d(0,1,1,360deg);*/
+      /*animation: two 8s infinite;*/
+      /*animation: shake 8s infinite;
+      animation-direction: alternate; 
+      animation-timing-function: cubic-bezier(0.25,0.1,0.25,1);*/
+      transform:rotate3d(0,1,0,720deg);
+      transform-timing-function: cubic-bezier(0.25,0.1,0.25,1);
+      /*transition-delay: 2s;*/
+    /*-webkit-transform: skew(150deg,150deg);*/
+    
+    
+    
 }
 
 ul.docked_toolbar li {
@@ -189,7 +225,7 @@ ul.docked_toolbar li.icon {
 }
 
 ul.docked_toolbar li.highlighted {
-    background-color: #ecf3f8 !important;
+    background-color: rgb(254, 255, 157) !important; /*#ecf3f8 !important;modbysd*/
 }
 
 ul.docked_toolbar li.pressed {

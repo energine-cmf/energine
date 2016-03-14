@@ -45,13 +45,13 @@
             <field name="smap_name"/>
         </fields>
         <toolbar name="e-divtree-toolbar">
-            <control id="add" title="BTN_ADD" type="button" icon="images/toolbar/add.gif" onclick="add"/>
-            <control id="edit" title="BTN_EDIT" type="button" icon="images/toolbar/edit.gif" onclick="edit"/>
-            <control id="delete" title="BTN_DELETE" type="button" icon="images/toolbar/delete.gif" onclick="del"/>
+            <control id="add" title="BTN_ADD" type="button" icon="images/toolbar/add.png" onclick="add"/>
+            <control id="edit" title="BTN_EDIT" type="button" icon="images/toolbar/edit.png" onclick="edit"/>
+            <control id="delete" title="BTN_DELETE" type="button" icon="images/toolbar/delete.png" onclick="del"/>
             <!-- <control id="go" title="BTN_GO" type="button" onclick="go"/>-->
-            <control id="sep1" type="separator"/>
-            <control id="up" title="BTN_MOVE_UP" type="button" icon="images/toolbar/up.gif" onclick="up"/>
-            <control id="down" title="BTN_MOVE_DOWN" type="button" icon="images/toolbar/down.gif" onclick="down"/>
+<!--             <control id="sep1" type="separator"/> -->
+            <control id="up" title="BTN_MOVE_UP" type="button" icon="images/toolbar/up.png" onclick="up"/>
+            <control id="down" title="BTN_MOVE_DOWN" type="button" icon="images/toolbar/down.png" onclick="down"/>
             <!-- <control id="sep2" type="separator"/>
                    <control id="close" title="BTN_ClOSE" type="button" onclick="close"/>-->
         </toolbar>

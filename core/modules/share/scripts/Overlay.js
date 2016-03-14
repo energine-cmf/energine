@@ -90,6 +90,7 @@ var Overlay = new Class(/** @lends Overlay# */{
                 this.element = this.element.dispose();
             }.bind(this)
         );
+	
     },
 
     /**

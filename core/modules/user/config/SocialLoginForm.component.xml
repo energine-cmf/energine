@@ -6,8 +6,8 @@
             <behavior name="LoginForm"/>
         </javascript>
 		<fields>
-			<field name="username" type="string" tableName="user" title="FIELD_U_NAME" length="50" mode="2"/>
-			<field name="password" type="password" tableName="user" title="FIELD_U_PASSWORD" length="40"  mode="2"/>
+			<field name="username" type="string" tableName="user" title="FIELD_U_NAME" length="255" mode="2"/>
+			<field name="password" type="password" tableName="user" title="FIELD_U_PASSWORD" length="255"  mode="2"/>
 		</fields>
 		<toolbar>
 			<control type="submit" id="user[login]" title="BTN_LOGIN" tooltip="Click me" />

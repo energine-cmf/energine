@@ -294,14 +294,11 @@ abstract class DataSet extends Component
         if ($this->getConfig()->getCurrentStateConfig()) {
             $configDataDescriptionObject->loadXML($this->getConfig()->getCurrentStateConfig()->fields);
         }
-
-
         // внешнее описание данных
         $externalDataDescription = $this->loadDataDescription();
         if (is_null($externalDataDescription)) {
             throw new SystemException('ERR_DEV_LOAD_DATA_DESCR_IS_FUNCTION', SystemException::ERR_DEVELOPER);
         }
-
         // если существует внешнее описание данных - пересекаем с описанием из конфиг
         if ($externalDataDescription) {
             $externalDataDescriptionObject = new DataDescription();
@@ -309,7 +306,6 @@ abstract class DataSet extends Component
             $configDataDescriptionObject =
                 $configDataDescriptionObject->intersect($externalDataDescriptionObject);
         }
-
         return $configDataDescriptionObject;
     }
 

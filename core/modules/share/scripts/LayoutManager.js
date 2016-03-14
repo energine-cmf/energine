@@ -547,7 +547,7 @@ LayoutManager.DummyWidget = new Class(/** @lends LayoutManager.DummyWidget# */{
         var tb = new Toolbar('widgetToolbar_' + this.column.name);
         tb.appendControl(new Toolbar.Button({
             id: 'add',
-            icon: 'images/toolbar/add.gif',
+            icon: 'images/toolbar/add.png',
             title: 'Add',
             action: 'addWidget'
         }));
@@ -731,7 +731,7 @@ LayoutManager.Widget = new Class(/** @lends LayoutManager.Widget */{
         if (!this['static']) {
             tb.appendControl(new Toolbar.Button({
                 id: 'add',
-                'icon': 'images/toolbar/add.gif',
+                'icon': 'images/toolbar/add.png',
                 title: 'Add',
                 action: 'addWidget'
             }));
@@ -745,7 +745,7 @@ LayoutManager.Widget = new Class(/** @lends LayoutManager.Widget */{
         })) {
             tb.appendControl(new Toolbar.Button({
                 id: 'edit',
-                icon: 'images/toolbar/edit.gif',
+                icon: 'images/toolbar/edit.png',
                 title: 'Edit',
                 action: 'editProps'
             }));
@@ -754,7 +754,7 @@ LayoutManager.Widget = new Class(/** @lends LayoutManager.Widget */{
         if (!this['static']) {
             tb.appendControl(new Toolbar.Button({
                 id: 'delete',
-                icon: 'images/toolbar/delete.gif',
+                icon: 'images/toolbar/delete.png',
                 title: 'Delete',
                 action: 'delWidget'
             }));

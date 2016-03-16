@@ -1043,7 +1043,7 @@ class Grid extends DBDataSet {
      * Apply user filter.
      */
     protected function applyUserFilter() {
-        (new Filter(FilterExpression::createFromPOST()))->apply($this);
+        (new Filter(FilterExpression::createFromPOST()))->apply($this);        
     }
 
     /**

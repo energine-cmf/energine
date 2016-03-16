@@ -53,7 +53,7 @@ class Filter extends Primitive {
     public function __construct(FilterExpression $data = null) {
         if (!is_null($data)) {
             $this->data = $data;
-        }
+        }                
     }
 
     /**
@@ -63,7 +63,7 @@ class Filter extends Primitive {
      */
     public function apply(Grid $grid) {
         if ($this->data) {
-            $grid->addFilterCondition((string)$this->data);
+            $grid->addFilterCondition((string)$this->data);            
         }
     }
 

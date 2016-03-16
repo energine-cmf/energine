@@ -117,13 +117,13 @@ class FilterExpression implements \Iterator {
      * @param $data
      * @return FilterExpression
      */
-    public static function createFrom($data) {
+    public static function createFrom($data) {    
         $result = new FilterExpression();
         if (isset($data['children']) && is_array($data['children'])) {
             foreach ($data['children'] as $child) {
                 $result->add(FilterField::createFrom($child));
             }
-        }
+        }        
         return $result;
     }
     /**
@@ -134,7 +134,7 @@ class FilterExpression implements \Iterator {
     public function __toString() {
         $result = array_reduce($this->children, function ($result, $filter) {
             return $result . (string)$filter ;
-        });
+        });     
         return '(' . $result . ')';
     }
 }

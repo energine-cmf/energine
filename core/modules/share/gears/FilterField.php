@@ -275,7 +275,8 @@ class FilterField extends Primitive {
             $fieldType = FieldDescription::convertType($tableInfo[$fieldName]['type'], $fieldName,
                 $tableInfo[$fieldName]['length'], $tableInfo[$fieldName]);
             if ($fieldType == FieldDescription::FIELD_TYPE_BOOL) $this->value = '';
-            elseif (!$this->value) {
+            //modbysd bug with 0 elseif (!$this->value) {
+            elseif (!isset($this->value)) {
                 return '';
             }
             if (in_array($this->condition, ['like', 'notlike']) && in_array($fieldType,

@@ -1041,10 +1041,10 @@ var GridManager = new Class(/** @lends GridManager# */{
         if (this.langId) {
             postBody += 'languageID=' + this.langId + '&';
         }
+        
         if (this.filter) {
             postBody += this.filter.getValue();
         }
-
         return postBody;
     },
 

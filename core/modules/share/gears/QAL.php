@@ -632,6 +632,7 @@ final class QAL extends Primitive {
         if (empty($args)) {
             throw new SystemException('ERR_NO_QUERY', SystemException::ERR_DEVELOPER);
         }
+
         if (!strpos($args[0], ' ')) {
             //если в имени таблицы есть пробелы
             //будем считать что это просто SQL код
@@ -954,6 +955,7 @@ final class QAL extends Primitive {
      */
     public
     function buildLimitStatement($clause) {
+
         $limitClause = '';
         if (is_array($clause)) {
             $limitClause = " LIMIT {$clause[0]}";

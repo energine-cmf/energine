@@ -1055,8 +1055,8 @@ var GridManager = new Class(/** @lends GridManager# */{
      * @public
      * @param {Object} result Result data from the server.
      */
-    processServerResponse: function (result) {	
-        var control = false;console.log(result);
+    processServerResponse: function (result) {
+        var control = false;//console.log(result);
         if (this.toolbar) {
             control = this.toolbar.getControlById('add');
         }

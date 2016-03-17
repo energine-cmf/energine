@@ -128,7 +128,7 @@ var Validator = new Class(/** @lends Validator# */{
         var result = true;
         var pattern,
             message;
-        field = $(field);
+        field = $(field);	
         pattern = field.getProperty('nrgn:pattern');
         if (pattern
             && (message = field.getProperty('nrgn:message'))

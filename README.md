@@ -1,4 +1,4 @@
-energine
+energine - mod
 ========
 
 Energine is a content management framework which allows to support web-applications/websites of any level of complexity.

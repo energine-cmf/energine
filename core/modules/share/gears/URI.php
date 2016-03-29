@@ -116,7 +116,7 @@ final class URI extends Primitive {
             $requestURI = '/';
             if (!E()->Utils->is_PHP_CLI()) {
                 $host = explode(':', ((isset($_SERVER['HTTP_HOST'])) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME']));
-                $protocol = (isset($_SERVER['HTTPS']) ? 'https' : 'http');
+                $protocol = (!empty($_SERVER['HTTPS']) ? 'https' : 'http');
                 $requestURI = $_SERVER['REQUEST_URI'];
             }
 

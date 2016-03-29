@@ -306,7 +306,6 @@ class DBDataSet extends DataSet {
                 }
             }
         }
-
         return $data;
     }
 
@@ -348,7 +347,6 @@ class DBDataSet extends DataSet {
         } elseif ($this->getDataLanguage() && $this->getParam('onlyCurrentLang')) {
             $filter = ' WHERE lang_id = ' . $this->getDataLanguage();
         }
-
         if ($this->getOrder()) {
             $order = $this->dbh->buildOrderCondition($this->getOrder());
         }

@@ -10,6 +10,7 @@ form div.error {
     padding: 0.5em;
     color: #931313;
     font-size: 13px;
+    display: inline-block;
     /*font-family: Tahoma, sans-serif;*/font-family: 'Roboto', sans-serif;
 }
 

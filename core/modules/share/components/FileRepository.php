@@ -74,7 +74,7 @@ class FileRepository extends Grid implements SampleFileRepository {
         $this->setFilter(['upl_is_active' => 1]);
 
         $this->setOrder(['upl_publication_date' => QAL::DESC]);
-        $this->addTranslation('TXT_NOT_READY', 'FIELD_UPL_IS_READY', 'ERR_UPL_NOT_READY');
+        $this->addTranslation('TXT_NOT_READY', 'FIELD_UPL_IS_READY', 'ERR_UPL_NOT_READY','TXT_FILE_SIZE');
         //Если данные пришли из модального окна
         if (isset($_POST['modalBoxData']) && ($d = json_decode($_POST['modalBoxData']))) {
             if ((isset($d->upl_pid) && ($uplPID = ($this->dbh->getScalar($this->getTableName(), 'upl_id',

@@ -45,9 +45,6 @@
             <field name="upl_is_webm" type="hidden"/>
             <field name="upl_is_flv" type="hidden"/>
         </fields>
-	<translations>
-            <translation const="TXT_FILE_SIZE"/>        
-        </translations>
         <toolbar>
             <control id="open" title="BTN_OPEN" type="button" onclick="open"/>
             <control id="sep01" type="separator"/>

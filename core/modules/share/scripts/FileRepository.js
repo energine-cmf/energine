@@ -81,12 +81,12 @@ Grid.implement(/** @lends Grid# */{
                         break;
 
                     case 'folderup':
-                        image.setProperty('src', 'images/icons/icon_folder_up.gif');
+                        image.setProperty('src', 'images/icons/icon_folder_up2.png');
                         break;
 
                     case 'video':
                     case 'image':
-                        dimensions = {'width': 60, 'height': 45};
+                        dimensions = {'width': 60, 'height': 45};			
                         image.setProperty('src', Energine.resizer + 'w60-h45/' + record[fieldName])
                             .addEvents({
                                 'error': function () {
@@ -123,6 +123,40 @@ Grid.implement(/** @lends Grid# */{
                         if (record['upl_internal_type'] == 'video') {
                             container.grab(new Element('div', {'class': 'video_file'}));
                         }
+                        
+                        cell.requestFilesSize= new XMLHttpRequest();
+			cell.requestFilesSize.ImageProps=cell;
+			cell.requestFilesSize.open('HEAD',  record[fieldName], true);
+			cell.requestFilesSize.onreadystatechange = function() 
+			  {	
+			    if (this.readyState == 4) 
+				{
+				  if (this.status == 200) 
+				      {
+					  var props=this.ImageProps.parentNode.getElementsByClassName('properties');
+					  if (props.length>0) {
+					      var size=this.getResponseHeader('Content-Length');
+					      var size_abbr='B';
+					      if (size > 1024) {
+						    size=size/1024;size_abbr="KiB"; 
+						    if (size > 1024) {
+						      size=size/1024;size_abbr="MiB";
+						      if (size > 1024) {
+							size=size/1024;size_abbr="GiB";
+						      }
+						    }
+					      }
+					      size=(size).toPrecision(3);					      
+					      new Element('tr').inject(props[0].getElementsByTagName("tbody")[0]).adopt([
+						new Element('td', {'html': Energine.translations.get('TXT_FILE_SIZE')+":"}),
+						new Element('td', {'html': size+" "+size_abbr})
+					      ]);
+					  }
+				      }
+				}
+			  };
+			cell.requestFilesSize.send(null);
+
                         break;
 
                     default:
@@ -130,7 +164,7 @@ Grid.implement(/** @lends Grid# */{
                         image.setProperty('src', 'images/icons/icon_undefined.gif');
                         break;
                 }
-                image.setProperties(dimensions).inject(container);
+                image.setProperties(dimensions).inject(container);		
                 break;
 
             case 'upl_publication_date':
@@ -198,6 +232,7 @@ Grid.implement(/** @lends Grid# */{
                                     new Element('td', {'html': record['upl_height']})
                                 ]);
                             }
+
                             break;
 
                         default :
@@ -244,7 +279,6 @@ var FileRepository = new Class(/** @lends FileRepository# */{
          * @type {PathList}
          */
         this.pathBreadCrumbs = new PathList(this.element.getElementById('breadcrumbs'));
-
         /**
          * Current PID (Parent ID).
          * @type {string|number}

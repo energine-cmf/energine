@@ -73,7 +73,8 @@ Grid.implement(/** @lends Grid# */{
 
                 switch (record['upl_internal_type']) {
                     case 'folder':
-                        image.setProperty('src', 'images/icons/icon_folder.png');
+                        image.setProperty('src', 'images/icons/icon_folder.png');			
+			dimensions = {'width': 50, 'height': 50};
                         break;
 
                     case 'repo':
@@ -82,6 +83,7 @@ Grid.implement(/** @lends Grid# */{
 
                     case 'folderup':
                         image.setProperty('src', 'images/icons/icon_folder_up2.png');
+			dimensions = {'width': 50, 'height': 38};
                         break;
 
                     case 'video':

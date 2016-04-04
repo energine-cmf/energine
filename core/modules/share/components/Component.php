@@ -523,6 +523,8 @@ class Component extends Primitive implements IBlock {
         } catch (SystemException $e) {
             throw new SystemException($e->getMessage(), SystemException::ERR_DEVELOPER, [
                 'class' => $fqClassName,
+                'name' => $name,
+                'params' => $params,
                 'trace' => $e->getTraceAsString()
             ]);
         }

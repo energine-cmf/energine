@@ -89,7 +89,7 @@ class ErrorDocument extends Primitive implements IDocument {
             $error->setAttribute('line', $this->e->getLine());
 
             $bktrace = $this->doc->createElement('backtrace');
-            $dbgObj = debug_backtrace(!DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 5);
+            $dbgObj = debug_backtrace(!DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 2);
             array_walk($dbgObj, function ($callable) use ($bktrace) {
                 $bktrace->appendChild($call = $this->doc->createElement('call'));
                 array_walk($callable, function ($value, $key) use ($call) {

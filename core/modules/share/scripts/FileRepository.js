@@ -73,7 +73,7 @@ Grid.implement(/** @lends Grid# */{
 
                 switch (record['upl_internal_type']) {
                     case 'folder':
-			dimensions = {'width': 80, 'height': 81};
+			dimensions = {'width': 50, 'height': 50};
                         image.setProperty('src', 'images/icons/icon_folder.png');						
                         break;
 
@@ -282,6 +282,10 @@ var FileRepository = new Class(/** @lends FileRepository# */{
          * @type {PathList}
          */
         this.pathBreadCrumbs = new PathList(this.element.getElementById('breadcrumbs'));
+
+	$$('.e-pane-toolbar.e-tabs.clearfix .current').setStyle('padding', '0px');
+	$$('.e-pane-toolbar.e-tabs.clearfix .current').setStyle('width', '100%');
+	$$('.e-pane-toolbar.e-tabs.clearfix .current').adopt(this.element.getElementById('breadcrumbs'));
         /**
          * Current PID (Parent ID).
          * @type {string|number}

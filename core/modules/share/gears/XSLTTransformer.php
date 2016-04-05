@@ -85,7 +85,7 @@ class XSLTTransformer extends Primitive implements ITransformer {
             $xsltProc = new \XSLTProcessor;
             $xsltDoc = new \DOMDocument('1.0', 'UTF-8');
             if (!@$xsltDoc->load($this->fileName)) {
-                throw new SystemException('ERR_DEV_NOT_WELL_FORMED_XSLT', SystemException::ERR_DEVELOPER);
+                throw new SystemException('ERR_DEV_NOT_WELL_FORMED_XSLT', SystemException::ERR_DEVELOPER, [$this->fileName, libxml_get_last_error()]);
             }
             $xsltDoc->documentURI = $this->fileName;
             $xsltProc->importStylesheet($xsltDoc);

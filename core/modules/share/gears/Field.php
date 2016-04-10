@@ -145,6 +145,7 @@ class Field extends Primitive implements \Iterator {
         else {
             array_unshift($this->data, $data);
         }
+        return $this;
     }
 
     //todo VZ: Why bool is returned?

@@ -543,6 +543,16 @@
         </div>
     </xsl:template>
 
+    <!-- read-only lookup -->
+    <xsl:template match="field[@mode='1' and ancestor::component[@type='form'] and @type='lookup']" mode="field_input_readonly">
+        <div class="control">
+            <span id="{@name}_read"><xsl:value-of select="." disable-output-escaping="yes"/></span>
+            <input>
+                <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES_READONLY"/>
+                <xsl:attribute name="value"><xsl:value-of select="value/@id"/></xsl:attribute>
+            </input>
+        </div>
+    </xsl:template>
     <!-- read-only поле логического типа -->
     <xsl:template match="field[@type='boolean'][@mode=1][ancestor::component[@type='form']]">
         <div class="field">

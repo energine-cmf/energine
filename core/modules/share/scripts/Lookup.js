@@ -125,7 +125,7 @@ var Lookup = new Class({
     load: function (data) {
         this.keyField.set('value', data[this.keyFieldName]);
         this.input.set('value', data[this.valueFieldName]);
-        this.keyField.fireEvent('change');
+        this.keyField.fireEvent('change', data);
     },
 
     /**

@@ -70,10 +70,21 @@ class ErrorComponent extends DataSet {
 
     protected function loadData(){
 
+        switch ($this->exception->getCode()) {
+            case SystemException::ERR_404:
+                $message = E()->Utils->translate("TXT_ERROR_404");
+                break;
+            case SystemException::ERR_403:
+                $message = E()->Utils->translate("TXT_ERROR_403");
+                break;
+            default:
+                $message = $this->exception->getMessage();
+        }
+
         return [
             [
                 'title'=>$this->title,
-                'message'=>$this->exception->getMessage(),
+                'message'=>$message,
                 'hint'=>E()->Utils->translate('TXT_ERROR_HINT')
             ]
         ];

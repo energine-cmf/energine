@@ -6,8 +6,8 @@
         </javascript>
         <fields>
             <field name="u_id"/>
-            <field name="u_name"/>
             <field name="u_fullname"/>
+            <field name="u_name"/>
         </fields>
         <toolbar>
             <control id="use" title="BTN_USE" type="button" onclick="use"/>

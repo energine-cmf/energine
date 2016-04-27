@@ -28,7 +28,7 @@ class UserLookup extends Grid {
     /**
      * Apply user filter.
      */
-    protected function applyUserFilter() {
+ /*   protected function applyUserFilter() {
         //получили данные о текущем фильтре
         if ($f = FilterExpression::createFromPOST()) {
             //Добавили к фильтру новое условие
@@ -45,7 +45,7 @@ class UserLookup extends Grid {
             //inspect((string)$f);
             (new Filter($f))->apply($this);
         }
-    }
+    }*/
 
     protected function loadData() {
         $result = parent::loadData();

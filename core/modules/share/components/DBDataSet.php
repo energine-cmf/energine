@@ -665,15 +665,15 @@ class DBDataSet extends DataSet {
                                 $table = $t;
                                 unset($t);
                             }
-                            $valueFieldName = array_reduce(array_keys($this->dbh->getColumnsInfo($table)),
-                                function ($str, $row) {
 
-                                    if (strpos($row, '_name')) {
-                                        return $row;
-                                    }
+                            $valueFieldName = '';
 
-                                    return $str;
-                                });
+                            foreach (array_keys($this->dbh->getColumnsInfo($table)) as $row){
+                                if (strpos($row, '_name')) {
+                                    $valueFieldName = $row;
+                                    break;
+                                }
+                            }
                             $fieldMetaData->setProperty('value_field', $valueFieldName);
                             $fieldMetaData->setProperty('value_table', $table);
                             $fieldMetaData->setProperty('key_field', $keyInfo['fieldName']);

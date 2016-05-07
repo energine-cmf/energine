@@ -25,28 +25,6 @@ class UserLookup extends Grid {
         $this->setTableName('user_users');
     }
 
-    /**
-     * Apply user filter.
-     */
- /*   protected function applyUserFilter() {
-        //получили данные о текущем фильтре
-        if ($f = FilterExpression::createFromPOST()) {
-            //Добавили к фильтру новое условие
-            $f->add(
-            //Значение фильтра взяли из того что пришло
-                (new FilterField('u_name'))->setValue($f->current()->getValue())
-                    ->setCondition('like')
-                    ->setAttribute('tableName', $this->getTableName()
-                    )
-            );
-            //и применили
-            //в результате получилось что то типа
-            //(shop_goods_translation.goods_name LIKE '%условие%' ) OR (shop_goods.goods_code LIKE '%условие%' )"
-            //inspect((string)$f);
-            (new Filter($f))->apply($this);
-        }
-    }*/
-
     protected function loadData() {
         $result = parent::loadData();
         if (in_array($this->getType(), [self::COMPONENT_TYPE_LIST]) && is_array($result)) {

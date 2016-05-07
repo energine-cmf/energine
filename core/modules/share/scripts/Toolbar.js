@@ -307,6 +307,10 @@ Toolbar.Control = new Class(/** @lends Toolbar.Control# */{
     // constructor
     initialize: function (properties) {
         Object.append(this.properties, properties);
+        if(this.properties.disabled){
+            this.properties.isDisabled = !!this.properties.disabled;
+            this.properties.isInitiallyDisabled = this.properties.isDisabled;
+        }
     },
 
     /**

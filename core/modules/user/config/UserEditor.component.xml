@@ -32,6 +32,27 @@
 			<javascript>
 				<behavior name="Form"/>
 			</javascript>
+			<fields>
+			<field name="u_id"/>
+			<field name="u_is_active"/>			
+			<field name="u_person_name"/>
+			<field name="u_person_family_name"/>
+			<field name="u_person_surname"/>
+			<field name="u_bdate"/>
+			<field name="u_avatar_img"/>
+			<field name="u_fbid"/>
+			<field name="u_vkid"/>
+			<field name="u_gooid"/>
+			<field name="u_name"/>
+			<field name="u_phone"/>
+			<field name="u_add_phone"/>
+			<field name="u_password"/>
+			<field name="u_fullname"/>
+			<field name="u_country"/>
+			<field name="u_city"/>
+			<field name="u_address"/>
+			<field name="u_sex"/>
+			</fields>			
 			<toolbar>
 				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
 				<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
@@ -40,10 +61,31 @@
 		<state name="edit" >
 			<uri_patterns>
 				<pattern>/[int]/edit/</pattern>
-			</uri_patterns>
+			</uri_patterns>			
 			<javascript>
 				<behavior name="Form"/>
 			</javascript>
+			<fields>
+			<field name="u_id"/>
+			<field name="u_is_active"/>			
+			<field name="u_person_name"/>
+			<field name="u_person_family_name"/>
+			<field name="u_person_surname"/>
+			<field name="u_bdate"/>
+			<field name="u_avatar_img"/>
+			<field name="u_fbid"/>
+			<field name="u_vkid"/>
+			<field name="u_gooid"/>
+			<field name="u_name"/>
+			<field name="u_phone"/>
+			<field name="u_add_phone"/>
+			<field name="u_password"/>
+			<field name="u_fullname"/>
+			<field name="u_country"/>
+			<field name="u_city"/>
+			<field name="u_address"/>
+			<field name="u_sex"/>
+			</fields>			
 			<toolbar>
 				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
 				<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>

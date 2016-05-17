@@ -502,8 +502,8 @@ Filter.Clause = new Class({
         return this;
     }
 });
-Filter.Clause.create = function (fieldName, tableName, condition, type) {
-    return new Filter.Clause('[' + tableName + '][' + fieldName + ']', condition, type);
+Filter.Clause.create = function (fieldName, tableName, condition, type, operator) {
+    return new Filter.Clause('[' + tableName + '][' + fieldName + ']', condition, type, operator);
 };
 
 Filter.ClauseSet = new Class({

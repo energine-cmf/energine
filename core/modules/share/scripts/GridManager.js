@@ -950,12 +950,13 @@ var GridManager = new Class(/** @lends GridManager# */{
      * @public
      */
     onDoubleClick: function () {
-        if (this.toolbar.getControlById('edit')) {
+        var c;
+        if ((c = this.toolbar.getControlById('edit')) && !c.disabled()) {
             this.edit();
         }
         else if (this.toolbar.controls.length) {
             var action = this.toolbar.controls[0].properties.action;
-            if (this[action]) this[action]();
+            if (this[action] && !this.toolbar.controls[0].disabled()) this[action]();
         }
     },
 

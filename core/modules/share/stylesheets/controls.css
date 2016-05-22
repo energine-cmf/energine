@@ -292,6 +292,49 @@ div.with_append.focus_block input[type='button'] {
     transition: none;
     -webkit-transition: none;
 }
+/*custom */
+.user_users.e-pane-item .field.file_upload {
+    width: 200px;
+    height: 245px;
+    float: left;
+    display: inline-block;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+    margin-right: 29px;
+ 
+}
+.user_users.e-pane-item .field.u_person_name,
+.user_users.e-pane-item .field.u_person_family_name,
+.user_users.e-pane-item .field.u_person_surname,
+.user_users.e-pane-item .field.u_bdate
+{
+    float: none;
+    display: inline-block; 
+    width:800px;
+}
+.user_users.e-pane-item .field.u_person_name .name,
+.user_users.e-pane-item .field.u_person_family_name .name,
+.user_users.e-pane-item .field.u_person_surname .name,
+.user_users.e-pane-item .field.u_bdate .name{
+  width: 25%;
+}
+.user_users.e-pane-item .field.u_person_name .control, 
+.user_users.e-pane-item .field.u_person_name .control,
+.user_users.e-pane-item .field.u_person_family_name .control,
+.user_users.e-pane-item .field.u_person_surname .control,
+.user_users.e-pane-item .field.u_bdate .control{
+  width: 75%;
+}
+
+.user_users.e-pane-item .field{
+/*    float: none;
+    width: 800px;
+    padding: 10px 0;
+   display:table-row;
+   table-layout: auto;*/
+}
+
 /* --- media queries --- */
 @media screen and (max-width: 570px) {
     .e-pane-content .field .control,

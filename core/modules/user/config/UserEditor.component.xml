@@ -34,12 +34,12 @@
 			</javascript>
 			<fields>
 			<field name="u_id"/>
-			<field name="u_is_active"/>			
+			<field name="u_is_active"/>
+			<field name="u_avatar_img"/>
 			<field name="u_person_name"/>
 			<field name="u_person_family_name"/>
 			<field name="u_person_surname"/>
-			<field name="u_bdate"/>
-			<field name="u_avatar_img"/>
+			<field name="u_bdate"/>			
 			<field name="u_fbid"/>
 			<field name="u_vkid"/>
 			<field name="u_gooid"/>
@@ -68,11 +68,11 @@
 			<fields>
 			<field name="u_id"/>
 			<field name="u_is_active"/>			
+			<field name="u_avatar_img"/>			
 			<field name="u_person_name"/>
 			<field name="u_person_family_name"/>
 			<field name="u_person_surname"/>
 			<field name="u_bdate"/>
-			<field name="u_avatar_img"/>
 			<field name="u_fbid"/>
 			<field name="u_vkid"/>
 			<field name="u_gooid"/>

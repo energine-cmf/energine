@@ -14,7 +14,7 @@
     -->
     <xsl:template match="field[ancestor::component[@type='form']]">
         <div>
-            <xsl:attribute name="class">form-group field<xsl:if test="not(@nullable) and @type!='boolean'"> required</xsl:if></xsl:attribute>
+            <xsl:attribute name="class">form-group field <xsl:value-of select="./@name"/> <xsl:if test="not(@nullable) and @type!='boolean'"> required</xsl:if></xsl:attribute>            
             <xsl:apply-templates select="." mode="field_name"/>
             <xsl:apply-templates select="." mode="field_content"/>
         </div>

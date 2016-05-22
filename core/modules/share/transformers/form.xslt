@@ -93,7 +93,8 @@
             <div class="e-pane-content">
                 <xsl:for-each select="set:distinct($FIELDS/@tabName)">
                     <xsl:variable name="TAB_NAME" select="."/>
-                    <div id="{generate-id(.)}">
+                    <xsl:variable name="TAB_NAME_CLASS" select="$FIELDS[@tabName=$TAB_NAME and @index='PRI']/@tableName"/>
+                    <div id="{generate-id(.)}" class="{$TAB_NAME_CLASS}">
                         <xsl:apply-templates select="$FIELDS[@tabName=$TAB_NAME]"/>
                     </div>
                 </xsl:for-each>

@@ -294,7 +294,8 @@ div.with_append.focus_block input[type='button'] {
 }
 /*custom */
 .user_users.e-pane-item .field.file_upload {
-    width: 200px;
+    width: 200px; 
+    max-width:30%;
     height: 245px;
     float: left;
     display: inline-block;
@@ -312,6 +313,7 @@ div.with_append.focus_block input[type='button'] {
     float: none;
     display: inline-block; 
     width:640px;
+    max-width:60%;
 }
 .user_users.e-pane-item .field.u_person_name .name,
 .user_users.e-pane-item .field.u_person_family_name .name,

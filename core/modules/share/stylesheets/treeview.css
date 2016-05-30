@@ -42,3 +42,6 @@
 	background-color: transparent; 
 	color: #000; 
 }
+.treeview>li.folder.opened>ul>li.folder.opened>ul>li{ /* bold subcats */
+	font-weight:bold;
+}

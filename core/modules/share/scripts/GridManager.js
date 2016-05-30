@@ -516,13 +516,16 @@ var Grid = (function () {
                 }
 
                 // Set col width
-                for (n = 0; n < tds.length; n++) {
-                    headCols[n].setStyle('width', headers[n]);
+                for (n = 0; n < tds.length; n++) { 
+                    if (headCols[n]!==undefined)
+		    headCols[n].setStyle('width', headers[n]);
+		    if (bodyCols[n]!==undefined)
                     bodyCols[n].setStyle('width', headers[n]);
                 }
 
                 var oversizeHead = [];
                 for (n = 0; n < tds.length; n++) {
+		    if (ths[n]!==undefined)
                     oversizeHead[n] = ths[n].getDimensions({computeSize: true}).totalWidth > headers[n];
                 }
                 if (oversizeHead.length > 0) {
@@ -541,11 +544,13 @@ var Grid = (function () {
 
                     var scaleCoef = colWidth[0] / colWidth[1];
 
-                    for (n = 0; n < tds.length; n++) {
+                    for (n = 0; n < tds.length; n++) {			
                         headers[n] = (oversizeHead[n]) ? newWidth[n] : Math.floor(headers[n] * scaleCoef);
 
                         // Reset col width
+			if (headCols[n]!==undefined)			
                         headCols[n].setStyle('width', headers[n]);
+			if (bodyCols[n]!==undefined)
                         bodyCols[n].setStyle('width', headers[n]);
                     }
                 }

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <state name="main">
+        <fields>
+            <field name="promotion_id"/>
+            <field name="promotion_is_active"/>
+            <field name="promotion_name"/>
+            <field name="promotion_start_date" outputFormat="%E"/>
+            <field name="promotion_end_date" outputFormat="%E"/>
+        </fields>
+        <javascript>
+            <behavior name="GridManager"/>
+        </javascript>
+        <toolbar>
+            <control id="add" title="BTN_ADD" type="button" onclick="add"/>
+            <control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>
+            <control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
+        </toolbar>
+    </state>
+    <state name="getRawData">
+        <uri_patterns>
+            <pattern>/get-data/</pattern>
+            <pattern>/get-data/page-[pageNumber]/</pattern>
+            <pattern>/get-data/[sortField]-[sortDir]/</pattern>
+            <pattern>/get-data/[sortField]-[sortDir]/page-[pageNumber]/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="add">
+        <uri_patterns>
+            <pattern>/add/</pattern>
+        </uri_patterns>
+        <javascript>
+            <behavior name="Form"/>
+        </javascript>
+        <toolbar>
+            <control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+            <control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
+        </toolbar>
+    </state>
+    <state name="edit">
+        <uri_patterns>
+            <pattern>/[int]/edit/</pattern>
+        </uri_patterns>
+        <javascript>
+            <behavior name="Form"/>
+        </javascript>
+        <toolbar>
+            <control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+            <control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
+        </toolbar>
+    </state>
+    <state name="save">
+        <uri_patterns>
+            <pattern>/save/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="delete">
+        <uri_patterns>
+            <pattern>/[int]/delete/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="goodsEditor" rights="3">
+        <uri_patterns>
+            <pattern>/goods/[any]/</pattern>
+            <pattern>/[promotion_id]/goods/[any]/</pattern>
+        </uri_patterns>
+    </state>
+</configuration>

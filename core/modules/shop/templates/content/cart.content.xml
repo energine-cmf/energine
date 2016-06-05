@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content>
+    <component name="cart" class="Energine\shop\components\Cart">
+        <params>
+            <param name="active">0</param>
+            <param name="state">show</param>
+        </params>
+    </component>
+</content>

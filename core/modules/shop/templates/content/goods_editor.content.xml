@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content>
+    <container name="goodsContainer" block="alfa" widget="static">
+        <component name="goodsEditor" class="Energine\shop\components\GoodsEditor">
+            <params>
+                <param name="rights" type="hidden">2</param>
+                <param name="tableName" type="hidden">shop_goods</param>
+                <param name="config" type="hidden">core/modules/shop/config/GoodsEditor.component.xml</param>
+            </params>
+        </component>
+    </container>
+</content>

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+	<state name="main">
+		<fields>
+			<field name="goods_id"/>
+			<field name="smap_id"/>
+			<field name="goods_code"/>
+			<field name="goods_name"/>
+			<field name="producer_id"/>
+			<field name="sell_status_id"/>
+			<field name="goods_type"/>
+			<field name="goods_is_active"/>
+		</fields>
+		<javascript>
+			<behavior name="GridManager"/>
+		</javascript>
+		<toolbar>
+			<control id="add" title="BTN_ADD" type="button" onclick="add"/>
+			<control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>
+			<control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
+		</toolbar>
+	</state>
+	<state name="getRawData">
+		<uri_patterns>
+			<pattern>/get-data/</pattern>
+			<pattern>/get-data/page-[pageNumber]/</pattern>
+			<pattern>/get-data/[sortField]-[sortDir]/</pattern>
+			<pattern>/get-data/[sortField]-[sortDir]/page-[pageNumber]/</pattern>
+		</uri_patterns>
+	</state>
+	<state name="add">
+		<uri_patterns>
+			<pattern>/add/</pattern>
+		</uri_patterns>
+		<fields>
+			<field name="goods_id"/>
+			<field name="smap_id"/>
+			<field name="goods_segment"/>
+			<field name="producer_id"/>
+			<field name="sell_status_id"/>
+			<field name="goods_type"/>
+			<field name="goods_code"/>
+			<field name="goods_price"/>
+			<field name="goods_price_old"/>
+			<field name="goods_is_active"/>
+			<field name="lang_id"/>
+			<field name="goods_name"/>
+			<field name="goods_short_description"/>
+			<field name="goods_description_rtf"/>
+			<field name="goods_seo_title"/>
+			<field name="goods_seo_keywords"/>
+			<field name="goods_seo_description"/>
+		</fields>
+		<javascript>
+			<behavior name="GoodsForm"/>
+		</javascript>
+		<toolbar>
+			<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+			<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
+		</toolbar>
+	</state>
+	<state name="edit">
+		<uri_patterns>
+			<pattern>/[int]/edit/</pattern>
+		</uri_patterns>
+		<fields>
+			<field name="goods_id"/>
+			<field name="smap_id"/>
+			<field name="goods_segment"/>
+			<field name="producer_id"/>
+			<field name="sell_status_id"/>
+			<field name="goods_type"/>
+			<field name="goods_code" mode="1"/>
+			<field name="goods_price"/>
+			<field name="goods_price_old"/>
+			<field name="goods_is_active"/>
+			<field name="lang_id"/>
+			<field name="goods_name"/>
+			<field name="goods_short_description"/>
+			<field name="goods_description_rtf"/>
+			<field name="goods_seo_title"/>
+			<field name="goods_seo_keywords"/>
+			<field name="goods_seo_description"/>
+		</fields>
+		<javascript>
+			<behavior name="GoodsForm"/>
+		</javascript>
+		<toolbar>
+			<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+			<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
+		</toolbar>
+	</state>
+	<state name="save">
+		<uri_patterns>
+			<pattern>/save/</pattern>
+		</uri_patterns>
+	</state>
+	
+	<state name="delete">
+		<uri_patterns>
+			<pattern>/[int]/delete/</pattern>
+		</uri_patterns>
+	</state>
+	<state name="relationEditor" rights="3">
+		<uri_patterns>
+			<pattern>/relation/[any]/</pattern>
+			<pattern>/[goods_id]/relation/[any]/</pattern>
+		</uri_patterns>
+	</state>
+	<state name="featureEditor" rights="3">
+		<uri_patterns>
+			<pattern>/feature/[any]/</pattern>
+			<pattern>/[goods_id]/feature/[any]/</pattern>
+		</uri_patterns>
+	</state>
+	<state name="showSmapSelector" rights="3">
+		<uri_patterns>
+			<pattern>/selector/[any]/</pattern>
+		</uri_patterns>
+	</state>
+</configuration>

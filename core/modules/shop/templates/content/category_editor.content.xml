@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content>
+    <container name="smapSelector" block="alfa" widget="static">
+        <component name="siteList" class="Energine\shop\components\SiteList">
+            <params>
+                <param name="rights" type="hidden">2</param>
+                <param name="config" type="hidden">
+                    <configuration>
+                        <state name="main">
+                            <fields>
+                                <field name="site_id" type="int"></field>
+                                <field name="site_name" type="string"></field>
+                                <field name="site_host" type="string"></field>
+                            </fields>
+                        </state>
+                    </configuration>
+                </param>
+            </params>
+        </component>
+        <component name="categoryDivEditor" class="Energine\shop\components\CategoryEditor">
+            <params>
+                <param name="rights" type="hidden">2</param>
+                <param name="state" type="hidden">main</param>
+            </params>
+        </component>
+    </container>
+</content>

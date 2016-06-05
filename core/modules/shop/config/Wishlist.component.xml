@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <state name="main">
+        <javascript>
+            <behavior name="WishlistDaemon"/>
+        </javascript>
+        <uri_patterns>
+            <pattern>/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="add">
+        <uri_patterns>
+            <pattern>/wadd/[productID]/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="delete">
+        <uri_patterns>
+            <pattern>/wdel/[productID]/</pattern>
+        </uri_patterns>
+    </state>
+	<state name="basket">
+		<uri_patterns>
+			<pattern>/wbasket/[productID]/</pattern>
+		</uri_patterns>
+	</state>
+    <state name="show">
+        <javascript>
+            <behavior name="Wishlist"/>
+        </javascript>
+        <uri_patterns>
+            <pattern>/show/</pattern>
+        </uri_patterns>
+        <toolbar>
+            <control type="button" id="basket" title="BTN_MOVE_BASKET"/>
+            <control type="separator" id="s1"/>
+            <control type="button" id="delete" title="BTN_DELETE"/>
+        </toolbar>
+    </state>
+</configuration>

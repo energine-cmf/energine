@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+	<state name="main">
+		<javascript>
+			<behavior name="GoodsFilter"/>
+			<behavior name="ProductFilter" use="jquery"/>
+		</javascript>
+		<fields>
+			<field name="price"/>
+			<field name="features"/>
+			<field name="producers"/>
+		</fields>
+		<toolbar>
+			<control id="apply" title="BTN_APPLY_FILTER" type="submit"/>
+			<control id="reset" title="BTN_RESET_FILTER" type="button"/>
+		</toolbar>
+	</state>
+</configuration>

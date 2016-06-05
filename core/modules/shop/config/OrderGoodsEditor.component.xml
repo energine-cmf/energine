@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <state name="main">
+        <javascript>
+            <behavior name="GridManager"/>
+        </javascript>
+        <fields>
+            <field name="og_id"/>
+            <field name="order_id" type="hidden"/>
+            <field name="goods_title"/>
+            <field name="goods_price"/>
+            <field name="goods_quantity"/>
+            <field name="goods_amount"/>
+        </fields>
+        <toolbar>
+            <control id="add" title="BTN_ADD" type="button" onclick="add"/>
+            <control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>
+            <control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
+		</toolbar>
+    </state>
+    <state name="add">
+        <uri_patterns>
+            <pattern>/add/</pattern>
+        </uri_patterns>
+        <javascript>
+            <behavior name="OrderGoodsForm"/>
+        </javascript>
+		<fields>
+            <field name="og_id"/>
+            <field name="order_id"/>
+            <field name="goods_id" type="lookup" editor="Energine\shop\components\GoodsLookup" />
+            <field name="goods_title"/>
+			<field name="goods_description"/>
+            <field name="goods_real_price" mode="1"/>
+            <field name="goods_price" mode="1"/>
+            <field name="goods_quantity"/>
+            <field name="goods_amount"/>
+			<field name="session_id"/>
+		</fields>
+		<toolbar>
+            <control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+            <control id="after_save_action" title="TXT_AFTER_SAVE_ACTION"
+                     type="select"
+                    >
+                <options>
+                    <option id="reload">BTN_CLOSE</option>
+                    <option id="add">BTN_ADD</option>
+                </options>
+            </control>
+            <control id="sep1" type="separator"/>
+            <control id="close" title="BTN_CANCEL" type="button"
+                     onclick="close"/>
+        </toolbar>
+    </state>
+    <state name="edit">
+        <uri_patterns>
+            <pattern>/[int]/edit/</pattern>
+        </uri_patterns>
+        <javascript>
+            <behavior name="OrderGoodsForm"/>
+        </javascript>
+		<fields>
+            <field name="og_id"/>
+            <field name="order_id"/>
+            <field name="goods_id" type="lookup" editor="Energine\shop\components\GoodsLookup" mode="1"/>
+            <field name="goods_title" mode="1"/>
+			<field name="goods_description" mode="1"/>
+			<field name="goods_real_price" mode="1"/>
+			<field name="goods_price" mode="1"/>
+            <field name="goods_quantity"/>
+            <field name="goods_amount" mode="1"/>
+            <field name="session_id"/>
+        </fields>
+		<toolbar>
+            <control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+            <control id="after_save_action" title="TXT_AFTER_SAVE_ACTION" type="select">
+                <options>
+                    <option id="reload">BTN_CLOSE</option>
+                    <option id="editNext">BTN_EDIT_NEXT</option>
+                    <option id="editPrev">BTN_EDIT_PREV</option>
+                </options>
+            </control>
+            <control id="sep1" type="separator"/>
+            <control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
+        </toolbar>
+    </state>
+    <state name="save" rights="3">
+        <uri_patterns>
+            <pattern>/save/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="upload" rights="2">
+        <uri_patterns>
+            <pattern>/upload/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="delete" rights="2">
+        <uri_patterns>
+            <pattern>/[int]/delete/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="getRawData" rights="2">
+        <uri_patterns>
+            <pattern>/get-data/</pattern>
+            <pattern>/get-data/page-[pageNumber]/</pattern>
+            <pattern>/get-data/[sortField]-[sortDir]/</pattern>
+            <pattern>/get-data/[sortField]-[sortDir]/page-[pageNumber]/</pattern>
+        </uri_patterns>
+    </state>
+	<state name="goodsTotal">
+		<uri_patterns>
+			<pattern>/goods-total/</pattern>
+			<pattern>/[goods_id]/goods-total/</pattern>
+		</uri_patterns>
+	</state>
+	<state name="goodsDetails">
+		<uri_patterns>
+			<pattern>/[goods_id]/goods-details/</pattern>
+		</uri_patterns>
+	</state>
+</configuration>

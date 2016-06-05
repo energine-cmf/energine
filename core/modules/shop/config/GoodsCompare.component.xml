@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+
+	<state name="main">
+		<uri_patterns>
+			<pattern>/</pattern>
+		</uri_patterns>
+		<javascript>
+			<behavior name="GoodsCompare"/>
+		</javascript>
+		<translations>
+			<translation const="TXT_COMPARE"/>
+			<translation const="TXT_ADD_TO_COMPARE"/>
+			<translation const="TXT_REMOVE_FROM_COMPARE"/>
+		</translations>
+	</state>
+
+	<state name="informer">
+		<uri_patterns>
+			<pattern>/informer/</pattern>
+		</uri_patterns>
+	</state>
+
+	<state name="add">
+		<uri_patterns>
+			<pattern>/add/[goodsId]/</pattern>
+		</uri_patterns>
+	</state>
+
+	<state name="remove">
+		<uri_patterns>
+			<pattern>/remove/[goodsId]/</pattern>
+		</uri_patterns>
+	</state>
+
+	<state name="clear">
+		<uri_patterns>
+			<pattern>/clear/</pattern>
+		</uri_patterns>
+	</state>
+
+	<state name="compare">
+		<uri_patterns>
+			<pattern>/compare/[goodsIds]/</pattern>
+		</uri_patterns>
+	</state>
+
+</configuration>

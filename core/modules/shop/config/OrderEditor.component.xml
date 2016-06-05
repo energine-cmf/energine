@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+	<state name="main">
+		<fields>
+			<field name="order_id"/>
+			<field name="status_id"/>
+			<field name="order_total"/>
+			<field name="order_created"/>
+			<field name="order_user_name"/>
+			<field name="order_phone"/>
+			<field name="order_city"/>
+			<field name="delivery_type_id"/>
+			<field name="payment_type_id"/>
+			<field name="order_promocode"/>
+		</fields>
+		<javascript>
+			<behavior name="GridManager"/>
+		</javascript>
+		<toolbar>
+			<control id="add" title="BTN_ADD" type="button" onclick="add"/>
+			<control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>
+			<control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
+		</toolbar>
+	</state>
+	<state name="getRawData">
+		<uri_patterns>
+			<pattern>/get-data/</pattern>
+			<pattern>/get-data/page-[pageNumber]/</pattern>
+			<pattern>/get-data/[sortField]-[sortDir]/</pattern>
+			<pattern>/get-data/[sortField]-[sortDir]/page-[pageNumber]/</pattern>
+		</uri_patterns>
+	</state>
+	<state name="add">
+		<uri_patterns>
+			<pattern>/add/</pattern>
+		</uri_patterns>
+		<fields>
+			<field name="order_id"/>
+			<field name="site_id"/>
+			<field name="status_id"/>
+			<field name="u_id" type="lookup" editor="Energine\user\components\UserLookup"/>
+			<field name="order_email"/>
+			<field name="order_city"/>
+			<field name="order_address"/>
+			<field name="order_phone"/>
+			<field name="order_user_name"/>
+			<field name="order_comment"/>
+			<field name="delivery_type_id"/>
+			<field name="payment_type_id"/>
+			<field name="order_created"/>
+			<field name="order_updated"/>
+			<field name="order_amount"/>
+			<field name="order_discount"/>
+			<field name="order_total"/>
+			<field name="order_promocode"/>
+		</fields>
+		<javascript>
+			<behavior name="OrderForm"/>
+		</javascript>
+		<toolbar>
+			<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+			<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
+		</toolbar>
+	</state>
+	<state name="edit">
+		<uri_patterns>
+			<pattern>/[int]/edit/</pattern>
+		</uri_patterns>
+		<fields>
+			<field name="order_id"/>
+			<field name="site_id"/>
+			<field name="status_id"/>
+			<field name="order_city"/>
+			<field name="order_address"/>
+			<field name="order_phone"/>
+			<field name="order_email"/>
+			<field name="u_id" type="lookup" editor="Energine\user\components\UserLookup"/>
+			<field name="order_user_name"/>
+			<field name="order_comment"/>
+			<field name="delivery_type_id"/>
+			<field name="payment_type_id"/>
+			<field name="order_created"/>
+			<field name="order_updated"/>
+			<field name="order_amount"/>
+			<field name="order_discount"/>
+			<field name="order_total"/>
+			<field name="order_promocode"/>
+		</fields>
+		<javascript>
+			<behavior name="OrderForm"/>
+		</javascript>
+		<toolbar>
+			<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+			<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
+		</toolbar>
+	</state>
+	<state name="save">
+		<uri_patterns>
+			<pattern>/save/</pattern>
+		</uri_patterns>
+	</state>
+	<state name="delete">
+		<uri_patterns>
+			<pattern>/[int]/delete/</pattern>
+		</uri_patterns>
+	</state>
+	<state name="orderGoodsEditor" rights="3">
+		<uri_patterns>
+			<pattern>/goods/[any]/</pattern>
+			<pattern>/[order_id]/goods/[any]/</pattern>
+		</uri_patterns>
+	</state>
+	<state name="orderTotal">
+		<uri_patterns>
+			<pattern>/order-total/</pattern>
+			<pattern>/[order_id]/order-total/</pattern>
+		</uri_patterns>
+	</state>
+	<state name="userDetails">
+		<uri_patterns>
+			<pattern>/[u_id]/user-details/</pattern>
+		</uri_patterns>
+	</state>
+</configuration>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<content html_class="colset colset2">
+    <container name="left" column="column" html_class="col col1">
+        <container name="loginFormContainer" block="beta" widget="widget">
+            <component name="loginForm" class="Energine\user\components\SocialLoginForm"/>
+        </container>
+    </container>
+    <container name="center" column="column" html_class="col col2 last_col">
+        <container name="ShopMenuContainer" block="beta" widget="widget">
+            <component name="categoriesMenu" class="Energine\share\components\PageList">
+                <params>
+                    <param name="id" type="hidden">current</param>
+                    <param name="tags" type="string"></param>
+                    <param name="config" type="hidden">/core/modules/share/config/PageList.component.xml</param>
+                </params>
+            </component>
+        </container>
+    </container>
+</content>

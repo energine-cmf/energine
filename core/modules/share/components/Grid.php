@@ -462,12 +462,13 @@ class Grid extends DBDataSet {
             $mode = self::COMPONENT_TYPE_FORM_ADD;
         }
 
-        //создаем объект описания данных
-        $dataDescriptionObject = new DataDescription();
+
  
         if (!method_exists($this, $this->getPreviousState())) {
             throw new SystemException('ERR_NO_ACTION', SystemException::ERR_CRITICAL);
         }
+        //создаем объект описания данных
+        $dataDescriptionObject = new DataDescription();
 
         //получаем описание полей для метода
         $configDataDescription =
@@ -476,6 +477,12 @@ class Grid extends DBDataSet {
         if (isset($configDataDescription->fields)) {
             $dataDescriptionObject->loadXML($configDataDescription->fields);
         }
+        $currentConfigDataDescription =
+            $this->getConfig()->getStateConfig($this->getState());
+        if (isset($currentConfigDataDescription->fields)) {
+            $dataDescriptionObject->loadXML($currentConfigDataDescription->fields);
+        }
+
         //Создаем объект описания данных взятых из БД
         $DBDataDescription = new DataDescription();
         //Загружаем в него инфу о колонках

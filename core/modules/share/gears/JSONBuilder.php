@@ -99,6 +99,9 @@ class JSONBuilder implements  IBuilder {
                                     $fieldValue = $value[$fieldValue]['value'];
                                 }
                                 break;
+                            case FieldDescription::FIELD_TYPE_PHONE:
+                                $fieldValue = $this->formatPhone($fieldInfo, $fieldValue);
+                                break;
                             case FieldDescription::FIELD_TYPE_MULTI:
                                 if (is_array($fieldValue) && !empty($fieldValue)) {
                                     $values = $fieldInfo->getAvailableValues();

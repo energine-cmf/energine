@@ -250,12 +250,6 @@ class Saver extends Primitive {
                         {
                             case FieldDescription::FIELD_TYPE_PHONE:
                                 $fieldValue = preg_replace('/\D/', '', $fieldValue);
-                                /*if(strlen($fieldValue)<12){
-                                    if(substr(0, 2, $fieldValue) != 38){
-
-                                    }
-                                }*/
-
                                 break;
                             case FieldDescription::FIELD_TYPE_FLOAT:
                                 $fieldValue = str_replace(',', '.', $fieldValue);

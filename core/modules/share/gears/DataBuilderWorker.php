@@ -43,24 +43,8 @@ trait DataBuilderWorker {
 
 	protected function formatPhone( $fieldInfo, $fieldValue ) {
 		$placeholder = $fieldInfo->getPropertyValue( 'phonePlaceholder' );
-		$fieldValue  = preg_replace( '/\D/', '', $fieldValue );
+		$countryCode = $fieldInfo->getPropertyValue( 'phoneCode' );
 
-		if ( $placeholder && $fieldValue ) {
-			$format      = str_replace( 'X', '%s', $placeholder );
-			$countryCode = $fieldInfo->getPropertyValue( 'phoneCode' );
-
-			if ( strlen( $fieldValue ) == 9 && $countryCode ) {
-				$fieldValue = $countryCode . $fieldValue;
-			} elseif ( strlen( $fieldValue ) != 12 ) {
-				$fieldValue = str_pad( $fieldValue, 12, '0', STR_PAD_LEFT );
-			}
-
-			$format = str_repeat( '%s', strlen( $countryCode ) ) . $format;
-			
-
-			$fieldValue = vsprintf( '+' . $format, str_split( $fieldValue ) );
-		}
-
-		return $fieldValue;
+		return E()->Utils->formatPhone($placeholder, $countryCode, $fieldValue);
 	}
 }

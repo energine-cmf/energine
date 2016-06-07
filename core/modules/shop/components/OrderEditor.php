@@ -23,7 +23,7 @@ use Energine\share\gears\Data;
 use Energine\share\gears\DataDescription;
 use Energine\share\gears\JSONCustomBuilder;
 use Energine\share\gears\QAL;
-
+use Energine\share\gears\GridExtender;
 /**
  * Order editor.
  *
@@ -32,7 +32,7 @@ use Energine\share\gears\QAL;
  * @endcode
  */
 class OrderEditor extends Grid implements SampleOrderEditor {
-
+    use GridExtender;
     /**
      * Order Goods editor.
      * @var OrderGoodsEditor $orderGoodsEditor

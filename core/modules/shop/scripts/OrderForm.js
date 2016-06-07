@@ -231,7 +231,7 @@ Lookup = Class.refactor(Lookup, {
                     new Filter.ClauseSet(
                         Filter.Clause.create('u_name', this.valueTable, 'like', 'string', null).setValue(str),
                         Filter.Clause.create('u_fullname', this.valueTable, 'like', 'string', 'OR ').setValue(str),
-                        Filter.Clause.create('u_phone', this.valueTable, 'like', 'string', 'OR').setValue(str)
+                        Filter.Clause.create('u_phone', this.valueTable, 'like', 'string', 'OR').setValue(str.replace(/-|\(|\)/g,''))
                     )
                 ) + '&'
             });

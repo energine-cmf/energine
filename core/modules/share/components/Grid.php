@@ -504,6 +504,7 @@ class Grid extends DBDataSet {
         $saver->setMode($mode);
         $saver->setDataDescription($this->getDataDescription());
         $saver->setData($this->getData());
+
         if ($saver->validate() === true) {
             $saver->setFilter($this->getFilter());
             $saver->save();
@@ -535,7 +536,7 @@ class Grid extends DBDataSet {
      */
     public function build() {
         switch ($this->getState()) {
-            case 'attachments':
+            case 'attachments':		
                 return $this->attachmentEditor->build();
                 break;
             case 'tags':
@@ -581,6 +582,7 @@ class Grid extends DBDataSet {
             $data = $_POST[$this->getTableName()];
             //Приводим данные к стандартному виду
             $result = [$data];
+
             if ($this->getTranslationTableName()) {
                 if (!isset($_POST[$this->getTranslationTableName()])) {
                     throw new SystemException('ERR_NO_DATA', SystemException::ERR_CRITICAL);
@@ -795,7 +797,7 @@ class Grid extends DBDataSet {
         $attachmentEditorParams = [
             'origTableName' => $this->getTableName(),
             'pk' => $this->getPK(),
-            'tableName' => $this->getTableName() . AttachmentManager::ATTACH_TABLE_SUFFIX,
+            'tableName' => $this->getTableName() . AttachmentManager::ATTACH_TABLE_SUFFIX,            
         ];
 
         if (isset($sp['id'])) {
@@ -872,6 +874,153 @@ class Grid extends DBDataSet {
         //$this->addTranslation('TXT_FILTER', 'BTN_APPLY_FILTER', 'TXT_RESET_FILTER', 'TXT_FILTER_SIGN_BETWEEN', 'TXT_FILTER_SIGN_CONTAINS', 'TXT_FILTER_SIGN_NOT_CONTAINS');
         $this->prepare();
     }
+    /**
+     * Move the record.
+     * Allowed movement:
+     * - first
+     * - last
+     * @throws SystemException 'ERR_NO_ORDER_COLUMN'
+     */
+   protected function moveTo() {
+        if (!$this->getOrderColumn()) {
+            //Если не задана колонка для пользовательской сортировки то на выход
+            throw new SystemException('ERR_NO_ORDER_COLUMN', SystemException::ERR_DEVELOPER);
+        }
+        $params = $this->getStateParams();
+
+	if (count($params)==3) {
+	list($someid,$direction, $firstItem) = $params;
+	} elseif (count($params)==2) {
+	list($firstItem,$direction) = $params;
+	}
+
+        $baseFilter = $this->getFilter();
+        if (!empty($baseFilter)) {
+            $baseFilter = ' AND ' .
+                str_replace('WHERE', '', $this->dbh->buildWhereCondition($this->getFilter()));
+        } else {
+            $baseFilter = '';
+        }
+	
+        $allowed_directions = ['first', 'last','above','below'];
+        if (in_array($direction, $allowed_directions) && $firstItem == intval($firstItem)) {
+            switch ($direction) {
+                // двигаем элемент с id=$firstItem на самый верх
+                case 'first': //move element to order 0 and reindex elements by @order
+                    $this->dbh->beginTransaction();                 			
+                        $this->dbh->modify(
+                            QAL::UPDATE,
+                            $this->getTableName(),
+                            [$this->getOrderColumn() => '0'],
+                            [$this->getPK() => $firstItem]
+                        );
+		    
+			$request="set @Count=0;
+			   UPDATE ".$this->getTableName()." as a,".
+			  " (SELECT ".$this->getPK()."  FROM ".$this->getTableName()." WHERE 1 ".$baseFilter." ORDER BY ".$this->getOrderColumn()." ASC) as b".
+			  " SET a.".$this->getOrderColumn()." = @Count:=@Count+1".
+			  " WHERE b.".$this->getPK()."=a.".$this->getPK();
+			$this->dbh->modify($request);
+		   $this->dbh->commit();
+                    break;
+                // двигаем элемент с id=$firstItem в самый низ
+                case 'last':// from curr element all next pos-1,set curr element MAX+1
+		   $this->dbh->beginTransaction(); 
+	      		$request="set @CurPos=(SELECT ".$this->getOrderColumn()." FROM ".$this->getTableName()." WHERE ".$this->getPK()."=".$firstItem."  LIMIT 1);
+			   set @Count=@CurPos-1;
+			   UPDATE ".$this->getTableName()." as a,".
+			  " (SELECT ".$this->getPK()."  FROM ".$this->getTableName()." WHERE ".$baseFilter."  AND ".$this->getOrderColumn()." > @CurPos ORDER BY ".$this->getOrderColumn()." ASC) as b".
+			  " SET a.".$this->getOrderColumn()." = @Count:=@Count+1".
+			  " WHERE b.".$this->getPK()."=a.".$this->getPK();
+			$this->dbh->modify($request);			
+			$request="set @lastpos=(SELECT MAX(".$this->getOrderColumn().") FROM ".$this->getTableName()." WHERE 1 ".$baseFilter." ORDER BY ".$this->getOrderColumn()." DESC LIMIT 1);
+			UPDATE ".$this->getTableName()." SET ".$this->getOrderColumn()."=(@lastpos+1) WHERE ".$this->getPK()."=$firstItem";
+
+			$this->dbh->modify($request);
+
+		   $this->dbh->commit();
+                    break;
+                // двигаем элемент выше или ниже id=$secondItem
+		case 'above':
+		case 'below':
+		        //Определяем order_num текущей страницы
+			$currentOrderNum = $this->dbh->getScalar($this->getTableName(), $this->getOrderColumn(), [$this->getPK() => $firstItem]);
+			if (is_null($currentOrderNum)) { //modbysd:bad fix it
+			    $currentOrderNum=1;
+			    $this->dbh->modify(
+			      QAL::UPDATE,
+			      $this->getTableName(),
+			      [$this->getOrderColumn() => $currentOrderNum],
+			[$this->getPK() => $firstItem]
+			);
+			}
+			$orderArrow = ($direction == 'below') ? Grid::DIR_DOWN :Grid::DIR_UP;
+			$orderDirection = ($orderArrow == Grid::DIR_DOWN) ? QAL::ASC : QAL::DESC;
+			
+			//Определяем идентификатор записи которая находится рядом с текущей
+			$request =
+			    'SELECT ' . $this->getPK() . ' as neighborID, ' .
+			    $this->getOrderColumn() . ' as neighborOrderNum ' .
+			    'FROM ' . $this->getTableName() .
+			    ' WHERE ' . $this->getOrderColumn() . ' ' . $orderArrow .
+			    ' ' . $currentOrderNum . ' ' . $baseFilter .
+			    ' ORDER BY ' . $this->getOrderColumn() . ' ' .
+			    $orderDirection . ' Limit 1';			
+			$data =convertDBResult($this->dbh->select($request), 'neighborID');
+
+			if(empty($data)) {	//modbysd:no result,check for dupes looking for same order value if so move to new max _order_num
+					    // all pos up - max _order_numm down - id max _order_num
+			  $request =
+			    'SELECT ' . $this->getPK() . ' as neighborID, ' .
+			    $this->getOrderColumn() . ' as neighborOrderNum ' .
+			    'FROM ' . $this->getTableName() .
+			    ' WHERE ' . $this->getPK() . ' != '.
+			    ' ' . $firstItem .' AND '.$this->getOrderColumn().'='.$currentOrderNum.' ' . $baseFilter .
+			    ' ORDER BY '.$this->getPK().' '.$orderDirection.' Limit 1';
+			  $data =convertDBResult($this->dbh->select($request), 'neighborID');
+
+			  if ($data) { 
+			    $maxOrderNum = $this->dbh->select("SELECT ".$this->getOrderColumn()." from ".$this->getTableName()." WHERE 1 ".$baseFilter."  ORDER BY ".$this->getOrderColumn()." DESC LIMIT 1");			    
+
+			    if (is_null($maxOrderNum[0][$this->getOrderColumn()])) $maxOrderNum[0][$this->getOrderColumn()]=0;
+			    $currentOrderNum=$maxOrderNum[0][$this->getOrderColumn()]+1;
+			    $this->dbh->beginTransaction();
+			    $this->dbh->modify(
+			      QAL::UPDATE,
+			      $this->getTableName(),
+			      [$this->getOrderColumn() => $currentOrderNum],
+			      [$this->getPK() => $firstItem]
+			    );  
+			    $this->dbh->commit();
+			  }
+			} elseif($data) { //normal ops neighbor data found 
+			  $neighborID = NULL;
+			  $neighborOrderNum = 0;
+			  extract(current($data));
+			  $this->dbh->beginTransaction();
+			  $this->dbh->modify(
+			    QAL::UPDATE,
+			    $this->getTableName(),
+			    [$this->getOrderColumn() => $currentOrderNum],
+			    [$this->getPK() => $neighborID]
+			  );
+			  $this->dbh->modify(
+			    QAL::UPDATE,
+			    $this->getTableName(),
+			    [$this->getOrderColumn() => $neighborOrderNum],
+			    [$this->getPK() => $firstItem]
+			  );
+
+			  $this->dbh->commit();
+			}
+		    break;
+            }
+        }
+
+        $b = new JSONCustomBuilder();
+        $b->setProperty('result', true);
+        $this->setBuilder($b);
+    }
 
     /**
      * Move the record.
@@ -883,7 +1032,7 @@ class Grid extends DBDataSet {
      * @todo: Пофиксить перемещение в начало списка, т.к. сейчас порядковый номер может выйти меньше 0. Аналогичная ситуация с move above.
      * @throws SystemException 'ERR_NO_ORDER_COLUMN'
      */
-    protected function moveTo() {
+    protected function moveTo_old() { 
         if (!$this->getOrderColumn()) {
             //Если не задана колонка для пользовательской сортировки то на выход
             throw new SystemException('ERR_NO_ORDER_COLUMN', SystemException::ERR_DEVELOPER);
@@ -988,6 +1137,8 @@ class Grid extends DBDataSet {
 
         //Определяем order_num текущей страницы
         $currentOrderNum = $this->dbh->getScalar($this->getTableName(), $this->getOrderColumn(), [$this->getPK() => $currentID]);
+	if (is_null($currentOrderNum)) $currentOrderNum='1';
+	
 
         $orderDirection = ($direction == Grid::DIR_DOWN) ? QAL::ASC : QAL::DESC;
 
@@ -1012,6 +1163,7 @@ class Grid extends DBDataSet {
 
         $data =
             convertDBResult($this->dbh->select($request), 'neighborID');
+
         if ($data) {
             $neighborID = NULL;
             $neighborOrderNum = 0;

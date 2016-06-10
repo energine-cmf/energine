@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content>
+	<container name="fgEditorContainer" block="alfa" widget="static">
+		<component name="fgEditor" class="Energine\share\components\Grid">
+			<params>
+				<param name="rights">3</param>
+				<param name="tableName">shop_feature_groups</param>
+				<param name="config">core/modules/shop/config/FeatureGroupEditor.component.xml</param>
+			</params>
+		</component>
+	</container>
+</content>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <state name="main">
+        <javascript>
+            <behavior name="ProductList"/>
+        </javascript>
+        <uri_patterns>
+            <pattern>/page-[pageNumber]/</pattern>
+            <pattern>/sort-[sfield]-[sdir]/</pattern>
+            <pattern>/sort-[sfield]-[sdir]/page-[pageNumber]/</pattern>
+            <pattern>/</pattern>
+        </uri_patterns>
+        <fields>
+            <field name="goods_id"/>
+            <field name="smap_id"/>
+            <field name="goods_name"/>
+            <field name="goods_short_description"/>
+            <field name="goods_code"/>
+            <field name="goods_segment"/>
+            <field name="goods_price"/>
+            <field name="sell_status_id" type="lookup"/>
+            <field name="producer_id" type="lookup"/>
+            <field name="attachments"/>
+            <!--<field name="features"/>
+            <field name="tags"/>-->
+        </fields>
+        <toolbar name="list_type">
+            <control type="link" id="tile" onclick="asTile" title="SHOW_AS_TILE"/>
+            <control type="link" id="list" onclick="asList" title="SHOW_AS_LIST"/>
+        </toolbar>
+        <toolbar name="product">
+            <control type="button" id="buy" title="BTN_BUY"/>
+            <control type="link" id="wishlist" title="BTN_WISHLIST" authorized="authorized"/>
+        </toolbar>
+    </state>
+    <state name="view">
+        <uri_patterns>
+            <pattern>/view/[goodsSegment]/</pattern>
+        </uri_patterns>
+        <javascript>
+            <behavior name="ProductView" use="jquery"/>
+        </javascript>
+<!--        <fields>
+            <field name="goods_id"/>
+            <field name="goods_name"/>
+            <field name="producer_id" type="lookup"/>
+            <field name="goods_description_rtf"/>
+            <field name="goods_code"/>
+            <field name="sell_status_id" type="lookup"/>
+            <field name="goods_price"/>
+            <field name="attachments"/>
+            <field name="features"/>
+            <field name="tags"/>
+        </fields>-->
+        <toolbar name="product">
+            <control type="button" id="buy" title="BTN_BUY"/>
+            <control type="button" id="wishlist" title="BTN_WISHLIST"/>
+        </toolbar>
+    </state>
+</configuration>

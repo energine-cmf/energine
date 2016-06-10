@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+	<state name="main">
+		<uri_patterns>
+			<pattern>/</pattern>
+		</uri_patterns>
+		<fields>
+			<field name="goods_id"/>
+			<field name="smap_id"/>
+			<field name="goods_name"/>
+			<field name="goods_segment"/>
+			<field name="goods_price"/>
+			<field name="sell_status_id" type="lookup"/>
+            <field name="producer_id" type="lookup"/>
+			<field name="attachments"/>
+		</fields>
+		<javascript>
+			<behavior name="ProductCarousel" use="jquery"/>
+		</javascript>
+	</state>
+</configuration>

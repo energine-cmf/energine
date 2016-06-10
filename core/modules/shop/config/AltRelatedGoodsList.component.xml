@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <state name="init">
+        <javascript>
+            <behavior name="ProductList"/>
+        </javascript>
+        <uri_patterns>
+            <pattern>/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="main">
+        <uri_patterns>
+            <pattern>/show/</pattern>
+        </uri_patterns>
+    </state>
+</configuration>

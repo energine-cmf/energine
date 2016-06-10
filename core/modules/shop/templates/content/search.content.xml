@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content>
+		<!-- результаты поиска -->
+		<component name="searchResults" class="Energine\shop\components\SearchResults">
+			<params>
+				<param name="bind">searchForm</param>
+			</params>
+		</component>
+</content>

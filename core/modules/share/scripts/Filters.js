@@ -492,6 +492,10 @@ Filter.Clause = new Class({
     },
     setValue: function (value) {
         if (value) {
+            if (this.type == 'phone'){
+                value = value.replace(/\D/g,'');
+            }
+
             if (this.value) {
                 (this.value = [this.value]).push(value);
             }

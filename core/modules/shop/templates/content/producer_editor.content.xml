@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content>
+    <container name="producerContainer" block="alfa" widget="static">
+        <component name="producerEditor" class="Energine\shop\components\ProducerEditor">
+            <params>
+                <param name="rights">2</param>
+            </params>
+        </component>
+    </container>
+</content>

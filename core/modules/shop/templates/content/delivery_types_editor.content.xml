@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content>
+	<container name="deliveryTypesEditorContainer" block="alfa" widget="static">
+		<component name="deliveryTypesEditor" class="Energine\share\components\Grid">
+			<params>
+				<param name="rights">1</param>
+				<param name="tableName">shop_delivery_types</param>
+				<param name="config">core/modules/shop/config/DeliveryTypesEditor.component.xml</param>
+			</params>
+		</component>
+	</container>
+</content>

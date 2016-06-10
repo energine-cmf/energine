@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content>
+	<container name="orderStatusEditorContainer" block="alfa" widget="static">
+		<component name="orderStatusEditor" class="Energine\share\components\Grid">
+			<params>
+				<param name="rights">1</param>
+				<param name="tableName">shop_order_statuses</param>
+				<param name="config">core/modules/shop/config/OrderStatusesEditor.component.xml</param>
+			</params>
+		</component>
+	</container>
+</content>

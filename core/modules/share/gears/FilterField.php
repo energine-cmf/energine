@@ -66,6 +66,9 @@ class FilterField extends Primitive {
      */
     public function __construct($name, $type = FieldDescription::FIELD_TYPE_STRING) {
         $this->name = $name;
+        if(!$type || !in_array($type, [FieldDescription::FIELD_TYPE_PHONE, FieldDescription::FIELD_TYPE_STRING, FieldDescription::FIELD_TYPE_DATE, FieldDescription::FIELD_TYPE_DATETIME,])){
+            $type = FieldDescription::FIELD_TYPE_STRING;
+        }
         $this->type = $type;
     }
 
@@ -124,8 +127,12 @@ class FilterField extends Primitive {
             if (!isset($attrs['title'])) {
                 $attrs['title'] = 'FIELD_' . $this->name;
             }
-            $attrs['type'] = FieldDescription::convertType($meta['type'], $this->getAttribute('name'), $meta['length'],
-                $meta);
+            
+            if (!isset($attrs['type'])) {
+                $attrs['type'] = FieldDescription::convertType($meta['type'], $this->getAttribute('name'), $meta['length'],
+                    $meta);
+            }
+
             $attrs['tableName'] = $meta['tableName'];
         }
 

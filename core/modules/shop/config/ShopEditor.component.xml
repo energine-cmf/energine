@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <state name="main">
+        <javascript>
+            <behavior name="SiteManager"/>
+        </javascript>
+        <fields>
+            <field name="site_id" type="integer"/>
+            <field name="site_name"/>
+        </fields>
+        <toolbar>
+            <control id="add" title="BTN_ADD" type="button" onclick="add"/>
+            <control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>
+            <control id="sep01" type="separator"/>
+            <control id="go" title="BTN_GO" type="button" onclick="go"/>
+            <control id="sep02" type="separator"/>
+            <control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
+            <control id="sep04" type="separator"/>
+            <control id="properties" title="BTN_PROPERTIES" type="button" onclick="siteProps"/>
+        </toolbar>
+        <translations>
+            <translation const="MSG_CONFIRM_TEMPLATES_RESET"/>
+            <translation const="MSG_TEMPLATES_RESET"/>
+        </translations>
+    </state>
+    <state name="add">
+        <uri_patterns>
+            <pattern>/add/</pattern>
+        </uri_patterns>
+        <javascript>
+            <behavior name="Form"/>
+        </javascript>
+        <toolbar>
+            <control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+            <control id="after_save_action" title="TXT_AFTER_SAVE_ACTION"
+                     type="select"
+                    >
+                <options>
+                    <option id="reload">BTN_CLOSE</option>
+                    <option id="add">BTN_ADD</option>
+                </options>
+            </control>
+            <control id="sep1" type="separator"/>
+            <control id="close" title="BTN_CANCEL" type="button"
+                     onclick="close"/>
+        </toolbar>
+    </state>
+    <state name="edit">
+        <uri_patterns>
+            <pattern>/[int]/edit/</pattern>
+        </uri_patterns>
+        <javascript>
+            <behavior name="Form"/>
+        </javascript>
+        <toolbar>
+            <control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+            <control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
+        </toolbar>
+    </state>
+    <state name="save" rights="3">
+        <uri_patterns>
+            <pattern>/save/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="delete" rights="2">
+        <uri_patterns>
+            <pattern>/[int]/delete/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="properties" rights="3">
+        <uri_patterns>
+            <pattern>/[site_id]/properties/[any]/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="getRawData" rights="2">
+        <uri_patterns>
+            <pattern>/get-data/</pattern>
+            <pattern>/get-data/page-[pageNumber]/</pattern>
+            <pattern>/get-data/[sortField]-[sortDir]/</pattern>
+            <pattern>/get-data/[sortField]-[sortDir]/page-[pageNumber]/</pattern>
+        </uri_patterns>
+    </state>
+</configuration>

@@ -162,6 +162,7 @@ class Saver extends Primitive {
         foreach ($this->getDataDescription() as $fieldName => $fieldDescription) {
             $fieldData = $this->getData()->getFieldByName($fieldName);
             if ($fieldDescription->getType() == FieldDescription::FIELD_TYPE_BOOL ||
+                $fieldDescription->getType() == FieldDescription::FIELD_TYPE_PHONE ||
                 //$fieldDescription->getType() == FieldDescription::FIELD_TYPE_PFILE ||
                 $fieldDescription->getType() == FieldDescription::FIELD_TYPE_FILE ||
                 $fieldDescription->getType() == FieldDescription::FIELD_TYPE_CAPTCHA ||
@@ -245,7 +246,11 @@ class Saver extends Primitive {
                     }
                     // сохраняем поля из основной таблицы
                     if ($fieldInfo->isMultilanguage() == false && $fieldInfo->getPropertyValue('key') !== true && $fieldInfo->getPropertyValue('languageID') == false) {
-                        switch ($fieldInfo->getType()) {
+                        switch ($fieldInfo->getType())
+                        {
+                            case FieldDescription::FIELD_TYPE_PHONE:
+                                $fieldValue = preg_replace('/\D/', '', $fieldValue);
+                                break;
                             case FieldDescription::FIELD_TYPE_FLOAT:
                                 $fieldValue = str_replace(',', '.', $fieldValue);
                                 break;

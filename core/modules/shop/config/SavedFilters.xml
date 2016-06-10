@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <state name="main" rights="3">
+        <fields>
+            <field name="sf_id"/>
+            <field name="sf_name"/>
+            <field name="sf_data"/>
+        </fields>
+        <toolbar>
+            <control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>
+            <control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
+        </toolbar>
+    </state>
+    <state name="save">
+        <uri_patterns>
+            <pattern>/save/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="delete">
+            <uri_patterns>
+                <pattern>/[int]/delete/</pattern>
+            </uri_patterns>
+        </state>
+</configuration>

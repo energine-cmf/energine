@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Базовая конфигурация для сетки  -->
+<!-- Включает основные методы и панели инструментов -->
+<configuration>
+    <state name="main">
+        <fields>
+            <field name="feature_id"/>
+			<field name="group_id"/>
+			<field name="feature_name"/>
+			<field name="feature_title"/>
+			<field name="feature_type"/>							
+			<!--<field name="feature_order_num"/>!-->
+        </fields>
+        <javascript>
+			<behavior name="GridManager"/>
+        </javascript>
+        <toolbar>
+            <control id="add" title="BTN_ADD" type="button" onclick="add"/>
+            <control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>
+            <control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
+	    <control id="copy" title="BTN_COPY" type="button" onclick="copy"/>
+        </toolbar>
+    </state>
+    <state name="getRawData">
+        <uri_patterns>
+            <pattern>/get-data/</pattern>
+            <pattern>/get-data/page-[pageNumber]/</pattern>
+            <pattern>/get-data/[sortField]-[sortDir]/</pattern>
+            <pattern>/get-data/[sortField]-[sortDir]/page-[pageNumber]/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="add">
+        <uri_patterns>
+            <pattern>/add/</pattern>
+        </uri_patterns>
+        <javascript>
+            <behavior name="FeatureForm"/>
+        </javascript>
+        <toolbar>
+            <control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+            <control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
+        </toolbar>
+    </state>
+    <state name="edit">
+        <uri_patterns>
+            <pattern>/[int]/edit/</pattern>
+        </uri_patterns>
+        <javascript>
+            <behavior name="FeatureForm"/>
+        </javascript>
+        <toolbar>
+            <control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+            <control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
+        </toolbar>
+    </state>
+    <state name="save">
+        <uri_patterns>
+            <pattern>/save/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="delete">
+        <uri_patterns>
+            <pattern>/[int]/delete/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="copy">
+        <uri_patterns>
+            <pattern>/[int]/copy/</pattern>
+        </uri_patterns>
+    </state>
+	<state name="optionEditor" rights="3">
+		<uri_patterns>
+			<pattern>/option/[any]/</pattern>
+			<pattern>/[feature_id]/option/[any]/</pattern>
+		</uri_patterns>
+	</state>
+</configuration>

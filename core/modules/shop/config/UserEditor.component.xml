@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+	<state name="main">
+		<javascript>
+			<behavior name="UserManager"/>
+		</javascript>
+		<filter>
+			<field name="u_name"/>
+			<field name="u_fullname"/>
+			<field name="u_is_active"/>
+		</filter>
+		<fields>
+			<field name="u_id"/>
+			<field name="u_is_active"/>
+			<field name="u_fullname"/>
+			<field name="u_name"/>
+			<field name="u_group" type="text" title="FIELD_U_GROUP" sort="0"/>
+		</fields>
+		<toolbar>
+			<control id="add" title="BTN_ADD" type="button" onclick="add"/>
+			<control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>
+			<control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
+			<control id="sep1" type="separator"></control>
+			<control id="activate" title="BTN_ACTIVATE" type="button" onclick="activate"/>
+			<control id="sep2" type="separator"></control>
+			<control id="close" title="BTN_CLOSE" type="button" onclick="close"/>
+		</toolbar>
+	</state>
+	<state name="add" >
+		<uri_patterns>
+			<pattern>/add/</pattern>
+		</uri_patterns>
+		<javascript>
+			<behavior name="Form"/>
+		</javascript>
+		<fields>
+			<field name="u_id"/>
+			<field name="u_is_active"/>
+			<field name="u_fullname"/>
+			<field name="u_name"/>
+			<field name="u_password"/>
+			<field name="u_phone"/>
+			<field name="u_city"/>
+			<field name="u_address"/>
+		</fields>
+		<toolbar>
+			<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+			<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
+		</toolbar>
+	</state>
+	<state name="edit" >
+		<uri_patterns>
+			<pattern>/[int]/edit/</pattern>
+		</uri_patterns>
+		<javascript>
+			<behavior name="Form"/>
+		</javascript>
+		<fields>
+			<field name="u_id"/>
+			<field name="u_is_active"/>
+			<field name="u_fullname"/>
+			<field name="u_name"/>
+			<field name="u_password"/>
+			<field name="u_phone"/>
+			<field name="u_city"/>
+			<field name="u_address"/>
+		</fields>
+		<toolbar>
+			<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+			<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
+		</toolbar>
+	</state>
+	<state name="save">
+		<uri_patterns>
+			<pattern>/save/</pattern>
+		</uri_patterns>
+	</state>
+	<state name="getRawData">
+		<uri_patterns>
+			<pattern>/get-data/</pattern>
+			<pattern>/get-data/page-[pageNumber]/</pattern>
+			<pattern>/get-data/[sortField]-[sortDir]/</pattern>
+			<pattern>/get-data/[sortField]-[sortDir]/page-[pageNumber]/</pattern>
+		</uri_patterns>
+	</state>
+	<state name="delete">
+		<uri_patterns>
+			<pattern>/[int]/delete/</pattern>
+		</uri_patterns>
+	</state>
+	<state name="upload"  rights="3">
+		<uri_patterns>
+			<pattern>/upload/</pattern>
+		</uri_patterns>
+	</state>
+	<state name="imageManager" rights="3">
+		<uri_patterns>
+			<pattern>/imagemanager/</pattern>
+		</uri_patterns>
+	</state>
+	<state name="fileLibrary" rights="3">
+		<uri_patterns>
+			<pattern>/file-library/</pattern>
+			<pattern>/file-library/[any]/</pattern>
+		</uri_patterns>
+	</state>
+	<state name="activate" rights="3">
+		<uri_patterns>
+			<pattern>/[int]/activate/</pattern>
+		</uri_patterns>
+	</state>
+</configuration>

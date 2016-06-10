@@ -12,6 +12,28 @@ namespace Energine\share\gears {
      * @package Energine\share\gears
      */
     class Utils {
+        function formatPhone( $placeholder, $code, $fieldValue ) {
+
+            $fieldValue  = preg_replace( '/\D/', '', $fieldValue );
+
+            if ( $placeholder && $fieldValue ) {
+                $format      = str_replace( 'X', '%s', $placeholder );
+                $countryCode = $code;
+
+                if ( strlen( $fieldValue ) == 9 && $countryCode ) {
+                    $fieldValue = $countryCode . $fieldValue;
+                } elseif ( strlen( $fieldValue ) != 12 ) {
+                    $fieldValue = str_pad( $fieldValue, 12, '0', STR_PAD_LEFT );
+                }
+
+                $format = str_repeat( '%s', strlen( $countryCode ) ) . $format;
+
+
+                $fieldValue = vsprintf( '+' . $format, str_split( $fieldValue ) );
+            }
+            
+            return $fieldValue;
+        }
         /**
          * @brief Inspect variables.
          * It directly prints the information about input arguments to the output stream formatted with HTML.

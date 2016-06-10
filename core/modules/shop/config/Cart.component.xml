@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <state name="show">
+        <javascript>
+            <behavior name="Cart"/>
+        </javascript>
+        <uri_patterns>
+                    <pattern>/show/</pattern>
+                </uri_patterns>
+        <toolbar>
+            <control type="button" id="basket" title="BTN_ORDER"/>
+        </toolbar>
+    </state>
+    <state name="main">
+        <uri_patterns>
+            <pattern>/</pattern>
+        </uri_patterns>
+        <javascript>
+            <behavior name="CartDaemon"/>
+        </javascript>
+    </state>
+    <state name="add">
+        <uri_patterns>
+            <pattern>/add/[productID]/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="delete">
+        <uri_patterns>
+            <pattern>/del/[productID]/</pattern>
+        </uri_patterns>
+        <toolbar>
+            <control type="button" id="basket" title="BTN_ORDER"/>
+        </toolbar>
+    </state>
+    <state name="edit">
+        <uri_patterns>
+            <pattern>/edit/[productID]/</pattern>
+        </uri_patterns>
+    </state>
+</configuration>

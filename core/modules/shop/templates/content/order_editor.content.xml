@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content>
+    <container name="orderContainer" block="alfa" widget="static">
+        <component name="orderEditor" class="Energine\shop\components\OrderEditor">
+            <params>
+                <param name="rights" type="hidden">2</param>
+                <param name="tableName" type="hidden">shop_orders</param>
+                <param name="config" type="hidden">core/modules/shop/config/OrderEditor.component.xml</param>
+            </params>
+        </component>
+    </container>
+</content>

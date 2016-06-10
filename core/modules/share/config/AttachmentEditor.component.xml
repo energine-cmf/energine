@@ -112,7 +112,7 @@
             <control id="moveAbove" title="BTN_MOVE_ABOVE" type="button" onclick="moveAbove"/>
             <control id="moveBelow" title="BTN_MOVE_BELOW" type="button" onclick="moveBelow"/>
             <control id="sep02" type="separator"/>
-            <control id="close" title="BTN_CANCEL" type="button" onclick="close"/>
+            <control id="close" title="BTN_MOVE_CANCEL" type="button" onclick="close"/>
         </toolbar>
     </state>
     <state name="up" rights="3">

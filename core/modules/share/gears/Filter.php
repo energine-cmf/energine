@@ -102,9 +102,11 @@ class Filter extends Primitive {
                     throw new SystemException('ERR_BAD_FILTER_XML', SystemException::ERR_DEVELOPER);
                 }
                 $name = (string)$fieldDescription['name'];
-                $field = new FilterField($name);
+
+                $field = new FilterField($name, $type = isset($fieldDescription['type'])?(string)$fieldDescription['type']:null);
                 $this->attachField($field);
-                $field->load($fieldDescription, (isset($meta[$name]) ? $meta[$name] : null));
+                $field->load($fieldDescription,
+                    (isset($meta[$name]) ? $meta[$name] : null));
             }
         }
     }

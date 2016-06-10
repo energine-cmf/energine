@@ -493,7 +493,7 @@ Filter.Clause = new Class({
     setValue: function (value) {
         if (value) {
             if (this.value) {
-                (this.value = [this.value]).push(value);
+                (this.value = [this.value]).push((this.type !== 'phone')?value:value.replace(/-|\(|\)/g,''));
             }
             else {
                 this.value = value;

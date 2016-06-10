@@ -891,8 +891,8 @@
 
     <xsl:template match="field[@type='tab'][ancestor::component[@type='form']]"/>
 
-    <xsl:template match="field[@type='tab'][ancestor::component[@type='form']]" mode="field_name">
-        <li data-src="{ancestor::component/@single_template}{.}">
+    <xsl:template match="field[@type='tab'][ancestor::component[@type='form']]" mode="field_name">    
+        <li data-src="{$LANG_ABBR}{ancestor::component/@single_template}{.}">
             <a href="#{generate-id(.)}"><xsl:value-of select="@title" /></a>
         </li>
     </xsl:template>

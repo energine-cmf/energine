@@ -16,7 +16,11 @@ class GridExtender;
 
 namespace Energine\share\gears;
 
-
+/**
+ * Class GridExtender
+ * @package Energine\share\gears
+ * @todo move into the grid
+ */
 trait GridExtender {
 	protected function createDataDescription(){
 		/**

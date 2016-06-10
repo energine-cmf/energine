@@ -236,7 +236,7 @@ ul.toolbar li.delete_btn:focus, ul.toolbar li.delete_btn:hover, ul.toolbar li.de
     background-color: rgb(250, 225, 225);    
     border-color: #efffde;    
 }
-ul.toolbar li.save_btn,ul.toolbar_attachmentEditor li.close_btn,
+ul.toolbar li.save_btn,ul.toolbar li.close_btn,
 ul.toolbar li.save_btn.disabled:focus, ul.toolbar li.save_btn.disabled:hover, ul.toolbar li.save_btn.disabled:active {
     color: #fff;
     /*background-color: #3276b1;
@@ -245,7 +245,7 @@ ul.toolbar li.save_btn.disabled:focus, ul.toolbar li.save_btn.disabled:hover, ul
 }
 
 ul.toolbar li.save_btn:focus, ul.toolbar li.save_btn:hover, ul.toolbar li.save_btn:active,
-ul.toolbar_attachmentEditor li.close_btn:focus,ul.toolbar_attachmentEditor li.close_btn:hover,ul.toolbar_attachmentEditor li.close_btn:active{
+ul.toolbar li.close_btn:focus,ul.toolbar li.close_btn:hover,ul.toolbar li.close_btn:active{
     color: #fff;
     /*background-color: #3276b1;
     border-color: #285e8e;*/

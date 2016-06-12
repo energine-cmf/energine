@@ -258,6 +258,7 @@ var Filter = new Class({
                 }
             }
         }, this);
+        this.condition.selectedIndex = 0;
         this.switchInputs(this.condition.get('value'), fieldType);
         this.disableInputField(isDate);
         this.inputs.showDatePickers(isDate);

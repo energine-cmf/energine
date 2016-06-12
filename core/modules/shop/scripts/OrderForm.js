@@ -99,7 +99,7 @@ var OrderForm = new Class(/** @lends OrderForm# */{
                         delete data.result, data.mode;
                         Object.each(data, function(value, key){
                             if(this.element.getElementById(key)){
-                                this.element.getElementById(key).set('value', value);
+                                this.element.getElementById(key).set('value', value).focus();
                             }
                         }, this);
                         $(this.element.getElementById('u_id_name')).set('value', data.order_user_name);

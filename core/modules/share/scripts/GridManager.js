@@ -16,6 +16,7 @@
  *
  * @author Pavel Dubenko
  * @author Valerii Zinchenko
+ * @author Oleg Marichev
  *
  * @version 1.1.5
  */
@@ -105,14 +106,18 @@ var Grid = (function () {
             'mouseout': function () {
                 this.removeClass('highlighted');
             },
-            'click': function (e) {
-                if (!e.control) {
+            'click': function (e) { 
+                if (!(e.control || e.shift)) {
                     if (this != grid.getSelectedItem()) {
                         grid.selectItem(this);
                     }
                 }
                 else {
-                    grid.selectItem(this, true);
+		    if (e.shift) {
+		      grid.selectItem(this, true,true);
+		    } else {
+		      grid.selectItem(this, true);
+		    }
                 }
 
             },
@@ -296,15 +301,45 @@ var Grid = (function () {
          * @public
          * @param {Element} item Data field that will be selected.
          */
-        selectItem: function (item, multiple) {
+        selectItem: function (item, multiple,rangeselect) {
             if(!multiple)
                 this.deselectItem();
 
             if (item) {
                 item.addClass('selected');
-                if(multiple)
-                    this.selectedItem.push(item);
-                else
+                if(multiple) {
+                    if (rangeselect) {
+		      if (this.selectedItem.length>0) {
+			this.selectedItem.push(item);
+			var el=this.selectedItem[this.selectedItem.length-1];
+			var findup=el;var finddown=el;
+			while (findup.previousSibling || finddown.nextSibling) {
+			  if (findup.previousSibling) findup=findup.previousSibling;
+			  if (finddown.nextSibling) finddown=finddown.nextSibling;
+			  if (findup === item) {
+			    finddown=false;
+			    break;
+			  }  else
+			  if (finddown === item) {
+			    findup=false;
+			    break;
+			  }
+			}
+			if (finddown===false || findup===false ) {
+			    var selected;if (finddown===false ) selected=findup.nextSibling; else 
+			    if (findup===false)  selected=finddown.previousSibling; 
+			    while (selected!==el) {
+			    selected.addClass('selected');
+			    this.selectedItem.push(selected);this.fireEvent('select', selected);
+			    if (finddown===false) selected=selected.nextSibling; else 
+			    if (findup===false)  selected=selected.previousSibling; 			    
+			    }
+			}
+		      } else 
+			this.selectedItem.push(item);
+		    } else 
+		      this.selectedItem.push(item);
+		} else
                     this.selectedItem = new Elements([item]);
 
                 /**
@@ -655,23 +690,61 @@ var Grid = (function () {
             }
             return this.getSelectedItem().record;
         },
+	 /**
+         * Return the records from the selected data field.
+         *
+         * @function
+         * @public
+         * @returns {Object}
+         */
+	getSelectedRecords: function () {
+            if (!this.getSelectedItem(true)) {
+                return false;
+            }
+            return this.getSelectedItem(true);
+        },
 
         /**
-         * Returns the value of the key field from the selected item.
+         * Returns the value(s) of the key field from the selected(s) item.
          *
          * @function
          * @public
          * @returns {boolean}
          */
-        getSelectedRecordKey: function () {
-            if (!this.keyFieldName || !this.getSelectedRecord()) {
-                return false;
-            }
-            var id = this.getSelectedRecord()[this.keyFieldName];
-            if (this.metadata[this.keyFieldName].type == 'lookup') {
+        getSelectedRecordKey: function (multiple) {
+	  if (arguments.length<1) {
+	       if (!this.keyFieldName || !this.getSelectedRecord()) {
+		 return false;
+	      }
+	      var id = this.getSelectedRecord()[this.keyFieldName];
+	      if (this.metadata[this.keyFieldName].type == 'lookup') {
                 id = this.getSelectedRecord()[this.keyFieldName]['id'];
-            }
-            return id;
+	      }
+	      return id;
+	  } else {
+	    if (this.selectedItem.length<2) {
+	      if (!this.keyFieldName || !this.getSelectedRecord()) {
+		 return false;
+	      }
+	      var id = this.getSelectedRecord()[this.keyFieldName];
+	      if (this.metadata[this.keyFieldName].type == 'lookup') {
+                id = this.getSelectedRecord()[this.keyFieldName]['id'];
+	      }
+	      return id;
+	    } else {
+	      var ida=[];
+		if (!this.keyFieldName || !this.getSelectedRecords()) return false;
+		 var sr=this.getSelectedRecords();
+		  for (var l=0;l<sr.length;l++) {
+		    if (this.metadata[this.keyFieldName].type == 'lookup') {		      
+		      ida.push(sr[l].record[this.keyFieldName]['id']);
+		    } else {		      
+		      ida.push(sr[l].record[this.keyFieldName]);
+		    }
+		  }
+	      return ida.join(",");	      
+	    }
+	  }
         },
 
         /**
@@ -1295,8 +1368,10 @@ var GridManager = new Class(/** @lends GridManager# */{
         if ((this.delConfirmCounter > 1) || confirm(MSG_CONFIRM_DELETE)) {
             this.delConfirmCounter++;
             this.overlay.show();
-            Energine.request(this.singlePath + this.grid.getSelectedRecordKey() +
-                '/delete/', null,
+	    var delstr=this.grid.getSelectedRecordKey(true);
+	    if (delstr===false) {this.overlay.hide();this.delConfirmCounter = 0;return;}
+	    delstr+='/delete/';
+            Energine.request(this.singlePath + delstr, null,
                 function () {
                     this.overlay.hide();
                     this.grid.fireEvent('dirty');

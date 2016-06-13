@@ -205,6 +205,7 @@ class Grid extends DBDataSet {
         $transactionStarted = $this->dbh->beginTransaction();
         try {
             list($id) = $this->getStateParams();
+	    $id=explode(",",$id);
             if (!$this->recordExists($id)) {
                 throw new SystemException('ERR_404', SystemException::ERR_404);
             }
@@ -249,6 +250,7 @@ class Grid extends DBDataSet {
                     ]), [$orderColumn => QAL::ASC]);
             }
         }
+
         $this->dbh->modify(QAL::DELETE, $this->getTableName(), NULL, [$this->getPK() => $id]);
 
         //если определен порядок следования перестраиваем индекс сортировки

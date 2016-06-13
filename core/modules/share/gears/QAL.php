@@ -725,18 +725,6 @@ final class QAL extends Primitive {
             case self::DELETE:
                 $sqlQuery = 'DELETE FROM ' . $tableName;
                 break;
-  /*          case self::COPY://modBySD
-		throw new SystemException(self::ERR_BAD_QUERY_FORMAT, SystemException::ERR_DB);
-                if (!empty($data)&&!empty($condition)) {
-                    $buildQueryBody($data, $args);
-                    $sqlArgs=implode(', ', array_map(function ($fieldName) {
-                            return $fieldName . '= %s';
-                        }, array_keys($data)));
-                    $sqlQuery = 'INSERT INTO ' . $tableName . ' SELECT ' .$sqlArgs. ' FROM '. $tableName;
-                } else {
-                    throw new SystemException(self::ERR_BAD_QUERY_FORMAT, SystemException::ERR_DB);
-                }            
-		break;*/
             default:
                 throw new SystemException(self::ERR_BAD_QUERY_FORMAT, SystemException::ERR_DB);
         }
@@ -744,6 +732,7 @@ final class QAL extends Primitive {
         if (isset($condition) && $mode != self::INSERT) {
             $sqlQuery .= $this->buildWhereCondition($condition, $args);
         }
+
         array_unshift($args, $sqlQuery);
         //throw new SystemException(self::ERR_BAD_QUERY_FORMAT, $sqlQuery);
         return call_user_func_array([$this, 'modifyRequest'], $args);

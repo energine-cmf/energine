@@ -304,15 +304,13 @@ var Grid = (function () {
         selectItem: function (item, multiple,rangeselect) {
             if(!multiple)
                 this.deselectItem();
-
             if (item) {
                 item.addClass('selected');
                 if(multiple) {
                     if (rangeselect) {
-		      if (this.selectedItem.length>0) {
-			this.selectedItem.push(item);
-			var el=this.selectedItem[this.selectedItem.length-1];
-			var findup=el;var finddown=el;
+		      if (this.selectedItem.length>0) {				
+			var el=this.selectedItem[this.selectedItem.length-1];			
+			var findup=el;var finddown=el;			
 			while (findup.previousSibling || finddown.nextSibling) {
 			  if (findup.previousSibling) findup=findup.previousSibling;
 			  if (finddown.nextSibling) finddown=finddown.nextSibling;
@@ -324,7 +322,7 @@ var Grid = (function () {
 			    findup=false;
 			    break;
 			  }
-			}
+			}			
 			if (finddown===false || findup===false ) {
 			    var selected;if (finddown===false ) selected=findup.nextSibling; else 
 			    if (findup===false)  selected=finddown.previousSibling; 
@@ -333,8 +331,9 @@ var Grid = (function () {
 			    this.selectedItem.push(selected);this.fireEvent('select', selected);
 			    if (finddown===false) selected=selected.nextSibling; else 
 			    if (findup===false)  selected=selected.previousSibling; 			    
-			    }
+			    }			    
 			}
+			this.selectedItem.push(item);
 		      } else 
 			this.selectedItem.push(item);
 		    } else 

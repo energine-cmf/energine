@@ -106,7 +106,7 @@ var Grid = (function () {
             'mouseout': function () {
                 this.removeClass('highlighted');
             },
-            'click': function (e) { 
+            'click': function (e) { 		
                 if (!(e.control || e.shift)) {
                     if (this != grid.getSelectedItem()) {
                         grid.selectItem(this);
@@ -114,6 +114,8 @@ var Grid = (function () {
                 }
                 else {
 		    if (e.shift) {
+		      //e.preventDefault();
+		      //document.getSelection().removeAllRanges();
 		      grid.selectItem(this, true,true);
 		    } else {
 		      grid.selectItem(this, true);
@@ -475,7 +477,7 @@ var Grid = (function () {
                 return;
             }
 
-            var cell = new Element('td').inject(row);
+            var cell = new Element('td').setProperty('unselectable', 'on').inject(row);
             switch (this.metadata[fieldName].type) {
                 case 'boolean':
                     var checkbox = new Element('img').setProperties({
@@ -743,7 +745,7 @@ var Grid = (function () {
 		  }
 	      return ida.join(",");	      
 	    }
-	  }
+	  }	  
         },
 
         /**

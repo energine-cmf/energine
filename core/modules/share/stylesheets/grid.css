@@ -457,6 +457,12 @@ table.gridTable {
     line-height: normal;
     *border-right: 17px solid #efefef; /* исправляет выползание скролла за пределы контейнера в IE */
     *margin-right: -17px;
+     -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .gridTable th {
@@ -470,6 +476,12 @@ table.gridTable {
     /*font-family: Tahoma, sans-serif;*/    font-family: 'Roboto', sans-serif;
     font-weight: bold;
     text-align: center;
+     -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .gridTable td {
@@ -479,6 +491,14 @@ table.gridTable {
     border-right: 1px solid #ddd;
     cursor: default;
     /*font-family: Tahoma, sans-serif;*/    font-family: 'Roboto', sans-serif;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.gridTable td *{
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;

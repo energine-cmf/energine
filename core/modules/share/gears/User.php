@@ -201,10 +201,12 @@ class User extends Primitive {
      */
     public function update($data) {
         $result = false;
+        ;
         if ($this->getID()) {
-            if ($this->getID() != $this->dbh->getScalar('user_users', 'u_id', ['u_name' => $data['u_name']])) {
-                throw new SystemException('ERR_DUPLICATE_LOGIN');
-            }
+// modbysd: disabled due to conflict with email change  on front(psi:possibly security issue,anyway need rewrite).
+//             if ($this->getID() != $this->dbh->getScalar('user_users', 'u_id', ['u_name' => $data['u_name']])) {
+//                 throw new SystemException('ERR_DUPLICATE_LOGIN');
+//             }
             if (isset($data['u_password'])) {
                 $data['u_password'] = password_hash($data['u_password'], PASSWORD_DEFAULT);
             }

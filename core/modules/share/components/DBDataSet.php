@@ -729,7 +729,7 @@ class DBDataSet extends DataSet {
 
     /**
      * Detect if the specific record exist.
-     * @param string $id ID.
+     * @param mixed $id ID.
      * @param mixed $fieldName Field name.
      * @return bool
      */

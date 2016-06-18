@@ -336,8 +336,10 @@
             <xsl:attribute name="id"><xsl:value-of select="@name"/></xsl:attribute>
             <xsl:attribute name="value"><xsl:value-of select="value/@id"/></xsl:attribute>
         </input>
-        <div class="with_append">
-            <input type="text" id="{@name}_name"  class="text acpl" autocomplete="off" spellcheck="false" style="height:32px;" value="{value}"/>
+        <div class="with_append lookup">
+            <select id="{@name}_name"  class="text acpl"  multiple="multiple" data-value="{value}" style="width:100%;" data-language="{$DOC_PROPS[@name='lang']/@real_abbr}">
+
+            </select>
             <div class="appended_block">
                 <button type="button"  style="height: 18px;">...</button>
             </div>

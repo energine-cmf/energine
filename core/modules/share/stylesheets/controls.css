@@ -93,11 +93,12 @@
 .e-pane-content .required textarea {
     border-color: black;/*#7DC27D;*/
 }
-.e-pane-content input.acpl{
-    border: none;
-}
+
 .e-pane-content .with_append{
     border-bottom: 1px solid #CCCCCC;
+}
+.e-pane-content .with_append.lookup{
+    border-bottom: none;
 }
 .e-pane-b-toolbar input[type="text"],
 .e-pane-b-toolbar input[type="password"],
@@ -211,11 +212,14 @@ div.with_append.focus_block input[type='button'] {
 .e-pane-content .field .control  .with_append input,
 .e-pane-content .field .control  .with_append select,
 .e-pane-content .field .control  .with_append .read {
-    display: table-cell;
+/*    display: table-cell;
     width: 100%;
     margin-top: 0;
-    border-right-width: 0;
+    border-right-width: 0;*/
     /* border-radius: 4px 0 0 4px; */
+}
+.e-pane-content .field .control  .with_append.lookup select{
+    border-right-width: 1px;
 }
 .e-pane-content .field .control  .with_append.with_link select {
     border-radius: 4px;

@@ -195,7 +195,7 @@ var OrderForm = new Class(/** @lends OrderForm# */{
 });
 
 Lookup = Class.refactor(Lookup, {
-    rebuild: function (result) {
+    /*rebuild: function (result) {
         if (result.result && result.data) {
             this.list.update(result.data.map(function (item) {
                 return {
@@ -209,33 +209,18 @@ Lookup = Class.refactor(Lookup, {
             this.list.hide();
         }
     },
-    requestValues: function (str) {
-        if (!this.date) {
-            this.date = new Date();
-        }
-
-        if ((this.date.get('sec') - new Date().get('sec')) < Lookup.TIMEOUT_PERIOD) {
-            if (this.timeout) {
-                clearTimeout(this.timeout);
-                this.timeout = null;
-            }
-        }
-
-        this.timeout = (function () {
-            new Request.JSON({
-                url: this.url + 'get-data/',
-                link: 'cancel',
-                onSuccess: this.rebuild.bind(this)
-            }).send({
+    requestValues: function (obj) {
+        if(obj.term) {
+            var str = obj.term;
+            return {
                 data: 'filter=' + JSON.encode(
                     new Filter.ClauseSet(
                         Filter.Clause.create('u_name', this.valueTable, 'like', 'string', null).setValue(str),
                         Filter.Clause.create('u_fullname', this.valueTable, 'like', 'string', 'OR ').setValue(str),
-                        Filter.Clause.create('u_phone', this.valueTable, 'like', 'string', 'OR').setValue(str.replace(/-|\(|\)/g,''))
+                        Filter.Clause.create('u_phone', this.valueTable, 'like', 'string', 'OR').setValue(str.replace(/-|\(|\)/g, ''))
                     )
                 ) + '&'
-            });
-        }).delay(Lookup.TIMEOUT_PERIOD, this);
-
-    },
+            };
+        }
+    },*/
 })

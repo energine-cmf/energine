@@ -1,17 +1,24 @@
-ScriptLoader.load('Filters');
+ScriptLoader.load('scripts/select2/Select2_wrapper_jquery.js', 'scripts/select2/select2.full.jquery.min.js', 'Filters');
 
 var Lookup = new Class({
     initialize: function (el, componentPath) {
         var button;
-
         this.el = $(el);
+        Asset.css('select2/select2.css');
         this.url = componentPath + this.el.getProperty('data-url');
+
+        Select2_wrapper_jquery(el,
+            this.url+'get-data/',
+            this.requestValues.bind(this),
+            this.rebuild.bind(this)
+        );
+
         this.keyField = this.el.getElement('input[type=hidden]');
         this.keyFieldName = this.el.getProperty('data-key-field');
         this.valueFieldName = this.el.getProperty('data-value-field');
         this.valueTable = this.el.getProperty('data-value-table');
 
-        this.input = this.el.getElement('input[type=text]');
+        /*this.input = this.el.getElement('input[type=text]');*/
 
         this.el.getElement('button').addEvent('click', function (e) {
             e.stop();
@@ -24,71 +31,29 @@ var Lookup = new Class({
                 }.bind(this)
             });
         }.bind(this));
-
-        this.list = new DropBoxList(this.input);
-        this.list.addEvent('choose', this.select.bind(this));
-        this.list.get().inject(this.input, 'after');
-        //Вешаем на keyup для того чтобы у нас было реальное value поля
-        this.input.addEvent('keyup', this.enter.bind(this));
-        this.date = false;
     },
-
-    /**
-     * Event handler. Enter.
-     *
-     * @param {Object} e Event.
-     */
-    enter: function (e) {
-        if (!this.url) {
-            return;
-        }
-
-        var val = this.input.value;
-
-        switch (e.key) {
-            case 'esc':
-                this.list.hide();
-                this.list.empty();
-                break;
-
-            case 'up':
-            case 'down':
-            case 'enter':
-                this.list.keyPressed.call(this.list, e);
-                break;
-
-            default :
-                if (val != this.value) {
-                    if (val.length > Lookup.START_CHAR_COUNT) {
-                        this.value = val;
-                        this.requestValues(val);
-                    }
-                }
-
-
-        }
-    },
-
+    
     /**
      * Prepare the data.
      *
      * @param {Object} result Result object.
      */
-    rebuild: function (result) {
-        if (result.result && result.data) {
-            this.list.update(result.data.map(function (item) {
-                return {
-                    key: item[this.keyFieldName],
-                    'value': item[this.valueFieldName]
-                }
-            }.bind(this)), this.value);
-            this.list.show();
-        }
-        else {
-            this.list.hide();
-        }
+    rebuild:  function (response, requestParams) {
 
+        // parse the results into the format expected by Select2
+        // since we are using custom formatting functions we do not need to
+        // alter the remote JSON data, except to indicate that infinite
+        // scrolling can be used
+        if(response.data) {
+            requestParams.page = requestParams.page || 1;
 
+            return {
+                results: response.data/*,
+                pagination: {
+                    more: (params.page * 30) < response.total_count
+                }*/
+            }
+        }
     },
 
     /**
@@ -96,29 +61,11 @@ var Lookup = new Class({
      *
      * @param {string} str Data string.
      */
-    requestValues: function (str) {
-        if (!this.date) {
-            this.date = new Date();
-        }
-
-        if ((this.date.get('sec') - new Date().get('sec')) < Lookup.TIMEOUT_PERIOD) {
-            if (this.timeout) {
-                clearTimeout(this.timeout);
-                this.timeout = null;
-            }
-        }
-
-        this.timeout = (function () {
-            new Request.JSON({
-                url: this.url + 'get-data/',
-                link: 'cancel',
-                onSuccess: this.rebuild.bind(this)
-            }).send({
-                    data: 'filter=' + JSON.encode(
-                        new Filter.ClauseSet(Filter.Clause.create(this.valueFieldName, this.valueTable, 'like', 'string').setValue(str))
-                    ) + '&'
-                });
-        }).delay(Lookup.TIMEOUT_PERIOD, this);
+    requestValues: function (query) {
+        if(query.term)
+        return {'filter': JSON.encode(
+            new Filter.ClauseSet(Filter.Clause.create(this.valueFieldName, this.valueTable, 'like', 'string').setValue(query.term))
+        ) };
 
     },
 

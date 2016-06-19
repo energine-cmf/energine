@@ -10,10 +10,12 @@ var Lookup = new Class({
         Select2_wrapper_jquery(el,
             this.url+'get-data/',
             this.requestValues.bind(this),
-            this.rebuild.bind(this)
+            this.rebuild.bind(this),
+            this.show.bind(this),
+            this.show.bind(this)
         );
 
-        this.keyField = this.el.getElement('input[type=hidden]');
+        //this.keyField = this.el.getElement('input[type=hidden]');
         this.keyFieldName = this.el.getProperty('data-key-field');
         this.valueFieldName = this.el.getProperty('data-value-field');
         this.valueTable = this.el.getProperty('data-value-table');
@@ -31,6 +33,9 @@ var Lookup = new Class({
                 }.bind(this)
             });
         }.bind(this));
+    },
+    show: function(row, obj){
+        return row[this.valueFieldName];
     },
     
     /**
@@ -54,6 +59,10 @@ var Lookup = new Class({
                 }*/
             }
         }
+
+        return {
+            results:[]
+        }
     },
 
     /**
@@ -70,9 +79,9 @@ var Lookup = new Class({
     },
 
     load: function (data) {
-        this.keyField.set('value', data[this.keyFieldName]);
-        this.input.set('value', data[this.valueFieldName]);
-        this.keyField.fireEvent('change', data);
+        //this.keyField.set('value', data[this.keyFieldName]);
+        //this.input.set('value', data[this.valueFieldName]);
+        //this.keyField.fireEvent('change', data);
     },
 
     /**
@@ -80,17 +89,10 @@ var Lookup = new Class({
      *
      * @param {HTMLLIElement} li Element that will be selected.
      */
-    select: function (li) {
-        var text = li.get('text');
-
-        if ((this.list.selected !== false) && this.list.items[this.list.selected]) {
-            this.input.set('value', text);
-            this.keyField.set('value', li.retrieve('key'));
-            this.keyField.fireEvent('change');
-        }
-        this.list.hide();
+    select: function () {
+        console.log(arguments)
     }
 });
 
 Lookup.TIMEOUT_PERIOD = 500;
-Lookup.START_CHAR_COUNT = 2;
+Lookup.START_CHAR_COUNT = 1;

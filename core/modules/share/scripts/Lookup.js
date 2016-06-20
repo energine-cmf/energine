@@ -1,18 +1,19 @@
-ScriptLoader.load('scripts/select2/Select2_wrapper_jquery.js', 'scripts/select2/select2.full.jquery.min.js', 'Filters');
+ScriptLoader.load('scripts/select2/Select2_wrapper_jquery.js', 'scripts/select2/select2.jquery.js', 'Filters');
 
 var Lookup = new Class({
     initialize: function (el, componentPath) {
         var button;
         this.el = $(el);
         Asset.css('select2/select2.css');
-        this.url = componentPath + this.el.getProperty('data-url');
 
+        this.url = componentPath + this.el.getProperty('data-url');
+        //el.removeEvents();
         Select2_wrapper_jquery(el,
-            this.url+'get-data/',
+            this.url + 'get-data/',
             this.requestValues.bind(this),
-            this.rebuild.bind(this),
-            this.show.bind(this),
-            this.show.bind(this)
+            this.rebuild.bind(this)
+            ,this.show.bind(this)
+            ,this.select.bind(this)
         );
 
         //this.keyField = this.el.getElement('input[type=hidden]');
@@ -34,34 +35,39 @@ var Lookup = new Class({
             });
         }.bind(this));
     },
-    show: function(row, obj){
-        return row[this.valueFieldName];
+    show: function (row, obj) {
+        return '<div>'+row.text+'</div>';
     },
-    
+
     /**
      * Prepare the data.
      *
      * @param {Object} result Result object.
      */
-    rebuild:  function (response, requestParams) {
+    rebuild: function (response, requestParams) {
 
         // parse the results into the format expected by Select2
         // since we are using custom formatting functions we do not need to
         // alter the remote JSON data, except to indicate that infinite
         // scrolling can be used
-        if(response.data) {
+        if (response.data) {
             requestParams.page = requestParams.page || 1;
 
             return {
-                results: response.data/*,
-                pagination: {
-                    more: (params.page * 30) < response.total_count
-                }*/
+                results: response.data.map(function(row){
+                    return {
+                        id:row[this.keyFieldName],
+                        text:row[this.valueFieldName]
+                    }
+                }.bind(this))/*,
+                 pagination: {
+                 more: (params.page * 30) < response.total_count
+                 }*/
             }
         }
 
         return {
-            results:[]
+            results: []
         }
     },
 
@@ -71,10 +77,12 @@ var Lookup = new Class({
      * @param {string} str Data string.
      */
     requestValues: function (query) {
-        if(query.term)
-        return {'filter': JSON.encode(
-            new Filter.ClauseSet(Filter.Clause.create(this.valueFieldName, this.valueTable, 'like', 'string').setValue(query.term))
-        ) };
+        if (query.term)
+            return {
+                'filter': JSON.encode(
+                    new Filter.ClauseSet(Filter.Clause.create(this.valueFieldName, this.valueTable, 'like', 'string').setValue(query.term))
+                )
+            };
 
     },
 
@@ -89,10 +97,10 @@ var Lookup = new Class({
      *
      * @param {HTMLLIElement} li Element that will be selected.
      */
-    select: function () {
-        console.log(arguments)
+    select: function (obj) {
+        return obj.text;
     }
 });
 
 Lookup.TIMEOUT_PERIOD = 500;
-Lookup.START_CHAR_COUNT = 1;
+//Lookup.START_CHAR_COUNT = 1;

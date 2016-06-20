@@ -330,15 +330,17 @@
     </xsl:template>
 
     <xsl:template match="field[@type='lookup' and ancestor::component[@type='form' and (@exttype='feed' or @exttype='grid')]]" mode="field_input">
-        <input>
+        <!--<input>
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
             <xsl:attribute name="type">hidden</xsl:attribute>
             <xsl:attribute name="id"><xsl:value-of select="@name"/></xsl:attribute>
             <xsl:attribute name="value"><xsl:value-of select="value/@id"/></xsl:attribute>
-        </input>
+        </input>-->
         <div class="with_append lookup">
-            <select id="{@name}_name"  class="text acpl"  multiple="multiple" data-value="{value}" style="width:100%;" data-language="{$DOC_PROPS[@name='lang']/@real_abbr}">
-
+            <!--multiple="multiple"-->
+            <select id="{@name}_name"  class="text acpl"    style="width:100%;" data-lang="{$DOC_PROPS[@name='lang']/@real_abbr}">
+                <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
+                <xsl:attribute name="data-placeholder">test</xsl:attribute>
             </select>
             <div class="appended_block">
                 <button type="button"  style="height: 18px;">...</button>

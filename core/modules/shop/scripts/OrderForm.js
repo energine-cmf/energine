@@ -34,14 +34,14 @@ var OrderForm = new Class(/** @lends OrderForm# */{
         $(window).addEvent('orderTabGoods', this.onOrderTabGoods.bind(this));
         new Elements([
             this.element.getElement('[name=shop_orders[order_discount]]')/*,
-            this.element.getElement('[name=shop_orders[order_discount]]')*/
+             this.element.getElement('[name=shop_orders[order_discount]]')*/
         ]).addEvents({
             'keyup': this.recalculateTotals.bind(this),
             'change': this.recalculateTotals.bind(this)
         });
 
         var $uid = this.element.getElementById('u_id');
-            $uid.addEvent('change', this.fetchUserDetails.bind(this, $uid));
+        jQuery($uid).on('change', this.fetchUserDetails.bind(this, $uid));
 
         $(window).fireEvent('orderTabMain');
 
@@ -67,7 +67,7 @@ var OrderForm = new Class(/** @lends OrderForm# */{
                 currentTab.loaded = true;
             }
             else {
-                this.codeEditors.each(function(ce){
+                this.codeEditors.each(function (ce) {
                     ce.refresh();
                 });
             }
@@ -97,12 +97,12 @@ var OrderForm = new Class(/** @lends OrderForm# */{
                 function (data) {
                     if (data.result) {
                         delete data.result, data.mode;
-                        Object.each(data, function(value, key){
-                            if(this.element.getElementById(key)){
+                        Object.each(data, function (value, key) {
+                            if (this.element.getElementById(key)) {
                                 this.element.getElementById(key).set('value', value).focus();
                             }
                         }, this);
-                        $(this.element.getElementById('u_id_name')).set('value', data.order_user_name);
+                        //$(this.element.getElementById('u_id_name')).set('value', data.order_user_name);
                     }
                 }.bind(this),
                 this.processServerError.bind(this),
@@ -130,18 +130,18 @@ var OrderForm = new Class(/** @lends OrderForm# */{
             function (data) {
                 if (data.result) {
                     order_amount.set('value', data.amount);
-                    if(this.element.getElementById('order_amount_read')){
+                    if (this.element.getElementById('order_amount_read')) {
                         this.element.getElementById('order_amount_read').set('html', data.amount);
                     }
                     order_total.set('value', data.total);
-                    if(this.element.getElementById('order_total_read')){
+                    if (this.element.getElementById('order_total_read')) {
                         this.element.getElementById('order_total_read').set('html', data.total);
                     }
-                    if(this.element.getElementById('order_goods_discount_read')){
+                    if (this.element.getElementById('order_goods_discount_read')) {
                         this.element.getElementById('order_goods_discount_read').set('html', data.discount);
                     }
 
-                    if(onSuccess) onSuccess();
+                    if (onSuccess) onSuccess();
                 }
             }.bind(this),
             this.processServerError.bind(this),
@@ -163,7 +163,7 @@ var OrderForm = new Class(/** @lends OrderForm# */{
      * @public
      */
     save: function () {
-        this.recalculateTotals(function(){
+        this.recalculateTotals(function () {
             Cookie.dispose('uid', {path: new URI(Energine.base).get('directory'), duration: 0});
             this.richEditors.each(function (editor) {
                 editor.onSaveForm();
@@ -176,7 +176,7 @@ var OrderForm = new Class(/** @lends OrderForm# */{
                 return;
             }
 
-            this.booleanTags.each(function(bt){
+            this.booleanTags.each(function (bt) {
                 bt.save();
             });
 
@@ -195,32 +195,56 @@ var OrderForm = new Class(/** @lends OrderForm# */{
 });
 
 Lookup = Class.refactor(Lookup, {
-    /*rebuild: function (result) {
-        if (result.result && result.data) {
-            this.list.update(result.data.map(function (item) {
-                return {
-                    key: item[this.keyFieldName],
-                    'value': item['u_acp_name']
-                }
-            }.bind(this)), this.value);
-            this.list.show();
+    rebuild: function (response, requestParams) {
+
+        // parse the results into the format expected by Select2
+        // since we are using custom formatting functions we do not need to
+        // alter the remote JSON data, except to indicate that infinite
+        // scrolling can be used
+        if (response.data) {
+            requestParams.page = requestParams.page || 1;
+
+            return {
+                results: response.data.map(function (row) {
+                    return Object.append(row, {
+                        id: row[this.keyFieldName],
+                        text: row[this.valueFieldName]
+                    })
+                }.bind(this))/*,
+                 pagination: {
+                 more: (params.page * 30) < response.total_count
+                 }*/
+            }
         }
-        else {
-            this.list.hide();
+
+        return {
+            results: []
+        }
+    },
+    show: function (row) {
+        if(!row.loading) {
+            return '<div>' +
+                '<div>' + row.u_fullname + '</div>' +
+                '<div>' + row.u_phone + '</div>' +
+                '<div>' + row.u_name + '</div>' +
+                '</div>';
         }
     },
     requestValues: function (obj) {
-        if(obj.term) {
+        if (obj.term) {
             var str = obj.term;
             return {
-                data: 'filter=' + JSON.encode(
+                filter: JSON.encode(
                     new Filter.ClauseSet(
                         Filter.Clause.create('u_name', this.valueTable, 'like', 'string', null).setValue(str),
                         Filter.Clause.create('u_fullname', this.valueTable, 'like', 'string', 'OR ').setValue(str),
                         Filter.Clause.create('u_phone', this.valueTable, 'like', 'string', 'OR').setValue(str.replace(/-|\(|\)/g, ''))
                     )
-                ) + '&'
-            };
+                )
+            }
         }
-    },*/
-})
+    },
+    select: function (obj) {
+        return '<div>'+obj.u_fullname+'</div>';
+    }
+});

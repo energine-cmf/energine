@@ -239,20 +239,20 @@ var Form = new Class(/** @lends Form# */{
                 isOnFocus: false,
                 controlEl: el
             });
-            el.addEvents({
+  /*          el.addEvents({
                 mouseenter: this.glow.bind(this),
                 mouseleave: this.glow.bind(this)
-            });
+            });*/
         }, this);
         this.appendedControls.getElements('input,select').each(function (el, id) {
             el.each(function (el) {
                 el.controlEl = this.appendedControls[id];
             }.bind(this));
 
-            el.addEvents({
+/*            el.addEvents({
                 focus: this.glow.bind(this),
                 blur: this.glow.bind(this)
-            });
+            });*/
         }, this);
     },
 
@@ -292,7 +292,7 @@ var Form = new Class(/** @lends Form# */{
                 ev.target.controlEl.isOnFocus = true;
             case 'mouseenter':
                 ev.target.controlEl.addClass('focus_block');
-                ev.stopPropagation();
+               // ev.stopPropagation();
                 break;
 
             case 'blur':
@@ -300,7 +300,7 @@ var Form = new Class(/** @lends Form# */{
             case 'mouseleave':
                 if (!ev.target.controlEl.isOnFocus) {
                     ev.target.controlEl.removeClass('focus_block');
-                    ev.stopPropagation();
+                 //   ev.stopPropagation();
                 }
                 break;
         }

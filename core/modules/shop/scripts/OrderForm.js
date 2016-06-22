@@ -27,7 +27,7 @@ var OrderForm = new Class(/** @lends OrderForm# */{
 
     // constructor
     initialize: function (element) {
-        //Asset.css('order_editor.css');
+        Asset.css('order_editor.css');
         this.parent(element);
 
         $(window).addEvent('orderTabMain', this.onOrderTabMain.bind(this));
@@ -223,7 +223,9 @@ Lookup = Class.refactor(Lookup, {
     },
     show: function (row) {
         if(!row.loading) {
-            return '<div>' +
+            return '<div class="users_acp_list clearfix">' +
+
+                '<div class="image"><img src="' + ((row.image)?row.image:"images/webworks/default_avatar.jpg" )+ '" /></div>' +
                 '<div>' + row.u_fullname + '</div>' +
                 '<div>' + row.u_phone + '</div>' +
                 '<div>' + row.u_name + '</div>' +
@@ -245,6 +247,7 @@ Lookup = Class.refactor(Lookup, {
         }
     },
     select: function (obj) {
-        return '<div>'+obj.u_fullname+'</div>';
+        if(obj.u_fullname)
+            return '<div>'+obj.u_fullname+'</div>';
     }
 });

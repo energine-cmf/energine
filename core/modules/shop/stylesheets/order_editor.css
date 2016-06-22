@@ -1,0 +1,13 @@
+.users_acp_list{
+
+}
+.users_acp_list div{
+    float:left;
+    width:100px;
+}
+.users_acp_list .image{
+    float:left;
+}
+.users_acp_list .image img{
+    width:50%;
+}

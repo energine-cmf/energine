@@ -1,13 +1,18 @@
 .users_acp_list{
-
+    font-family: Roboto, sans-serif;
 }
 .users_acp_list div{
     float:left;
-    width:100px;
+    clear:right;
+    padding-right:20px;
+    padding-bottom:10px;
+
 }
 .users_acp_list .image{
     float:left;
+    width:100px;
+
 }
 .users_acp_list .image img{
-    width:50%;
+    width:70%;
 }

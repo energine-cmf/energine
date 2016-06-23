@@ -35,7 +35,8 @@ var OrderGoodsForm = new Class(/** @lends OrderGoodsForm# */{
 		new Elements([this.element.getElementById('goods_quantity'), this.element.getElementById('goods_price')])
 			.addEvents({'keyup': this.recalculateTotals.bind(this), 'change': this.recalculateTotals.bind(this)});
 
-		this.element.getElementById('goods_id').addEvent('change', this.fetchGoodsDetails.bind(this));
+		jQuery('#' + 'goods_id').on('change', this.fetchGoodsDetails.bind(this));
+
 
 		$(window).fireEvent('orderGoodsTabMain');
 

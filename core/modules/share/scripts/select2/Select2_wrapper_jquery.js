@@ -21,8 +21,8 @@ var Select2_wrapper_jquery;
             templateSelection: selectionFunction,
             language: $select.data('lang'),
             allowClear: true,
-            escapeMarkup: function (markup) { return markup; }
-
+            escapeMarkup: function (markup) { return markup; },
+            placeholder:$select.data('placeholder')
             //,minimumInputLength: Lookup.START_CHAR_COUNT
         });
     }

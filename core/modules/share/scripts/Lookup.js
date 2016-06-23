@@ -1,14 +1,15 @@
-ScriptLoader.load('scripts/select2/Select2_wrapper_jquery.js', 'scripts/select2/select2.jquery.js', 'Filters');
+ScriptLoader.load('scripts/select2/Select2_wrapper_jquery.js', 'scripts/select2/select2.full.jquery.min.js', 'Filters');
 
 var Lookup = new Class({
     initialize: function (el, componentPath) {
         var button;
         this.el = $(el);
+        this.$select = null;
         Asset.css('select2/select2.css');
 
         this.url = componentPath + this.el.getProperty('data-url');
         //el.removeEvents();
-        Select2_wrapper_jquery(el,
+        this.selectComponent = Select2_wrapper_jquery(this.$select = this.el.getElement('select'),
             this.url + 'get-data/',
             this.requestValues.bind(this),
             this.rebuild.bind(this)
@@ -87,9 +88,10 @@ var Lookup = new Class({
     },
 
     load: function (data) {
-        //this.keyField.set('value', data[this.keyFieldName]);
-        //this.input.set('value', data[this.valueFieldName]);
-        //this.keyField.fireEvent('change', data);
+        this.selectComponent.val(data[this.keyFieldName]).trigger('change');
+        /*$select.select2({initSelection: function(element, callback){
+            callback({id:data[this.keyFieldName], text:data[this.valueFieldName]});
+        }.bind(this)});*/
     },
 
     /**

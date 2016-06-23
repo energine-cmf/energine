@@ -202,7 +202,8 @@
             });
         </script>
         <xsl:apply-templates select="document/translations"/>
-        <xsl:if test="count(//javascript/behavior[@use='jquery']) &gt; 0">
+        <xsl:variable name="USE_JQUERY" select="(count(/document/javascript/library[contains(@name, 'jquery')]) &gt;0) or (count(//javascript/behavior[@use='jquery']) &gt; 0)"/>
+        <xsl:if test="$USE_JQUERY">
             <script src="{/document/javascript/@jquery}"></script>
             <script type="text/javascript">
                 jQuery.noConflict();
@@ -210,22 +211,23 @@
                   options['headers'] = {'X-Request': options.dataType};
                 });
             </script>
+
             <xsl:apply-templates select="/" mode="jquery_scripts"/>
-        </xsl:if>
-        <xsl:if test="count(//javascript/behavior[@use='jquery']) &gt; 0">
             <xsl:apply-templates select="/document/javascript/library" mode="jquery"/>
-            <script type="text/javascript">
-                (function($, window, document) {
-                // Listen for the jQuery ready event on the document
-                $(function() {
-            <xsl:for-each select="//javascript/behavior[@use='jquery']">
-                <xsl:call-template name="INIT_JS">
-                    <xsl:with-param name="PREFIX">jquery_</xsl:with-param>
-                </xsl:call-template>
-            </xsl:for-each>
-                });
-                }(window.jQuery, window, document));
-            </script>
+            <xsl:if test="//javascript/behavior[@use='jquery'] &gt; 0">
+                <script type="text/javascript">
+                    (function($, window, document) {
+                    // Listen for the jQuery ready event on the document
+                    $(function() {
+                <xsl:for-each select="//javascript/behavior[@use='jquery']">
+                    <xsl:call-template name="INIT_JS">
+                        <xsl:with-param name="PREFIX">jquery_</xsl:with-param>
+                    </xsl:call-template>
+                </xsl:for-each>
+                    });
+                    }(window.jQuery, window, document));
+                </script>
+            </xsl:if>
             <xsl:apply-templates select="/document/javascript/library"/>
         </xsl:if>
     </xsl:template>

@@ -207,7 +207,7 @@ class OrderEditor extends Grid implements SampleOrderEditor {
         select 
         	u_fullname as order_user_name, u_city as order_city, u_phone as order_phone, LCASE(u_name) as order_email,
         	 u_avatar_img as image,
-adr_aux_phone as order_aux_phone,
+IFNULL(u_add_phone, adr_aux_phone) as order_aux_phone,
 adr_index as order_index, 
 adr_floor as order_floor,
 adr_apt  as order_apt,

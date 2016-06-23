@@ -61,6 +61,7 @@
 		     </uri_patterns>
 			<fields>
 				<field name="ltag_id"/>
+				<field name="lang_id"/>
 				<field name="ltag_name"/>
 				<field name="ltag_value_rtf" type="text"/>
 			</fields>

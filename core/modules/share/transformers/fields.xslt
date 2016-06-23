@@ -338,9 +338,8 @@
         </input>-->
         <div class="with_append lookup">
             <!--multiple="multiple"-->
-            <select id="{@name}_name"  class="text acpl"    style="width:100%;" data-lang="{$DOC_PROPS[@name='lang']/@real_abbr}">
+            <select id="{@name}_name"  class="text acpl" style="width:100%;" data-lang="{$DOC_PROPS[@name='lang']/@real_abbr}">
                 <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
-                <xsl:attribute name="data-placeholder">test</xsl:attribute>
             </select>
             <div class="appended_block">
                 <button type="button"  style="height: 18px;">...</button>

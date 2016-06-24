@@ -214,7 +214,7 @@
 
             <xsl:apply-templates select="/" mode="jquery_scripts"/>
             <xsl:apply-templates select="/document/javascript/library" mode="jquery"/>
-            <xsl:if test="//javascript/behavior[@use='jquery'] &gt; 0">
+            <xsl:if test="count(//javascript/behavior[@use='jquery']) &gt; 0">
                 <script type="text/javascript">
                     (function($, window, document) {
                     // Listen for the jQuery ready event on the document

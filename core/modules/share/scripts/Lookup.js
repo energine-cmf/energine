@@ -87,13 +87,10 @@ var Lookup = new Class({
 
     },
 
-    load: function (data) {
+    load: function (data, triggerEvent) {
         this.$select.grab(new Element('option', {'value':data[this.keyFieldName], 'text':data[this.valueFieldName]}));
 
-        this.selectComponent.trigger('change');
-        /*$select.select2({initSelection: function(element, callback){
-            callback({id:data[this.keyFieldName], text:data[this.valueFieldName]});
-        }.bind(this)});*/
+        if(triggerEvent) this.selectComponent.trigger('change');
     },
 
     /**

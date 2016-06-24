@@ -59,6 +59,8 @@ var Form = new Class(/** @lends Form# */{
      */
     richEditors: [],
 
+    lookups: [],
+
     /**
      * Array of Uploaders.
      * @type {Uploader[]}
@@ -155,7 +157,7 @@ var Form = new Class(/** @lends Form# */{
         }, this);
 
         this.form.getElements('div.type_lookup').each(function (el) {
-            new Lookup(el, this.singlePath);
+            this.lookups.push(new Lookup(el, this.singlePath));
         }, this);
 
         var tags = null;

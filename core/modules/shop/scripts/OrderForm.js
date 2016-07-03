@@ -135,6 +135,7 @@ var OrderForm = new Class(/** @lends OrderForm# */{
                     if (this.element.getElementById('order_amount_read')) {
                         this.element.getElementById('order_amount_read').set('html', data.amount);
                     }
+
                     if (!isPromoCodeUsed) {
                         order_total.set('value', data.total);
                         if (this.element.getElementById('order_total_read')) {
@@ -147,9 +148,15 @@ var OrderForm = new Class(/** @lends OrderForm# */{
                         if (onSuccess && ((typeof onSuccess) == 'function')) onSuccess();
                     }
                     else {
+                        var total = order_total.get('value');
                         if (this.element.getElementById('order_goods_discount_read')) {
-                            this.element.getElementById('order_goods_discount_read').set('html', order_amount.get('value') - order_total.get('value') );
+                            this.element.getElementById('order_goods_discount_read').set('html', order_amount.get('value') - total);
                         }
+
+                        /*if (this.element.getElementById('order_total_read')) {
+                            this.element.getElementById('order_total_read').set('html', total - order_discount.get('value'));
+                        }
+                        order_total.set('value', total - order_discount.get('value'));*/
                     }
                 }
             }.bind(this),

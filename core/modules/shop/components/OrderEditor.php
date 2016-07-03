@@ -100,6 +100,16 @@ class OrderEditor extends Grid implements SampleOrderEditor {
 		);
 	}
 
+	protected function edit() {
+		parent::edit();
+		if($f = $this->getData()->getFieldByName('order_promocode')){
+
+			if($f->getRowData(0)){
+				$this->getDataDescription()->getFieldDescriptionByName('order_discount')->setMode(FieldDescription::FIELD_MODE_READ);
+			}
+		}
+	}
+
 	/**
 	 * Create component for editing ordered goods.
 	 */

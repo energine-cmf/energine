@@ -141,7 +141,7 @@ var OrderForm = new Class(/** @lends OrderForm# */{
                         this.element.getElementById('order_goods_discount_read').set('html', data.discount);
                     }
 
-                    if (onSuccess) onSuccess();
+                    if (onSuccess && ((typeof onSuccess) == 'function')) onSuccess();
                 }
             }.bind(this),
             this.processServerError.bind(this),

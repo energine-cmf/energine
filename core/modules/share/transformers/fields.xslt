@@ -531,7 +531,7 @@
     <xsl:template match="field[@mode='1'][ancestor::component[@type='form']]" mode="field_name_readonly">
         <xsl:if test="@title">
                 <div class="name"><label for="{@name}">
-                    <xsl:value-of select="concat(@title, ':')" disable-output-escaping="yes"/>
+                    <xsl:value-of select="@title" disable-output-escaping="yes"/>
                 </label></div>
         </xsl:if>
     </xsl:template>
@@ -539,7 +539,7 @@
     <!-- для любого поля, на которое права только чтение -->
     <xsl:template match="field[@mode='1'][ancestor::component[@type='form']]" mode="field_input_readonly">
         <div class="control">
-            <span id="{@name}_read"><xsl:value-of select="." disable-output-escaping="yes"/></span>
+            <input type="text" id="{@name}_read" disabled="disabled" value="{.}"/>
             <input>
                 <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES_READONLY"/>
             </input>
@@ -549,7 +549,7 @@
     <!-- read-only lookup -->
     <xsl:template match="field[@mode='1' and ancestor::component[@type='form'] and @type='lookup']" mode="field_input_readonly">
         <div class="control">
-            <span id="{@name}_read"><xsl:value-of select="." disable-output-escaping="yes"/></span>
+            <input type="text" id="{@name}_read" disabled="disabled" value="{.}"/>
             <input>
                 <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES_READONLY"/>
                 <xsl:attribute name="value"><xsl:value-of select="value/@id"/></xsl:attribute>
@@ -636,11 +636,13 @@
     </xsl:template>
 
     <xsl:template match="field[@type='select'][@mode='1'][ancestor::component[@type='form']]" mode="field_input_readonly">
-        <span class="read"><xsl:value-of select="options/option[@selected='selected']"/></span>
-        <input>
-            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES_READONLY"/>
-            <xsl:attribute name="value"><xsl:value-of select="options/option[@selected='selected']/@id"/></xsl:attribute>
-        </input>
+        <div class="control">
+            <input type="text" value="{options/option[@selected='selected']}" disabled="disabled"></input>
+            <input>
+                <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES_READONLY"/>
+                <xsl:attribute name="value"><xsl:value-of select="options/option[@selected='selected']/@id"/></xsl:attribute>
+            </input>
+        </div>
     </xsl:template>
 
     <!-- read-only поле типа multiselect -->

@@ -120,6 +120,7 @@
     float: left;
     width: 100%;
     padding: 10px 0;
+
 }
 .e-pane-content .field .name {
     display: block;
@@ -127,15 +128,13 @@
     vertical-align: middle;
     width: 30%;
     margin-bottom: 10px;
-    /*font-weight: bold;*/
+    margin:0;
+    min-height: 30px;
+    line-height:30px;
 }
-.e-pane-content .field .name{
-    margin-top:12px;
-    margin-bottom:0;
-}
-.e-pane-content .field.readonly .name{
-    margin-top:0;
-    margin-bottom:0;
+.e-pane-content .field .name label{
+    display: inline-block;
+    vertical-align: bottom;
 }
 .e-pane-content .field .control {
     display: block;
@@ -143,14 +142,16 @@
     vertical-align: middle;
     width: 68%;
     margin-left: -4px;
+    min-height: 30px;
 }
 .e-pane-content .field.readonly {
-/*    font-weight: bold;*/
     color: gray;
-    padding: 10px;
-    padding-left:0;
-    padding-right: 0;
 }
+.e-pane-content .field.readonly input[type="text"]{
+    border-bottom-color: white;
+    color:gray;
+}
+
 .e-pane-content .field .control textarea,
 .e-pane-content .field .control input[type="text"]
 .e-pane-content .field .control input[type="password"],

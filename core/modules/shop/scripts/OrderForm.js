@@ -112,6 +112,8 @@ var OrderForm = new Class(/** @lends OrderForm# */{
     },
 
     recalculateTotals: function (onSuccess) {
+        var isPromoCodeUsed = ($('order_promocode') && ($('order_promocode').get('value')));
+
 
         var orderID = this.element.getElementById('order_id').get('value');
 
@@ -133,15 +135,22 @@ var OrderForm = new Class(/** @lends OrderForm# */{
                     if (this.element.getElementById('order_amount_read')) {
                         this.element.getElementById('order_amount_read').set('html', data.amount);
                     }
-                    order_total.set('value', data.total);
-                    if (this.element.getElementById('order_total_read')) {
-                        this.element.getElementById('order_total_read').set('html', data.total);
-                    }
-                    if (this.element.getElementById('order_goods_discount_read')) {
-                        this.element.getElementById('order_goods_discount_read').set('html', data.discount);
-                    }
+                    if (!isPromoCodeUsed) {
+                        order_total.set('value', data.total);
+                        if (this.element.getElementById('order_total_read')) {
+                            this.element.getElementById('order_total_read').set('html', data.total);
+                        }
+                        if (this.element.getElementById('order_goods_discount_read')) {
+                            this.element.getElementById('order_goods_discount_read').set('html', data.discount);
+                        }
 
-                    if (onSuccess && ((typeof onSuccess) == 'function')) onSuccess();
+                        if (onSuccess && ((typeof onSuccess) == 'function')) onSuccess();
+                    }
+                    else {
+                        if (this.element.getElementById('order_goods_discount_read')) {
+                            this.element.getElementById('order_goods_discount_read').set('html', order_amount.get('value') - order_total.get('value') );
+                        }
+                    }
                 }
             }.bind(this),
             this.processServerError.bind(this),
@@ -222,10 +231,10 @@ Lookup = Class.refactor(Lookup, {
         }
     },
     show: function (row) {
-        if(!row.loading) {
+        if (!row.loading) {
             return '<div class="users_acp_list clearfix">' +
 
-                '<div class="image"><img src="' + ((row.image)?row.image:"images/webworks/default_avatar.jpg" )+ '" /></div>' +
+                '<div class="image"><img src="' + ((row.image) ? row.image : "images/webworks/default_avatar.jpg" ) + '" /></div>' +
                 '<div>' + row.u_fullname + '</div>' +
                 '<div>' + row.u_phone + '</div>' +
                 '<div>' + row.u_name + '</div>' +
@@ -247,7 +256,7 @@ Lookup = Class.refactor(Lookup, {
         }
     },
     select: function (obj) {
-        if(obj.u_fullname)
-            return '<div>'+obj.u_fullname+'</div>';
+        if (obj.u_fullname)
+            return '<div>' + obj.u_fullname + '</div>';
     }
 });

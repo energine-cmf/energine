@@ -129,6 +129,14 @@
     margin-bottom: 10px;
     /*font-weight: bold;*/
 }
+.e-pane-content .field .name{
+    margin-top:12px;
+    margin-bottom:0;
+}
+.e-pane-content .field.readonly .name{
+    margin-top:0;
+    margin-bottom:0;
+}
 .e-pane-content .field .control {
     display: block;
     float: left;
@@ -137,9 +145,11 @@
     margin-left: -4px;
 }
 .e-pane-content .field.readonly {
-    font-weight: bold;
+/*    font-weight: bold;*/
     color: gray;
-    padding: 0;
+    padding: 10px;
+    padding-left:0;
+    padding-right: 0;
 }
 .e-pane-content .field .control textarea,
 .e-pane-content .field .control input[type="text"]

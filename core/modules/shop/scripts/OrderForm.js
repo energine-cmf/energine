@@ -133,22 +133,22 @@ var OrderForm = new Class(/** @lends OrderForm# */{
                 if (data.result) {
                     order_amount.set('value', data.amount);
                     if (this.element.getElementById('order_amount_read')) {
-                        this.element.getElementById('order_amount_read').set('html', data.amount);
+                        this.element.getElementById('order_amount_read').set('value', data.amount);
                     }
                     if (!isPromoCodeUsed) {
                         order_total.set('value', data.total);
                         if (this.element.getElementById('order_total_read')) {
-                            this.element.getElementById('order_total_read').set('html', data.total);
+                            this.element.getElementById('order_total_read').set('value', data.total);
                         }
                         if (this.element.getElementById('order_goods_discount_read')) {
-                            this.element.getElementById('order_goods_discount_read').set('html', data.discount);
+                            this.element.getElementById('order_goods_discount_read').set('value', data.discount);
                         }
 
                         if (onSuccess && ((typeof onSuccess) == 'function')) onSuccess();
                     }
                     else {
                         if (this.element.getElementById('order_goods_discount_read')) {
-                            this.element.getElementById('order_goods_discount_read').set('html', order_amount.get('value') - order_total.get('value'));
+                            this.element.getElementById('order_goods_discount_read').set('value', order_amount.get('value') - order_total.get('value'));
                         }
                     }
                 }

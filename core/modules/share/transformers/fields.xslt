@@ -637,7 +637,7 @@
 
     <xsl:template match="field[@type='select'][@mode='1'][ancestor::component[@type='form']]" mode="field_input_readonly">
         <div class="control">
-            <input type="text" value="{options/option[@selected='selected']}" disabled="disabled"></input>
+            <input type="text" value="{options/option[@selected='selected']}" disabled="disabled"  id="{@name}_read"></input>
             <input>
                 <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES_READONLY"/>
                 <xsl:attribute name="value"><xsl:value-of select="options/option[@selected='selected']/@id"/></xsl:attribute>

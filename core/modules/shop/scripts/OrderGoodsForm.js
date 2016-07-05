@@ -80,8 +80,8 @@ var OrderGoodsForm = new Class(/** @lends OrderGoodsForm# */{
 						goods_title.set('value', data.goods_title);
 						goods_price.set('value', data.goods_price);
 						goods_real_price.set('value', data.goods_real_price);
-						this.element.getElementById('goods_real_price_read').set('html', data.goods_real_price);
-						this.element.getElementById('goods_price_read').set('html', data.goods_price);
+						this.element.getElementById('goods_real_price_read').set('value', data.goods_real_price);
+						this.element.getElementById('goods_price_read').set('value', data.goods_price);
 
 						goods_quantity.set('value', data.goods_quantity);
 						goods_amount.set('value', data.goods_amount);
@@ -123,7 +123,7 @@ var OrderGoodsForm = new Class(/** @lends OrderGoodsForm# */{
 					if (data.result) {
 						goods_amount.set('value', data.goods_amount);
 						if(this.element.getElementById('goods_amount_read')){
-							this.element.getElementById('goods_amount_read').set('html', data.goods_amount);
+							this.element.getElementById('goods_amount_read').set('value', data.goods_amount);
 						}
 					}
 				}.bind(this),

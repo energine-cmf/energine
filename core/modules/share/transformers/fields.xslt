@@ -539,6 +539,16 @@
     <!-- для любого поля, на которое права только чтение -->
     <xsl:template match="field[@mode='1'][ancestor::component[@type='form']]" mode="field_input_readonly">
         <div class="control">
+            <span id="{@name}_read"><xsl:value-of select="." disable-output-escaping="yes"/></span>
+            <input>
+                <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES_READONLY"/>
+            </input>
+        </div>
+    </xsl:template>
+
+    <!-- для любого поля, на которое права только чтение в гриде -->
+    <xsl:template match="field[@mode='1'][ancestor::component[@type='form' and (@exttype='feed' or @exttype='grid')]]" mode="field_input_readonly">
+        <div class="control">
             <input type="text" id="{@name}_read" disabled="disabled" value="{.}"/>
             <input>
                 <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES_READONLY"/>
@@ -547,7 +557,7 @@
     </xsl:template>
 
     <!-- read-only lookup -->
-    <xsl:template match="field[@mode='1' and ancestor::component[@type='form'] and @type='lookup']" mode="field_input_readonly">
+    <xsl:template match="field[@mode='1' and ancestor::component[@type='form'] and @type='lookup'  and (@exttype='feed' or @exttype='grid') ]" mode="field_input_readonly">
         <div class="control">
             <input type="text" id="{@name}_read" disabled="disabled" value="{.}"/>
             <input>
@@ -635,7 +645,17 @@
         </xsl:if>
     </xsl:template>
 
+    <!-- Select for all fields -->
     <xsl:template match="field[@type='select'][@mode='1'][ancestor::component[@type='form']]" mode="field_input_readonly">
+        <span class="read"><xsl:value-of select="options/option[@selected='selected']"/></span>
+        <input>
+            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES_READONLY"/>
+            <xsl:attribute name="value"><xsl:value-of select="options/option[@selected='selected']/@id"/></xsl:attribute>
+        </input>
+    </xsl:template>
+
+    <!-- Select for grid fields -->
+    <xsl:template match="field[@type='select'][@mode='1'][ancestor::component[@type='form'  and (@exttype='feed' or @exttype='grid')]]" mode="field_input_readonly">
         <div class="control">
             <input type="text" value="{options/option[@selected='selected']}" disabled="disabled"  id="{@name}_read"></input>
             <input>

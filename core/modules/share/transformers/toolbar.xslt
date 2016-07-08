@@ -57,7 +57,7 @@
         <span style="margin-left:10px;"/>
     </xsl:template>
     <!-- Панель управления для формы -->
-    <xsl:template match="toolbar[parent::component[@exttype='grid']]">
+    <xsl:template match="toolbar[parent::component[@exttype='grid']]">    
         <script type="text/javascript">
             $(window).addEvent('domready', function(){
                     componentToolbars['<xsl:value-of select="generate-id(../recordset)"/>'] = new Toolbar('<xsl:value-of select="@name"/>'<xsl:if
@@ -82,13 +82,14 @@
         </script>
     </xsl:template>    
 
-    <xsl:template match="component[@exttype='grid']/toolbar/control[@type = 'button']">
-    	componentToolbars['<xsl:value-of select="generate-id(../../recordset)"/>'].appendControl(
+    <xsl:template match="component[@exttype='grid']/toolbar/control[@type = 'button']">    
+    	componentToolbars['<xsl:value-of select="generate-id(../../recordset)"/>'].appendControl(    	
             new Toolbar.Button({
                 id: '<xsl:value-of select="@id"/>',
                 title: '<xsl:value-of select="@title"/>',
                 action: '<xsl:value-of select="@onclick"/>',
                 icon: '<xsl:value-of select="@icon"/>',
+                class: '<xsl:value-of select="@class"/>',
                 disabled: '<xsl:value-of select="@disabled"/>'
             })
     	);

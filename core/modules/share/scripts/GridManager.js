@@ -293,7 +293,30 @@ var Grid = (function () {
             this.data = data;
             return true;
         },
-
+        /**
+         * Disable Control in Multiselect
+         *
+         * @function
+         * @public         * 
+         */
+        disableControlByMultiselect: function () {
+           var controls=this.element.getParent('.e-pane').GridManager.toolbar.controls;
+           for (var i=0;i<controls.length;i++)                     
+              if (controls[i].element.hasClass('nomultiselect')) 
+                  controls[i].DisableAndSetProperty('DisabledByMultiselect'); 
+        },
+        /**
+         * Enable Control in normal  Multiselect
+         *
+         * @function
+         * @public         * 
+         */
+        enableControlByMultiselect: function () {
+           var controls=this.element.getParent('.e-pane').GridManager.toolbar.controls;
+           for (var i=0;i<controls.length;i++)                     
+              if (controls[i].element.hasClass('nomultiselect')) 
+                  controls[i].EnableByProperty('DisabledByMultiselect'); 
+        },        
         /**
          * Select the one data field from all [data fields]{@link Grid#data}.
          *
@@ -305,10 +328,10 @@ var Grid = (function () {
          */
         selectItem: function (item, multiple,rangeselect) {
             if(!multiple)
-                this.deselectItem();
+                {this.deselectItem();this.enableControlByMultiselect();}
             if (item) {
                 item.addClass('selected');
-                if(multiple) {
+                if(multiple) {        this.disableControlByMultiselect();            
                     if (rangeselect) {
 		      if (this.selectedItem.length>0) {				
 			var el=this.selectedItem[this.selectedItem.length-1];			
@@ -861,6 +884,7 @@ var GridManager = new Class(/** @lends GridManager# */{
          * @type {Element}
          */
         this.element = $(element);
+        $(element).GridManager=this;// needed ??
         if($(window.parent.document).getElement('form.e-grid-form')){
             this.element.addClass('inside-form');
         }

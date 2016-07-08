@@ -321,6 +321,7 @@ Toolbar.Control = new Class(/** @lends Toolbar.Control# */{
      * @param {Element} controlDescr Element with properties in the attributes.
      */
     load: function (controlDescr) {
+
         this.properties.id = controlDescr.getAttribute('id') || '';
         this.properties.icon = controlDescr.getAttribute('icon') || '';
         this.properties.title = controlDescr.getAttribute('title') || '';
@@ -337,7 +338,7 @@ Toolbar.Control = new Class(/** @lends Toolbar.Control# */{
      * @public
      * @param {string} icon Icon url.
      */
-    buildAsIcon: function (icon) {
+    buildAsIcon: function (icon) {                
         this.element
             .addClass('icon unselectable')
             .setProperties({
@@ -455,6 +456,7 @@ Toolbar.Button = new Class(/** @lends Toolbar.Button# */{
     build: function () {
         this.parent();
         this.element.addClass(this.properties.id + '_btn');
+        if (this.properties.class!=undefined)  {this.element.addClass(this.properties.class);}
         var control = this;
         this.element.addEvents({
             'mouseover': function () {
@@ -471,7 +473,34 @@ Toolbar.Button = new Class(/** @lends Toolbar.Button# */{
             }
         });
     },
-
+    /**
+     * Disable And Set Property.
+     *
+     * @function
+     * @public
+     * @param {*} [property] Argument(s) for property.
+     */
+    DisableAndSetProperty: function (property) {
+        if (!this.properties.isDisabled) {
+            this.properties[property]=true;   
+            this.properties.isDisabled=true;
+            this.element.addClass('disabled').setStyle('opacity', 0.25);
+        }
+    },
+    /**
+     * Enable if Property true.
+     *
+     * @function
+     * @public
+     * @param {*} [property] Argument(s) for property.
+     */
+    EnableByProperty: function (property) {
+        if (this.properties[property]===true) {
+            this.properties[property]=false;                       
+            this.properties.isDisabled=false;
+            this.element.removeClass('disabled').setStyle('opacity', 1);
+        }
+    },    
     /**
      * Call the action function.
      *

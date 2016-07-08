@@ -81,11 +81,12 @@ class ErrorComponent extends DataSet {
                 $message = $this->exception->getMessage();
         }
 
+	    $txt_error_hint=str_replace('%site_name%',E()->getSiteManager()->getCurrentSite()->name,E()->Utils->translate('TXT_ERROR_HINT'));
         return [
             [
                 'title'=>$this->title,
                 'message'=>$message,
-                'hint'=>E()->Utils->translate('TXT_ERROR_HINT')
+                'hint'=>$txt_error_hint
             ]
         ];
     }

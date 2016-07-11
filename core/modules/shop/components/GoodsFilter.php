@@ -22,6 +22,7 @@ use Energine\shop\gears\FeatureFieldFactory;
 class GoodsFilter extends DataSet
 {
     const FILTER_GET = 'filter';
+    public $whereFilter;
     protected $filter_data = [];
     /**
      * @var GoodsList
@@ -43,18 +44,18 @@ class GoodsFilter extends DataSet
         $this->setTitle($this->translate('TXT_FILTER_LIB'));
         $dd = new DataDescription();
         $dd->load([
-            'sf_id' => [
-                'type' => FieldDescription::FIELD_TYPE_INT,
-                'key' => true,
-                'index' => 'PRI'
-            ],
-            'sf_name' => [
-                'type' => FieldDescription::FIELD_TYPE_STRING
-            ],
-            'sf_url' => [
-                'type' => FieldDescription::FIELD_TYPE_STRING
-            ]
-        ]);
+                      'sf_id' => [
+                          'type' => FieldDescription::FIELD_TYPE_INT,
+                          'key' => true,
+                          'index' => 'PRI'
+                      ],
+                      'sf_name' => [
+                          'type' => FieldDescription::FIELD_TYPE_STRING
+                      ],
+                      'sf_url' => [
+                          'type' => FieldDescription::FIELD_TYPE_STRING
+                      ]
+                  ]);
 
         $this->setDataDescription($dd);
         $d = new Data();
@@ -100,14 +101,14 @@ class GoodsFilter extends DataSet
         $this->setTitle($this->translate('TXT_TITLE_SAVE_FILTER_FORM'));
         $dd = new DataDescription();
         $dd->load([
-            'message' => [
-                'type' => FieldDescription::FIELD_TYPE_HTML_BLOCK,
-                'mode' => FieldDescription::FIELD_MODE_READ
-            ],
-            'sf_name' => [
-                'type' => FieldDescription::FIELD_TYPE_STRING
-            ]
-        ]);
+                      'message' => [
+                          'type' => FieldDescription::FIELD_TYPE_HTML_BLOCK,
+                          'mode' => FieldDescription::FIELD_MODE_READ
+                      ],
+                      'sf_name' => [
+                          'type' => FieldDescription::FIELD_TYPE_STRING
+                      ]
+                  ]);
 
         $this->setDataDescription($dd);
         $this->setBuilder(new EmptySimpleFormBuilder());
@@ -203,13 +204,19 @@ class GoodsFilter extends DataSet
                 ]
             );
             $this->getCategoriesRecursively($documentId);
-            $relatedProducts = $this->dbh->getColumn(
-                'SELECT goods_id FROM shop_goods WHERE smap_id IN (%s)',
-                $this->categoryIds
-            );
+            $filteredProductIds = $this->getFilterProducts();
+            if (!empty($filteredProductIds)) {
+                $relatedProducts = $filteredProductIds;
+            } else {
+                $relatedProducts = $this->dbh->getColumn(
+                    'SELECT goods_id FROM shop_goods WHERE smap_id IN (%s)',
+                    $this->categoryIds
+                );
+            }
 
             // добавляем в форму только активные фичи, предназначенные для фильтра
             if ($div_feature_ids) {
+                $result = $this->getFilteredProducts($div_feature_ids);
                 foreach ($div_feature_ids as $feature_id) {
                     $feature = FeatureFieldFactory::getField($feature_id, null, $relatedProducts);
 
@@ -236,8 +243,8 @@ class GoodsFilter extends DataSet
          * @var GoodsList
          */
         $this->setProperty('action', substr(array_reduce($this->boundComponent->getSortData(), function ($p, $c) {
-                return $p . $c . '-';
-            }, 'sort-'), 0, -1) . '/');
+                                       return $p . $c . '-';
+                                   }, 'sort-'), 0, -1) . '/');
 
         $this->filter_data = $this->boundComponent->getFilterData();
 
@@ -309,6 +316,22 @@ class GoodsFilter extends DataSet
                 }
             }
         }
+    }
+
+    private function getFilterProducts()
+    {
+        $whereCondition = $this->boundComponent->getFilterWhereConditions();
+        $conditions = array('(' => '', ')' => '', 'IN' => '', 'AND' => '', 'in' => '', ' ' => '');
+        $clearString = strtr($whereCondition, $conditions);
+
+        preg_match('/(?<=goods_id)[\d,]*/', $clearString, $productIds);
+
+        if (count($productIds) > 0) {
+            return explode(',', $productIds[0]);
+        } else {
+            return false;
+        }
+
     }
 
 }

@@ -412,12 +412,12 @@ var Grid = (function () {
                 var found=false;
                 var colname=$(header[i]).get('name');                
                 for (var fieldName in record) {
-                     if (this.metadata[fieldName].type == 'hidden') {
+                     if ((fieldName.sortedByHeadersName===undefined)&&(this.metadata[fieldName].type == 'hidden')) {
                          fieldName.sortedByHeadersName=true;
                          sorted[fieldName]=record[fieldName];
                          continue;
                     }
-                    if ((fieldName.toString()==colname)&&(fieldName.sortedByHeadersName===undefined)) {
+                    if ((fieldName.sortedByHeadersName===undefined)&&(fieldName.toString()==colname)) {
                         fieldName.sortedByHeadersName=true;
                         found=true;
                         sorted[fieldName]=record[fieldName];

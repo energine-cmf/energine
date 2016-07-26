@@ -276,11 +276,11 @@
                                                 <!--<xsl:when test="@index='PRI'"></xsl:when>-->
                                                 <xsl:when test="@language">
                                                     <xsl:if test="@language = $LANG_ID">
-                                                        <th id="col_{position()}"><xsl:value-of select="@title"/></th>
+                                                        <th id="col_{position()}" name="{@name}"><xsl:value-of select="@title"/></th>
                                                     </xsl:if>
                                                 </xsl:when>
                                                 <xsl:otherwise>
-                                                    <th id="col_{position()}"><xsl:value-of select="@title"/></th>
+                                                    <th id="col_{position()}" name="{@name}"><xsl:value-of select="@title"/></th>
                                                 </xsl:otherwise>
                                             </xsl:choose>
                                         </xsl:for-each>

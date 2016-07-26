@@ -81,6 +81,7 @@ var Grid = (function () {
 
         // Создаем новую строку в таблице.
         row = new Element('tr').addClass((id % 2 == 0) ? 'odd' : 'even').setProperty('unselectable', 'on').inject(this.tbody);
+        
         // Сохраняем запись в объекте строки.
         row.record = record;
 
@@ -400,7 +401,35 @@ var Grid = (function () {
                 return (this.selectedItem.length) ? this.selectedItem : null;
             }
         },
-
+        /**
+         * Sort Record according Headers  name property + hide unused headers        
+         * @function
+         * @public
+         */        
+        sortRecordAsHeadersName: function(record,header) {
+          var sorted=new Object();
+            for (var i=0;i<header.length;i++) {
+                var found=false;
+                var colname=$(header[i]).get('name');                
+                for (var fieldName in record) {
+                     if (this.metadata[fieldName].type == 'hidden') {
+                         fieldName.sortedByHeadersName=true;
+                         sorted[fieldName]=record[fieldName];
+                         continue;
+                    }
+                    if ((fieldName.toString()==colname)&&(fieldName.sortedByHeadersName===undefined)) {
+                        fieldName.sortedByHeadersName=true;
+                        found=true;
+                        sorted[fieldName]=record[fieldName];
+                        break;
+                    }
+                }
+                if (found===false) {                    
+                    $(header[i]).setStyle('display', 'none');                                        
+                }                
+            }
+            return sorted;
+        },
         /**
          * Build Grid. Fill the Grid's table body with data fields.
          *
@@ -412,20 +441,17 @@ var Grid = (function () {
 
             this.selectedItem = new Elements();
 
-            if (!this.isEmpty()) {
-                if (!this.dataKeyExists(preiouslySelectedRecordKey)) {
-                    preiouslySelectedRecordKey = false;
-                }
-                this.data.each(function (record, id) {
-                    addRecord.call(this, record, id, preiouslySelectedRecordKey);		    
-                }, this);
-                if (!this.selectedItem.length && !preiouslySelectedRecordKey) {
-                    this.selectItem(this.tbody.getFirst());
-                }
-            } else {
-                new Element('tr').inject(this.tbody);
-            }
-
+            /**
+             * Element for Grid's header.
+             * @type {Element}
+             */
+            this.gridHeadContainer = this.element.getElement('.gridHeadContainer');            
+            /**
+             * Element Grid's header tabs.
+             * @type {Element}
+             */
+            this.gridHeadContainerTabs = this.gridHeadContainer.getElements('th');            
+            
             /**
              * Main element that holds Grid's toolbar, header and container.
              * @type {Element}
@@ -439,16 +465,27 @@ var Grid = (function () {
             this.gridToolbar = this.element.getElement('.grid_toolbar');
 
             /**
-             * Element for Grid's header.
-             * @type {Element}
-             */
-            this.gridHeadContainer = this.element.getElement('.gridHeadContainer');
-
-            /**
              * Element for Grid's container.
              * @type {Element}
              */
-            this.gridContainer = this.element.getElement('.gridContainer');
+            this.gridContainer = this.element.getElement('.gridContainer');            
+            
+            if (!this.isEmpty()) {
+                if (!this.dataKeyExists(preiouslySelectedRecordKey)) {
+                    preiouslySelectedRecordKey = false;
+                }
+                this.data.each(function (record, id) {                    
+                    //modbysd: addRecord.call(this, record, id, preiouslySelectedRecordKey);                    
+                    addRecord.call(this, this.sortRecordAsHeadersName(record,this.gridHeadContainerTabs), id, preiouslySelectedRecordKey);		    
+                }, this);
+                if (!this.selectedItem.length && !preiouslySelectedRecordKey) {
+                    this.selectItem(this.tbody.getFirst());
+                }
+            } else {
+                new Element('tr').inject(this.tbody);
+            }
+
+
 
             this.adjustColumns();
 
@@ -1160,11 +1197,10 @@ var GridManager = new Class(/** @lends GridManager# */{
      * @param {Object} result Result data from the server.
      */
     processServerResponse: function (result) {
-        var control = false;//console.log(result);
+        var control = false;
         if (this.toolbar) {
             control = this.toolbar.getControlById('add');
         }
-
 
         if (!this.initialized) {
             this.grid.setMetadata(result.meta);

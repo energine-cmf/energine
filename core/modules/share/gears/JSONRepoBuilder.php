@@ -72,7 +72,7 @@ class JSONRepoBuilder extends JSONBuilder {
                         }
                         if($fieldName == 'upl_publication_date'){
                             if (!empty($fieldValue)) {
-                                $fieldValue =E()->Utils->formatDate($fieldValue, $fieldInfo->getPropertyValue('outputFormat'), FieldDescription::FIELD_TYPE_DATETIME);
+                                //disabled due to transltation reasons in filemanager $fieldValue =E()->Utils->formatDate($fieldValue, $fieldInfo->getPropertyValue('outputFormat'), FieldDescription::FIELD_TYPE_DATETIME);
                             }
                         }
                     }

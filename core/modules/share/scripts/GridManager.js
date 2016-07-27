@@ -410,7 +410,7 @@ var Grid = (function () {
             var sorted=new Object();
             for (var fieldName in record) { //add hidden fields to object
                 if (this.metadata[fieldName].type == 'hidden') {
-                    record[fieldName].sortedByHeadersName=true;
+                    fieldName.sortedByHeadersName=true;
                     sorted[fieldName]=record[fieldName];                         
                 }
             }
@@ -420,7 +420,7 @@ var Grid = (function () {
                 var colname=$(header[i]).get('name');                
                 for (var fieldName in record) {
                     if ((fieldName.sortedByHeadersName===undefined)&&(fieldName.toString()==colname)) {
-                        record[fieldName].sortedByHeadersName=true;
+                        fieldName.sortedByHeadersName=true;
                         found=true;
                         sorted[fieldName]=record[fieldName];
                         break;

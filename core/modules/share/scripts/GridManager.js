@@ -407,18 +407,20 @@ var Grid = (function () {
          * @public
          */        
         sortRecordAsHeadersName: function(record,header) {
-          var sorted=new Object();
+            var sorted=new Object();
+            for (var fieldName in record) { //add hidden fields to object
+                if (this.metadata[fieldName].type == 'hidden') {
+                    record[fieldName].sortedByHeadersName=true;
+                    sorted[fieldName]=record[fieldName];                         
+                }
+            }
+         
             for (var i=0;i<header.length;i++) {
                 var found=false;
                 var colname=$(header[i]).get('name');                
                 for (var fieldName in record) {
-                     if ((fieldName.sortedByHeadersName===undefined)&&(this.metadata[fieldName].type == 'hidden')) {
-                         fieldName.sortedByHeadersName=true;
-                         sorted[fieldName]=record[fieldName];
-                         continue;
-                    }
                     if ((fieldName.sortedByHeadersName===undefined)&&(fieldName.toString()==colname)) {
-                        fieldName.sortedByHeadersName=true;
+                        record[fieldName].sortedByHeadersName=true;
                         found=true;
                         sorted[fieldName]=record[fieldName];
                         break;

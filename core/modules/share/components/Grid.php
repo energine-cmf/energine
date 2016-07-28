@@ -779,24 +779,6 @@ class Grid extends DBDataSet {
     }
 
 
-    /**
-     * @copydoc DBDataSet::imageManager
-     */
-    /*    protected function imageManager() {
-            $this->imageManager =
-                $this->document->componentManager->createComponent('imagemanager', 'share', 'ImageManager', null);
-            //$this->imageManager->getState();
-            $this->imageManager->run();
-        }*/
-
-    /**
-     * @copydoc DBDataSet::fileLibrary
-     */
-    /*    protected function fileLibrary() {
-            $this->request->setPathOffset($this->request->getPathOffset() + 1);
-            $this->fileLibrary = $this->document->componentManager->createComponent('filelibrary', 'share', 'FileRepository', array('config' => 'core/modules/share/config/FileRepositoryModal.component.xml'));
-            $this->fileLibrary->run();
-        }*/
 
     /**
      * Show component: attachments.

@@ -6,9 +6,9 @@
  * @code
 class FilterField;
  * @endcode
- * @author andy.karpov
+ * @author    andy.karpov
  * @copyright Energine 2013
- * @version 1.0.0
+ * @version   1.0.0
  */
 namespace Energine\share\gears;
 
@@ -19,327 +19,387 @@ class FilterField;
  * @endcode
  */
 class FilterField extends Primitive {
-    /**
-     * Element tag name.
-     * @var string TAG_NAME
-     */
-    const TAG_NAME = 'field';
+	/**
+	 * Element tag name.
+	 * @var string TAG_NAME
+	 */
+	const TAG_NAME = 'field';
 
-    /**
-     * Document.
-     * @var \DOMDocument $doc
-     */
-    protected $doc;
+	/**
+	 * Document.
+	 * @var \DOMDocument $doc
+	 */
+	protected $doc;
 
-    /**
-     * Element type.
-     * @var string $type
-     */
-    protected $type = FieldDescription::FIELD_TYPE_STRING;
+	/**
+	 * Element type.
+	 * @var string $type
+	 */
+	protected $type = FieldDescription::FIELD_TYPE_STRING;
 
-    /**
-     * Additional attributes.
-     * @var array $attributes
-     */
-    private $attributes = [];
+	/**
+	 * Additional attributes.
+	 * @var array $attributes
+	 */
+	private $attributes = [ ];
 
-    /**
-     * Filter that holds this control element.
-     * @var Filter $filter
-     */
-    private $filter;
+	/**
+	 * Filter that holds this control element.
+	 * @var Filter $filter
+	 */
+	private $filter;
 
-    /**
-     * Element ID.
-     * @var int $index
-     */
-    private $index = false;
-    private $condition;
-    private $value;
-    private $name;
-    private $operator = '';
-
-
-    /**
-     * @param string $name Name.
-     * @param string
-     */
-    public function __construct($name, $type = FieldDescription::FIELD_TYPE_STRING) {
-        $this->name = $name;
-        if(!$type || !in_array($type, [FieldDescription::FIELD_TYPE_PHONE, FieldDescription::FIELD_TYPE_STRING, FieldDescription::FIELD_TYPE_DATE, FieldDescription::FIELD_TYPE_DATETIME,])){
-            $type = FieldDescription::FIELD_TYPE_STRING;
-        }
-        $this->type = $type;
-    }
-
-    /**
-     * Attach filter.
-     * @param Filter $filter Filter.
-     */
-    public function attach($filter) {
-        $this->filter = $filter;
-    }
-
-    /**
-     * Get attached filter.
-     * @return Filter
-     */
-    protected function getFilter() {
-        return $this->filter;
-    }
-
-    /**
-     * Set element ID.
-     * @param int $index ID.
-     */
-    public function setIndex($index) {
-        $this->index = $index;
-    }
-
-    /**
-     * Get element ID.
-     * @return int
-     * @throws SystemException 'ERR_DEV_NO_CONTROL_INDEX'
-     */
-    public function getIndex() {
-        if ($this->index === false) {
-            throw new SystemException('ERR_DEV_NO_CONTROL_INDEX', SystemException::ERR_DEVELOPER);
-        }
-
-        return $this->index;
-    }
-
-    /**
-     * Load element from XML description.
-     * @param \SimpleXMLElement $description Element description.
-     * @param array $meta DB column meta data
-     * @throws SystemException 'ERR_DEV_NO_CONTROL_TYPE'
-     */
-    public function load(\SimpleXMLElement $description, array $meta = null) {
-        //Получили список аттрибутов заданных в филдах фильтра
-        //Get the attributes list form filter fields
-        $attrs = (array)$description->attributes();
-        $attrs = $attrs['@attributes'];
-        //we do no need name attribute
-        unset($attrs['name']);
-
-        if ($meta) {
-            if (!isset($attrs['title'])) {
-                $attrs['title'] = 'FIELD_' . $this->name;
-            }
-            
-            if (!isset($attrs['type'])) {
-                $attrs['type'] = FieldDescription::convertType($meta['type'], $this->getAttribute('name'), $meta['length'],
-                    $meta);
-            }
-
-            $attrs['tableName'] = $meta['tableName'];
-        }
-
-        foreach ($attrs as $key => $value) {
-            if (isset($this->$key)) {
-                $this->$key = $value;
-            } else {
-                $this->setAttribute($key, $value);
-            }
-        }
-    }
-
-    /**
-     * Get element type.
-     * @return string
-     * @throws SystemException 'ERR_DEV_NO_CONTROL_TYPE'
-     */
-    public function getType() {
-        return $this->type;
-    }
-
-    /**
-     * Set attribute.
-     * @param string $attrName Attribute name.
-     * @param mixed $attrValue Attribute value.
-     *
-     * @return FilterField
-     */
-    public function setAttribute($attrName, $attrValue) {
-        $this->attributes[$attrName] = $attrValue;
-        return $this;
-    }
-
-    /**
-     * Get attribute.
-     * @param string $attrName Attribute name.
-     * @return mixed
-     */
-    public function getAttribute($attrName) {
-        if (isset($this->attributes[$attrName])) {
-            return $this->attributes[$attrName];
-        }
-
-        return false;
-    }
-
-    /**
-     * @param $data
-     * @return FilterField
-     */
-    public static function createFrom($data) {
-        if (isset($data['field']) && preg_match('/^\[([a-z_]+)\]\[([a-z_]+)\]$/', $data['field'], $matches)) {
-            $result = new FilterField($matches[2]);
-            $result->setAttribute('tableName', $matches[1]);
-            if (isset($data['type'])) {
-                $result->setAttribute('type', $data['type']);
-                if (isset($data['condition'])) {
-                    $result->condition = $data['condition'];
-                }
-                if (isset($data['value'])) {
-                    $result->value = $data['value'];
-                }
-                if (isset($data['operator'])) {
-                    $result->operator = $data['operator'];
-                }
-            }
-        }
+	/**
+	 * Element ID.
+	 * @var int $index
+	 */
+	private $index = false;
+	private $condition;
+	private $value;
+	private $name;
+	private $operator = '';
 
 
-        return $result;
-    }
+	/**
+	 * @param string $name Name.
+	 * @param string
+	 */
+	public function __construct( $name, $type = FieldDescription::FIELD_TYPE_STRING ) {
+		$this->name = $name;
+		if ( ! $type || ! in_array( $type, [
+				FieldDescription::FIELD_TYPE_PHONE,
+				FieldDescription::FIELD_TYPE_STRING,
+				FieldDescription::FIELD_TYPE_DATE,
+				FieldDescription::FIELD_TYPE_DATETIME,
+			] )
+		) {
+			$type = FieldDescription::FIELD_TYPE_STRING;
+		}
+		$this->type = $type;
+	}
 
-    public function setValue($value) {
-        $this->value = $value;
-        return $this;
-    }
+	/**
+	 * Attach filter.
+	 *
+	 * @param Filter $filter Filter.
+	 */
+	public function attach( $filter ) {
+		$this->filter = $filter;
+	}
 
-    public function setOperator($operator) {
-        $this->operator = $operator;
-        return $this;
-    }
+	/**
+	 * Get attached filter.
+	 * @return Filter
+	 */
+	protected function getFilter() {
+		return $this->filter;
+	}
 
-    /**
-     * @return mixed
-     */
-    public function getValue() {
-        return $this->value;
-    }
+	/**
+	 * Set element ID.
+	 *
+	 * @param int $index ID.
+	 */
+	public function setIndex( $index ) {
+		$this->index = $index;
+	}
 
-    /**
-     * @param mixed $condition
-     * @return FilterField
-     */
-    public function setCondition($condition) {
-        $this->condition = $condition;
-        return $this;
-    }
+	/**
+	 * Get element ID.
+	 * @return int
+	 * @throws SystemException 'ERR_DEV_NO_CONTROL_INDEX'
+	 */
+	public function getIndex() {
+		if ( $this->index === false ) {
+			throw new SystemException( 'ERR_DEV_NO_CONTROL_INDEX', SystemException::ERR_DEVELOPER );
+		}
+
+		return $this->index;
+	}
+
+	/**
+	 * Load element from XML description.
+	 *
+	 * @param \SimpleXMLElement $description Element description.
+	 * @param array $meta                    DB column meta data
+	 *
+	 * @throws SystemException 'ERR_DEV_NO_CONTROL_TYPE'
+	 */
+	public function load( \SimpleXMLElement $description, array $meta = null ) {
+		//Получили список аттрибутов заданных в филдах фильтра
+		//Get the attributes list form filter fields
+		$attrs = (array) $description->attributes();
+		$attrs = $attrs['@attributes'];
+		//we do no need name attribute
+		unset( $attrs['name'] );
+
+		if ( $meta ) {
+			if ( ! isset( $attrs['title'] ) ) {
+				$attrs['title'] = 'FIELD_' . $this->name;
+			}
+
+			if ( ! isset( $attrs['type'] ) ) {
+				$attrs['type'] = FieldDescription::convertType( $meta['type'], $this->getAttribute( 'name' ),
+					$meta['length'],
+					$meta );
+			}
+
+			$attrs['tableName'] = $meta['tableName'];
+		}
+
+		foreach ( $attrs as $key => $value ) {
+			if ( isset( $this->$key ) ) {
+				$this->$key = $value;
+			} else {
+				$this->setAttribute( $key, $value );
+			}
+		}
+	}
+
+	/**
+	 * Get element type.
+	 * @return string
+	 * @throws SystemException 'ERR_DEV_NO_CONTROL_TYPE'
+	 */
+	public function getType() {
+		return $this->type;
+	}
+
+	/**
+	 * Set attribute.
+	 *
+	 * @param string $attrName Attribute name.
+	 * @param mixed $attrValue Attribute value.
+	 *
+	 * @return FilterField
+	 */
+	public function setAttribute( $attrName, $attrValue ) {
+		$this->attributes[ $attrName ] = $attrValue;
+
+		return $this;
+	}
+
+	/**
+	 * Get attribute.
+	 *
+	 * @param string $attrName Attribute name.
+	 *
+	 * @return mixed
+	 */
+	public function getAttribute( $attrName ) {
+		if ( isset( $this->attributes[ $attrName ] ) ) {
+			return $this->attributes[ $attrName ];
+		}
+
+		return false;
+	}
+
+	/**
+	 * @param $data
+	 *
+	 * @return FilterField
+	 */
+	public static function createFrom( $data ) {
+		if ( isset( $data['field'] ) && preg_match( '/^\[([a-z_]+)\]\[([a-z_]+)\]$/', $data['field'], $matches ) ) {
+			$result = new FilterField( $matches[2] );
+			$result->setAttribute( 'tableName', $matches[1] );
+			if ( isset( $data['type'] ) ) {
+				$result->setAttribute( 'type', $data['type'] );
+				if ( isset( $data['condition'] ) ) {
+					$result->condition = $data['condition'];
+				}
+				if ( isset( $data['value'] ) ) {
+					$result->value = $data['value'];
+				}
+				if ( isset( $data['operator'] ) ) {
+					$result->operator = $data['operator'];
+				}
+			}
+		}
 
 
-    function __toString() {
-        $dbh = E()->getDB();
-        $tableName = $this->getAttribute('tableName');
-        $fieldName = $this->name;
+		return $result;
+	}
 
-        $values = $this->value;
-        if (!is_array($values)) {
-            $values = [$values];
-        }
+	public function setValue( $value ) {
+		$this->value = $value;
 
-        if (
-            !$dbh->tableExists($tableName)
-            ||
-            !($tableInfo = $dbh->getColumnsInfo($tableName))
-            ||
-            !isset($tableInfo[$fieldName])
-        ) {
-            throw new SystemException('ERR_BAD_FILTER_DATA', SystemException::ERR_CRITICAL, $tableName);
-        }
+		return $this;
+	}
 
-        if (is_array($tableInfo[$fieldName]['key'])) {
-            $fkTranslationTableName =
-                $dbh->getTranslationTablename($tableInfo[$fieldName]['key']['tableName']);
-            $fkTableName =
-                ($fkTranslationTableName) ? $fkTranslationTableName
-                    : $tableInfo[$fieldName]['key']['tableName'];
-            $fkValueField = substr($fkKeyName =
-                    $tableInfo[$fieldName]['key']['fieldName'], 0, strrpos($fkKeyName, '_')) .
-                '_name';
-            $fkTableInfo = $dbh->getColumnsInfo($fkTableName);
-            if (!isset($fkTableInfo[$fkValueField])) {
-                $fkValueField = $fkKeyName;
-            }
+	public function setOperator( $operator ) {
+		$this->operator = $operator;
 
-            if ($res =
-                $dbh->getColumn($fkTableName, $fkKeyName,
-                    $fkTableName . '.' . $fkValueField . ' ' .
-                    call_user_func_array('sprintf',
-                        array_merge([FilterConditionConverter::getInstance()[$this->condition]['condition']], $values)) .
-                    ' ')
-            ) {
-                return $this->operator.' '.$tableName . '.' . $fieldName . ' IN (' . implode(',', $res) . ')';
-            } else {
-                return $this->operator.' '.' FALSE ';
-            }
-        } else {
+		return $this;
+	}
 
-            $fieldType = FieldDescription::convertType($tableInfo[$fieldName]['type'], $fieldName,
-                $tableInfo[$fieldName]['length'], $tableInfo[$fieldName]);
-            if ($fieldType == FieldDescription::FIELD_TYPE_BOOL) $this->value = '';
-            //modbysd bug with 0 elseif (!$this->value) {
-            elseif (!isset($this->value)) {
-                return '';
-            }
-            if (in_array($this->condition, ['like', 'notlike']) && in_array($fieldType,
-                    [FieldDescription::FIELD_TYPE_DATE, FieldDescription::FIELD_TYPE_DATETIME])
-            ) {
-                if ($this->condition == 'like') {
-                    $this->condition = '=';
-                } else {
-                    $this->condition = '!=';
-                }
-            }
+	/**
+	 * @return mixed
+	 */
+	public function getValue() {
+		return $this->value;
+	}
 
-            $fieldName = (($tableName) ? $tableName . '.' : '') . $fieldName;
-            if ($fieldType == FieldDescription::FIELD_TYPE_DATETIME) {
-                $fieldName = 'DATE(' . $fieldName . ')';
-            }
+	/**
+	 * @param mixed $condition
+	 *
+	 * @return FilterField
+	 */
+	public function setCondition( $condition ) {
+		$this->condition = $condition;
 
-            $conditionPatterns = FilterConditionConverter::getInstance()[$this->condition]['condition'];
-            if (in_array($fieldType, [FieldDescription::FIELD_TYPE_DATETIME, FieldDescription::FIELD_TYPE_DATE])) {
-                $conditionPatterns = str_replace('\'%s\'', 'DATE(\'%s\')', $conditionPatterns);
-            }
-            $r = $this->operator.' '.$fieldName . ' ' . call_user_func_array('sprintf', array_merge([$conditionPatterns], $values)) . ' ';
-            return $r;
-        }
-    }
+		return $this;
+	}
 
 
-    /**
-     * Build element.
-     * @return DOMNode
-     */
-    public function build() {
-        $this->doc = new \DOMDocument('1.0', 'UTF-8');
+	function __toString() {
+		$dbh       = E()->getDB();
+		$tableName = $this->getAttribute( 'tableName' );
+		$fieldName = $this->name;
 
-        $controlElem = $this->doc->createElement(self::TAG_NAME);
-        $controlElem->setAttribute('name', $this->name);
-        foreach ($this->attributes as $attrName => $attrValue) {
-            $controlElem->setAttribute($attrName, $attrValue);
-        }
+		$values = $this->value;
+		if ( ! is_array( $values ) ) {
+			$values = [ $values ];
+		}
 
-        $controlElem->setAttribute('type', $this->getType());
-        $this->doc->appendChild($controlElem);
+		if (
+			! $dbh->tableExists( $tableName )
+			||
+			! ( $tableInfo = $dbh->getColumnsInfo( $tableName ) )
+			||
+			! isset( $tableInfo[ $fieldName ] )
+		) {
+			throw new SystemException( 'ERR_BAD_FILTER_DATA', SystemException::ERR_CRITICAL, $tableName );
+		}
 
-        return $this->doc->documentElement;
-    }
+		if ( is_array( $tableInfo[ $fieldName ]['key'] ) ) {
+			$fkTranslationTableName =
+				$dbh->getTranslationTablename( $tableInfo[ $fieldName ]['key']['tableName'] );
+			$fkTableName            =
+				( $fkTranslationTableName ) ? $fkTranslationTableName
+					: $tableInfo[ $fieldName ]['key']['tableName'];
+			$fkValueField           = substr( $fkKeyName =
+					$tableInfo[ $fieldName ]['key']['fieldName'], 0, strrpos( $fkKeyName, '_' ) ) .
+			                          '_name';
+			$fkTableInfo            = $dbh->getColumnsInfo( $fkTableName );
+			if ( ! isset( $fkTableInfo[ $fkValueField ] ) ) {
+				$fkValueField = $fkKeyName;
+			}
 
-    /**
-     * Translate language-dependent attributes.
-     * @param array $attrs Set of attributes for translation.
-     */
-    public function translate($attrs = ['title']) {
-        foreach ($attrs as $attrName) {
-            $attrValue = (string)$this->getAttribute($attrName);
-            if ($attrValue) {
-                $this->setAttribute($attrName, translate($attrValue));
-            }
-        }
-    }
+			if ( $res =
+				$dbh->getColumn( $fkTableName, $fkKeyName,
+					$fkTableName . '.' . $fkValueField . ' ' .
+					call_user_func_array( 'sprintf',
+						array_merge( [ FilterConditionConverter::getInstance()[ $this->condition ]['condition'] ],
+							$values ) ) .
+					' ' )
+			) {
+				return $this->operator . ' ' . $tableName . '.' . $fieldName . ' IN (' . implode( ',', $res ) . ')';
+			} else {
+				return $this->operator . ' ' . ' FALSE ';
+			}
+		} elseif ( in_array( $tableInfo[ $fieldName ]['type'], [ QAL::COLTYPE_ENUM, QAL::COLTYPE_SET ] ) ) {
+			$type = $tableInfo[ $fieldName ]['type'];
+
+
+				$values = array_filter( $tableInfo[ $fieldName ]['options'], function ( $option ) use ( $fieldName, $type ) {
+					$option_value = mb_convert_case(translate( 'field_' . $fieldName . '_' . $type . '_' . $option ), MB_CASE_LOWER);
+					$value = mb_convert_case($this->value, MB_CASE_LOWER);
+					switch($this->condition){
+						case '=':
+							$result = strpos($option_value, $value) !== false;
+							break;
+						case '!=':
+							$result = strpos($option_value, $value) === false;
+							break;
+						case 'notlike':
+							$result = strpos($option_value, $value) === false;
+							break;
+						case 'like':
+							$result = strpos($option_value, $value) !== false;
+							break;
+					}
+
+					return $result;
+				}  );
+
+				if(!empty($values)){
+					return $this->operator . ' ' . $tableName . '.' . $fieldName . ' IN (' .implode(',', array_map(function($value){
+						return '"'.$value.'"';
+					}, $values)).') ';
+				}
+				else {
+					return $this->operator . ' ' . ' FALSE ';
+				}
+
+		} else {
+
+			$fieldType = FieldDescription::convertType( $tableInfo[ $fieldName ]['type'], $fieldName,
+				$tableInfo[ $fieldName ]['length'], $tableInfo[ $fieldName ] );
+			if ( $fieldType == FieldDescription::FIELD_TYPE_BOOL ) {
+				$this->value = '';
+			} //modbysd bug with 0 elseif (!$this->value) {
+			elseif ( ! isset( $this->value ) ) {
+				return '';
+			}
+			if ( in_array( $this->condition, [ 'like', 'notlike' ] ) && in_array( $fieldType,
+					[ FieldDescription::FIELD_TYPE_DATE, FieldDescription::FIELD_TYPE_DATETIME ] )
+			) {
+				if ( $this->condition == 'like' ) {
+					$this->condition = '=';
+				} else {
+					$this->condition = '!=';
+				}
+			}
+
+			$fieldName = ( ( $tableName ) ? $tableName . '.' : '' ) . $fieldName;
+			if ( $fieldType == FieldDescription::FIELD_TYPE_DATETIME ) {
+				$fieldName = 'DATE(' . $fieldName . ')';
+			}
+
+			$conditionPatterns = FilterConditionConverter::getInstance()[ $this->condition ]['condition'];
+			if ( in_array( $fieldType,
+				[ FieldDescription::FIELD_TYPE_DATETIME, FieldDescription::FIELD_TYPE_DATE ] ) ) {
+				$conditionPatterns = str_replace( '\'%s\'', 'DATE(\'%s\')', $conditionPatterns );
+			}
+			$r = $this->operator . ' ' . $fieldName . ' ' . call_user_func_array( 'sprintf',
+					array_merge( [ $conditionPatterns ], $values ) ) . ' ';
+
+			return $r;
+		}
+	}
+
+
+	/**
+	 * Build element.
+	 * @return DOMNode
+	 */
+	public function build() {
+		$this->doc = new \DOMDocument( '1.0', 'UTF-8' );
+
+		$controlElem = $this->doc->createElement( self::TAG_NAME );
+		$controlElem->setAttribute( 'name', $this->name );
+		foreach ( $this->attributes as $attrName => $attrValue ) {
+			$controlElem->setAttribute( $attrName, $attrValue );
+		}
+
+		$controlElem->setAttribute( 'type', $this->getType() );
+		$this->doc->appendChild( $controlElem );
+
+		return $this->doc->documentElement;
+	}
+
+	/**
+	 * Translate language-dependent attributes.
+	 *
+	 * @param array $attrs Set of attributes for translation.
+	 */
+	public function translate( $attrs = [ 'title' ] ) {
+		foreach ( $attrs as $attrName ) {
+			$attrValue = (string) $this->getAttribute( $attrName );
+			if ( $attrValue ) {
+				$this->setAttribute( $attrName, translate( $attrValue ) );
+			}
+		}
+	}
 }

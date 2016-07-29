@@ -307,10 +307,10 @@ class FilterField extends Primitive {
 					$value = mb_convert_case($this->value, MB_CASE_LOWER);
 					switch($this->condition){
 						case '=':
-							$result = strpos($option_value, $value) !== false;
+							$result = $option_value === $value;
 							break;
 						case '!=':
-							$result = strpos($option_value, $value) === false;
+							$result = $option_value !== $value;
 							break;
 						case 'notlike':
 							$result = strpos($option_value, $value) === false;

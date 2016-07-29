@@ -107,9 +107,9 @@ class LoginForm extends DataSet implements SampleLoginForm {
             $tmp = E()->UserGroup->getInfo($roleID);
             $data[] = $tmp['group_name'];
         }
-	if (!$this->getData()->isEmpty()) {
-        //bySD field does not exist!!!!
-            //$this->getData()->getFieldByName('role_name')->setData(implode(', ', $data));
+	if (false===$this->getData()->isEmpty()) {
+            $this->getData()->getFieldByName('role_name')->setData(implode(', ', $data));
+        
         }
     }
 

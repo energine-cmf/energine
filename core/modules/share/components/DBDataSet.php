@@ -132,6 +132,7 @@ class DBDataSet extends DataSet {
 
         //Если не существует таблицы с переводами, то выбираем данные из основной таблицы
         //Для мультиязычной таблицы - дергаем отдельный хитрый(сложный) метод загрузки
+        
         $data = $this->modify(
             (!$this->getTranslationTableName()) ?
                 $this->commonLoadData() :
@@ -528,7 +529,7 @@ class DBDataSet extends DataSet {
      * @return mixed
      * @final
      */
-    final public function getOrder() {
+    final public function getOrder() { 
         if (is_null($this->order)) {
             $this->order = false;
             $columns = $this->dbh->getColumnsInfo($this->getTableName());
@@ -548,8 +549,11 @@ class DBDataSet extends DataSet {
      * @param string | array $order Sort order in the form @code array($orderFieldName => $orderDirection) @endcode
      * @final
      */
-    final protected function setOrder($order) {
+    final protected function setOrder($order) { 
         $this->order = $order;
+    }
+    final protected function issetOrder() { 
+        return (is_null($this->order))? false:true;
     }
 
     /**

@@ -41,7 +41,9 @@ class FeatureEditor extends Grid implements SampleFeatureEditor{
         parent::__construct($name, $params);
         $this->setTableName('shop_features');
         $this->setOrder(['group_id' => QAL::ASC, 'feature_name' => QAL::ASC]);
-    }
+        //$this->setOrder(['group_id' => QAL::DESC,'feature_id'=> QAL::DESC ,'feature_name' => QAL::ASC]);
+        }
+
 
 
     protected function defineParams() {
@@ -71,7 +73,7 @@ class FeatureEditor extends Grid implements SampleFeatureEditor{
         return $result;
     }
 
-    protected function createDataDescription() {
+    protected function createDataDescription() {    
         $r = parent::createDataDescription();
         if (in_array($this->getState(), ['add', 'edit'])) {
             $r->getFieldDescriptionByName('feature_smap_multi')->setProperty('tabName', $this->translate('TXT_CATEGORIES'));
@@ -233,6 +235,9 @@ class FeatureEditor extends Grid implements SampleFeatureEditor{
     protected function getRawData() {
             //отбираем те фичи права на которые есть у текущего пользователя
             $this->addFilterCondition([$this->getTableName() . '.feature_id' => $this->dbh->getColumn('shop_features2sites', 'feature_id', ['site_id' => $this->getSites()])]);
+            $this->setOrder(['feature_order_num' => QAL::ASC,'feature_id'=> QAL::DESC ,'feature_name' => QAL::DESC]);
+
+
 
         parent::getRawData();
     }

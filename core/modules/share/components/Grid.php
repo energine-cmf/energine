@@ -301,6 +301,7 @@ class Grid extends DBDataSet {
         if ($data instanceof Data) {
             $this->setData($data);
         }
+        
         if ($this->pager) {
             $this->getBuilder()->setPager($this->pager);
         }
@@ -383,11 +384,12 @@ class Grid extends DBDataSet {
         } else {
             $result = parent::createDataDescription();
         }
-
-        if (($col = $this->getOrderColumn())
-            && ($field = $result->getFieldDescriptionByName($col))
-        ) {
-            $result->removeFieldDescription($field);
+        if (!$this->issetOrder()) { //modbysd: not to overload SetOrder param if it set
+            if (($col = $this->getOrderColumn())
+                && ($field = $result->getFieldDescriptionByName($col))
+                ) {
+                    $result->removeFieldDescription($field);
+                }
         }
 
 
@@ -836,9 +838,9 @@ class Grid extends DBDataSet {
      * @param string $columnName Column name.
      * @see Grid::getOrderColumn
      */
-    protected function setOrderColumn($columnName) {
+    protected function setOrderColumn($columnName) { 
         $this->orderColumn = $columnName;
-        if ($columnName) {
+        if ($columnName) { 
             $this->setOrder([$columnName => QAL::ASC]);
         }
     }
@@ -848,7 +850,7 @@ class Grid extends DBDataSet {
      * @return string
      * @see Grid::setOrderColumn
      */
-    protected function getOrderColumn() {
+    protected function getOrderColumn() { 
         if (is_null($this->orderColumn)) {
             $this->orderColumn = false;
             $columns = $this->dbh->getColumnsInfo($this->getTableName());
@@ -1214,7 +1216,7 @@ class Grid extends DBDataSet {
         $actionParams = $this->getStateParams(true);
         if (isset($actionParams['sortField']) &&
             isset($actionParams['sortDir'])
-        ) {
+        ) { 
             //подразумевается что sortDir - тоже существует
             $this->setOrder([$actionParams['sortField'] => $actionParams['sortDir']]);
         }

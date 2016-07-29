@@ -40,6 +40,7 @@ class RoleEditor extends Grid {
     public function __construct($name,    array $params = null) {
         parent::__construct($name, $params);
         $this->setTableName('user_groups');
+        $this->setOrder(['group_name'=>QAL::ASC]);
         $this->setTitle($this->translate('TXT_ROLE_EDITOR'));
     }
 

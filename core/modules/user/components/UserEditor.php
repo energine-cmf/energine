@@ -33,6 +33,7 @@ class UserEditor extends Grid {
         parent::__construct($name, $params);
         $this->setTableName('user_users');
         $this->setTitle($this->translate('TXT_USER_EDITOR'));
+        //$this->setOrder(['group_id' => QAL::ASC, 'feature_name' => QAL::ASC]);
     }
 
     /**

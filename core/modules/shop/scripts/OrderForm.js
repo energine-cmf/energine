@@ -81,33 +81,45 @@ var OrderForm = new Class(/** @lends OrderForm# */{
 
     fetchUserDetails: function ($uID) {
         var value;
+
         if ($uID) {
-            Cookie.write(
-                'uid',
-                value = $uID.get('value'),
-                {path: new URI(Energine.base).get('directory'), duration: 1}
-            );
+            if (value = $uID.get('value')) {
+                Cookie.write(
+                    'uid',
+                    value,
+                    {path: new URI(Energine.base).get('directory'), duration: 1}
+                );
+                var url = [this.singlePath, value, '/user-details/'].join('');
 
-            var url = [this.singlePath, value, '/user-details/'].join('');
-
-            // ajax request
-            Energine.request(
-                url,
-                null,
-                function (data) {
-                    if (data.result) {
-                        delete data.result, data.mode;
-                        Object.each(data, function (value, key) {
-                            if (this.element.getElementById(key)) {
-                                this.element.getElementById(key).set('value', value).focus();
-                            }
-                        }, this);
-                        //$(this.element.getElementById('u_id_name')).set('value', data.order_user_name);
+                // ajax request
+                Energine.request(
+                    url,
+                    null,
+                    function (data) {
+                        if (data.result) {
+                            delete data.result, data.mode;
+                            Object.each(data, function (value, key) {
+                                if (this.element.getElementById(key)) {
+                                    this.element.getElementById(key).set('value', value).focus();
+                                }
+                            }, this);
+                            //$(this.element.getElementById('u_id_name')).set('value', data.order_user_name);
+                        }
+                    }.bind(this),
+                    this.processServerError.bind(this),
+                    this.processServerError.bind(this)
+                );
+            }
+            else {
+                ['order_email', 'order_city', 'order_street', 'order_building', 'order_apt', 'order_floor', 'order_index', 'order_phone', 'order_aux_phone', 'order_user_name'].each(function (key) {
+                    if (this.element.getElementById(key)) {
+                        this.element.getElementById(key).set('value', '');
                     }
-                }.bind(this),
-                this.processServerError.bind(this),
-                this.processServerError.bind(this)
-            );
+
+                }, this);
+            }
+
+
         }
     },
 
@@ -204,6 +216,15 @@ var OrderForm = new Class(/** @lends OrderForm# */{
 });
 
 Lookup = Class.refactor(Lookup, {
+    load: function (data, triggerEvent) {
+        data['id'] = data.u_id;
+        data['text'] = data.u_fullname;
+
+        jQuery("#u_id").empty().append('<option value="'+data.id+'">'+data.text +'</option>').val(data.u_id).trigger('change');
+        //this.selectComponent.select2('trigger', 'change', data);
+        //.val(data).trigger('change');
+
+    },
     rebuild: function (response, requestParams) {
 
         // parse the results into the format expected by Select2
@@ -258,5 +279,7 @@ Lookup = Class.refactor(Lookup, {
     select: function (obj) {
         if (obj.u_fullname)
             return '<div>' + obj.u_fullname + '</div>';
+        else if (obj.text)
+            return '<div>' + obj.text + '</div>';
     }
 });

@@ -114,7 +114,7 @@ class LoginForm extends DataSet implements SampleLoginForm {
 			$data[] = $tmp['group_name'];
 		}
 		if (!$this->getData()->isEmpty() && $this->getData()->getFieldByName( 'role_name' )) {
-			$this->getData()->getFieldByName( 'role_name' )->setData( implode( ', ', $data ) );
+			$this->getData()->getFieldByName( 'role_name' )->setData( implode( ', ', $data ) );			
 
 		}
 	}

@@ -4,21 +4,26 @@
 	<state name="showLoginForm">
         <javascript>
             <behavior name="LoginForm"/>
+	    <behavior name="MoveToFooter" path="admin"/>
         </javascript>
 		<fields>
-			<field name="username" type="string" tableName="user" title="FIELD_U_NAME" length="255" mode="2"/>
-			<field name="password" type="password" tableName="user" title="FIELD_U_PASSWORD" length="255"  mode="2"/>
+			<field name="username" type="string" tableName="user" title="FIELD_LOGIN_U_NAME" length="255" mode="2"/>
+			<field name="password" type="password" tableName="user" title="FIELD_LOGIN_U_PASSWORD" length="255"  mode="2"/>
 		</fields>
 		<toolbar>
+		  <control type="link" id="restore" title="TXT_FORGOT_PWD" click="restore-password"/>
 			<control type="submit" id="user[login]" title="BTN_LOGIN" tooltip="Click me" />
-            <control type="separator" id="sep"/>
+<!--             <control type="separator" id="sep"/> -->
             <control type="link" id="auth.facebook" title="BTN_FB_LOGIN" />
             <control type="link" id="auth.vk" title="BTN_VK_LOGIN" />
-            <control type="separator" id="sep02"/>
-			<control type="link" id="restore" title="TXT_FORGOT_PWD" click="restore-password"/>
+<!--             <control type="separator" id="sep02"/> -->
+			
 		</toolbar>
 	</state>
 	<state name="showLogoutForm">
+        <javascript>            
+	    <behavior name="MoveToFooter" path="admin"/>
+        </javascript>
 		<fields>
 			<field name="u_name" type="string" mode="1"/>
 			<field name="u_fullname" type="string" mode="1"/>

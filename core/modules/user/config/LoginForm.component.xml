@@ -22,7 +22,7 @@
 	</state>
 	<state name="showLogoutForm">
         <javascript>            
-	    <behavior name="MoveToFooter" path="admin"/>
+<!-- 	    <behavior name="MoveToFooter" path="admin"/> -->
         </javascript>
 		<fields>
 			<field name="u_name" type="string" mode="1"/>

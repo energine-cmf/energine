@@ -182,14 +182,21 @@ class Builder extends XMLBuilder {
 		} elseif ( $fieldInfo->getType() == FieldDescription::FIELD_TYPE_CAPTCHA ) {
 			$fieldValue = $this->getConfigValue( 'recaptcha.public' );
 		} elseif ( $fieldInfo->getType() == FieldDescription::FIELD_TYPE_LOOKUP && $fieldValue ) {
-			$value = $this->document->createElement( 'value', $fieldValue['value'] );
-			$value->setAttribute( 'id', $fieldValue['id'] );
+                        if (isset($fieldValue['value'])) {
+                            $value = $this->document->createElement( 'value', $fieldValue['value'] );
+                            if (isset($fieldValue['id'])) 
+                                $value->setAttribute( 'id', $fieldValue['id'] );
+                            } else { 
+                                $data=$fieldInfo->getAvailableValues()[$fieldValue];
+                                $value = $this->document->createElement( 'value', $data['value'] );
+                                $value->setAttribute( 'id', $fieldValue );
+                            }
 			$fieldValue = $value;
 		} elseif ( $fieldInfo->getType() == FieldDescription::FIELD_TYPE_PHONE && $fieldValue) {
 			$fieldValue = $this->formatPhone($fieldInfo, $fieldValue);
 		}
 		foreach ( $fieldInfo as $propName => $propValue ) {
-			if ( $propValue && is_scalar( $propValue ) && ( $propValue !== '0' ) ) {
+			if ( $propValue && is_scalar( $propValue ) && ( $propValue !== '0' ) ) {                                
 				$result->setAttribute( $propName, $propValue );
 			}
 		}

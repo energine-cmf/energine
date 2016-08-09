@@ -249,7 +249,7 @@ class FeatureEditor extends Grid implements SampleFeatureEditor{
     protected function copy() {      
 	list($id) = $this->getStateParams();   
 //feature
-      $new_id=$this->dbh->modify('
+      $sql     = sprintf( '
       INSERT INTO `shop_features` (
 	`group_id`,`feature_type`,`feature_site_multi`,`feature_smap_multi`,`feature_is_active`,`feature_is_filter`,`feature_is_order_param`,`feature_is_main`,`feature_sysname`,`feature_filter_type`,`feature_order_num`
       ) 
@@ -260,9 +260,8 @@ class FeatureEditor extends Grid implements SampleFeatureEditor{
 	      `group_id`,`feature_type`,`feature_site_multi`,`feature_smap_multi`,`feature_is_active`,`feature_is_filter`,`feature_is_order_param`,`feature_is_main`,`feature_sysname`,`feature_filter_type`,feature_order_num
 	    FROM `shop_features`
 	      WHERE `feature_id` = %s) as f
-      ;
-      SELECT LAST_INSERT_ID();
-      ', $id);
+      ;', $id);
+      $new_id = $this->dbh->modify( $sql );      
 //feature sites
       $this->dbh->modify('
       INSERT INTO `shop_features2sites` (
@@ -270,7 +269,7 @@ class FeatureEditor extends Grid implements SampleFeatureEditor{
       )	
       SELECT %s,`site_id`
 	FROM `shop_features2sites`
-	WHERE `feature_id` = %s
+	WHERE `feature_id` = %s LIMIT 1
       ', $new_id,$id);
 //feature translation
       $this->dbh->modify('

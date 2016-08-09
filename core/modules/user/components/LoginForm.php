@@ -42,8 +42,10 @@ class LoginForm extends DataSet implements SampleLoginForm {
 		) {
 			$base = 'http://' . Primitive::getConfigValue( 'site.domain' ) . '/';
 		}
-
-		$this->setAction( $base . 'auth.php' . ( ( isset( $_SERVER['HTTP_REFERER'] ) ) ? '' : '?return=' . ( ( $return = $this->getParam( 'successAction' ) ) ? $return : E()->getRequest()->getURI() ) ),
+ 		$lang = E()->getLanguage()->getCurrent();
+ 		//$lang=E()->getLanguage()->getAbbrByID($lang);
+ 		$lang=( isset( $_SERVER['HTTP_REFERER'] ))?'?lang='.$lang:'&lang='.$lang;
+		$this->setAction( $base . 'auth.php' . ( ( isset( $_SERVER['HTTP_REFERER'] ) ) ? '' : '?return=' . ( ( $return = $this->getParam( 'successAction' ) ) ? $return : E()->getRequest()->getURI() ) ) . $lang,
 			true );
 	}
 

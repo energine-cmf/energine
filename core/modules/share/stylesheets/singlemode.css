@@ -24,3 +24,17 @@ html, body {
         margin: 0;
     }
 }
+/* feedback */
+.apps_feedback a.email,.apps_feedback a.email:link,.apps_feedback a.email:hover,.apps_feedback a.email:visited {    
+    text-decoration:none;
+    color:rgb(128, 128, 128);
+    line-height: 30px;
+}
+.apps_feedback .read.control {
+    word-break: break-all;
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap;
+    white-space: -pre-wrap;
+    white-space: -o-pre-wrap;
+    word-wrap: break-word;
+}

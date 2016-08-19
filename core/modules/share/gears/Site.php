@@ -72,6 +72,14 @@ class Site extends Primitive {
                 $siteData['site_meta_robots'] = [];
             }
             $siteData['site_is_indexed'] = !in_array('NOINDEX', $siteData['site_meta_robots']);
+            
+            $favicon = E()->getDB()->getScalar('
+                    SELECT u.upl_path FROM share_uploads u
+                INNER JOIN shop_sites_uploads_favicon s ON s.upl_id = u.upl_id
+                     WHERE s.site_id = ' . $siteData['site_id']);
+            if (!empty($favicon)){
+                $siteData['faviconFile'] = '/resizer/w32-h32/' . $favicon;
+            }
             $result[$siteData['site_id']] = new Site($siteData);
         }
         $res = E()->getDB()->select('share_sites_translation');

@@ -431,3 +431,7 @@ a.goods_block_inner:hover {
     font-size: 40px;
     content: "\f105";
 }
+.slick-slider .feature_value{    
+    vertical-align:baseline;
+    font-size:10px;
+}

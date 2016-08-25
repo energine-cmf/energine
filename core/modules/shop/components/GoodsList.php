@@ -143,7 +143,7 @@ class GoodsList extends DBDataSet implements SampleGoodsList {
             $this->getData()->addField($f);
 
             // получаем список фич разделов указанных товаров
-            $features = $this->getGoodsDivisionFeatureIds($goods_ids);
+            $features = $this->getGoodsDivisionFeatureIds($goods_ids);            
             $mainFeaturesCondition = '';
             if($showOnlyMainFeatures){
                 $mainFeaturesCondition = ' AND (ff.feature_is_main) ';
@@ -184,7 +184,8 @@ class GoodsList extends DBDataSet implements SampleGoodsList {
 
                     if (is_array($list_features) and !in_array($feature->getSysName(), $list_features))
                         continue;
-//		    if (empty($feature->getValue())) continue;//modbysd remove empty values
+                    if($showOnlyMainFeatures)    
+		      if (empty($feature->getValue())) continue;//modbysd remove empty values, fixes unrelated values in GOODs_List (carusel)
                     $images = [];
                     if ($feature->getType() == FeatureFieldAbstract::FEATURE_TYPE_MULTIOPTION) {
                         $options = $feature->getOptions();

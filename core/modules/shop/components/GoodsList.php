@@ -143,8 +143,8 @@ class GoodsList extends DBDataSet implements SampleGoodsList {
             $this->getData()->addField($f);
 
             // получаем список фич разделов указанных товаров
-            if(!$showOnlyMainFeatures) 
-	      $features = $this->getGoodsDivisionFeatureIds($goods_ids);            
+	    $features = $this->getGoodsDivisionFeatureIds($goods_ids);            
+	    
             $mainFeaturesCondition = '';
             if($showOnlyMainFeatures){
                 $mainFeaturesCondition = ' AND (ff.feature_is_main) ';

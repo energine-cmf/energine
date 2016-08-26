@@ -143,7 +143,8 @@ class GoodsList extends DBDataSet implements SampleGoodsList {
             $this->getData()->addField($f);
 
             // получаем список фич разделов указанных товаров
-            $features = $this->getGoodsDivisionFeatureIds($goods_ids);            
+            if(!$showOnlyMainFeatures) 
+	      $features = $this->getGoodsDivisionFeatureIds($goods_ids);            
             $mainFeaturesCondition = '';
             if($showOnlyMainFeatures){
                 $mainFeaturesCondition = ' AND (ff.feature_is_main) ';
@@ -177,15 +178,17 @@ class GoodsList extends DBDataSet implements SampleGoodsList {
             foreach ($field_goods_id->getData() as $key => $goods_id) {
 
                 $feature_data = [];
-
+		if($showOnlyMainFeatures){
+		  $features = $this->getGoodsDivisionFeatureIds($goods_id);  
+		}
                 foreach ($features as $feature_id) {
                     $fpv_data = (isset($fpv_indexed[$goods_id][$feature_id]['fpv_data'])) ? $fpv_indexed[$goods_id][$feature_id]['fpv_data'] : '';
                     $feature = FeatureFieldFactory::getField($feature_id, $fpv_data);
 
                     if (is_array($list_features) and !in_array($feature->getSysName(), $list_features))
                         continue;
-                    if($showOnlyMainFeatures)    
-		      if (empty($feature->getValue())) continue;//modbysd remove empty values, fixes unrelated values in GOODs_List (carusel)
+//                    if($showOnlyMainFeatures)    
+//		      if (empty($feature->getValue())) continue;//modbysd remove empty values, fixes unrelated values in GOODs_List (carusel)
                     $images = [];
                     if ($feature->getType() == FeatureFieldAbstract::FEATURE_TYPE_MULTIOPTION) {
                         $options = $feature->getOptions();

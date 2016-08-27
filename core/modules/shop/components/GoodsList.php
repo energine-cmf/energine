@@ -83,6 +83,7 @@ class GoodsList extends DBDataSet implements SampleGoodsList {
                 'limit' => false,
                 'id' => false,
                 'list_features' => false, // false | any | feature_sysname1,feature_sysname2,..
+                'list_features_onlyfilter' => false,
             ]
         );
     }
@@ -133,7 +134,10 @@ class GoodsList extends DBDataSet implements SampleGoodsList {
 
         if ($list_features != 'any') {
             $list_features = explode(',', $list_features);
-        }
+        }        
+        //show on;y feature_that is filter
+        $list_features_onlyfilter = $this->getParam('list_features_onlyfilter');
+        
 
         if ($fd = $this->getDataDescription()->getFieldDescriptionByName('features')) {
 
@@ -149,7 +153,10 @@ class GoodsList extends DBDataSet implements SampleGoodsList {
             if($showOnlyMainFeatures){
                 $mainFeaturesCondition = ' AND (ff.feature_is_main) ';
             }
-
+            $filterFeaturesCondition = '';
+            if($list_features_onlyfilter){
+                $filterFeaturesCondition = ' AND (ff.feature_is_filter) ';
+            }            
             // получаем список значений fpv_data для заданного массива goods_id
             $fpv_indexed = [];
 
@@ -160,7 +167,7 @@ class GoodsList extends DBDataSet implements SampleGoodsList {
 				  on ft.fpv_id = f.fpv_id and ft.lang_id = %s
 				left join shop_features ff on (f.feature_id = ff.feature_id)
 				left join shop_feature_groups fg on ff.group_id = fg.group_id
-				where (f.feature_id in (%s)) and (f.goods_id in (%s)) '.$mainFeaturesCondition.'
+				where (f.feature_id in (%s)) and (f.goods_id in (%s)) '.$mainFeaturesCondition.$filterFeaturesCondition.'
 				order by fg.group_order_num asc, ff.feature_order_num asc',
                 $this->document->getLang(),
                 $features,
@@ -189,6 +196,8 @@ class GoodsList extends DBDataSet implements SampleGoodsList {
                         continue;
 //                    if($showOnlyMainFeatures)    
 //		      if (empty($feature->getValue())) continue;//modbysd remove empty values, fixes unrelated values in GOODs_List (carusel)
+                    if ($list_features_onlyfilter and ($feature->isFilter()==false)) continue;
+                    
                     $images = [];
                     if ($feature->getType() == FeatureFieldAbstract::FEATURE_TYPE_MULTIOPTION) {
                         $options = $feature->getOptions();

@@ -244,8 +244,68 @@ adr_street as order_street
 
 		$b->setProperties( $res );
 	}
-
-
+	
+	protected function ordersExport() {
+            $data=$this->GetExportData();
+            $filename = $this->getTitle() . '.csv';
+//            $filename = 'OrdersExport' . '.csv';
+//             $MIMEType = 'application/csv; charset=utf-8';
+//             $this->downloadFile($data, $MIMEType, $filename);
+            $this->response->setHeader('Content-Type', 'application/csv; charset=utf-8');
+            $this->response->setHeader('Content-Disposition','attachment; filename="' . $filename . '"');
+            $this->response->write($data);
+            $this->response->commit();   
+	}    
+	protected function GetExportData(){
+            $order_list="";
+            $order_list.= $this->FormatToCSVString([["Campagin","Order #","Updated","User","Phone","Total","Discount","Promocode","Status"]]);
+            $shop_table=$this->getTableName();            
+            $sql="SELECT distinct order_campagin FROM ".$shop_table;
+            $campagins=$this->dbh->select($sql);
+            foreach ($campagins as $campagin ) {
+            if ($campagin["order_campagin"]==NULL) {
+                $where_condition=" IS NULL ";
+            } else {
+                $where_condition=" = '".$campagin["order_campagin"]."' ";
+            }             
+            $sql="SELECT order_campagin,order_id,order_updated,order_user_name,order_phone,order_total,order_discount,order_promocode,shop_order_statuses.status_sysname FROM ".$shop_table." LEFT JOIN shop_order_statuses ON shop_orders.status_id=shop_order_statuses.status_id 
+            WHERE shop_orders.order_campagin".$where_condition." 
+             UNION 
+            SELECT 'Sum','','','','',SUM(order_total),SUM(order_discount),'','' FROM ".$shop_table." WHERE order_campagin".$where_condition;
+            
+            $orders=$this->dbh->select($sql);            
+            $order_list.= $this->FormatToRowCSVString(($campagin["order_campagin"]==NULL)?"":$campagin["order_campagin"]);
+            $order_list.= $this->FormatToCSVString($orders);
+            }
+            return $order_list;
+	}
+        /**
+            * Prepare CSV string.
+            * @param array $nextValue Next value.
+            * @return string
+            */
+        protected function FormatToCSVString(Array $Value) {
+        $separator = '"';
+        $delimiter = ';';
+        $rowDelimiter = "\r\n";
+        $row = '';
+        foreach ($Value as $nextValue) {            
+            foreach ($nextValue as $fieldValue) {
+                $row .= $separator .
+                str_replace([$separator, $delimiter], ["''", ','], $fieldValue) .
+                $separator . $delimiter;
+            }
+            //$row = substr($row, 0, -1);
+            $row.=$rowDelimiter;
+        }
+        return $row;
+        }	
+        protected function FormatToRowCSVString(String $Value) {
+        $separator = '"';
+        $delimiter = ';';
+        $rowDelimiter = "\r\n";
+        return  $separator.str_replace([$separator, $delimiter], ["''", ','], $Value).$separator . $delimiter.$rowDelimiter;
+        }
 }
 
 interface SampleOrderEditor {

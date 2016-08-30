@@ -300,11 +300,11 @@ adr_street as order_street
         }
         return $row;
         }	
-        protected function FormatToRowCSVString(String $Value) {
+        protected function FormatToRowCSVString($Value) {
         $separator = '"';
         $delimiter = ';';
         $rowDelimiter = "\r\n";
-        return  $separator.str_replace([$separator, $delimiter], ["''", ','], $Value).$separator . $delimiter.$rowDelimiter;
+        return  $separator.str_replace([$separator, $delimiter], ["''", ','],(string) $Value).$separator . $delimiter.$rowDelimiter;
         }
 }
 

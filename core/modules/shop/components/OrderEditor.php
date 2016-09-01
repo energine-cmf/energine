@@ -268,6 +268,7 @@ adr_street as order_street
             $tDiscount=$this->translate("Export_Orders_Discount");
             $tPromocode=$this->translate("Export_Orders_Promocode");
             $tStatus=$this->translate("Export_Orders_Status");
+            $tNoCampagin=$this->translate("Export_Orders_NoCampagin");
             
             $order_list.= $this->FormatToCSVString([[$tCampagin,$tOrder,$tUpdated,$tUser,$tPhone,$tTotal,$tDiscount,$tPromocode,$tStatus]]);
             $shop_table=$this->getTableName();            
@@ -279,13 +280,13 @@ adr_street as order_street
             } else {
                 $where_condition=" = '".$campagin["order_campagin"]."' ";
             }             
-            $sql="SELECT order_campagin,order_id,order_updated,order_user_name,order_phone,order_total,order_discount,order_promocode,shop_order_statuses.status_sysname FROM ".$shop_table." LEFT JOIN shop_order_statuses ON shop_orders.status_id=shop_order_statuses.status_id 
+            $sql="SELECT IF(order_campagin IS NULL,'".$tNoCampagin."',order_campagin),order_id,order_updated,order_user_name,order_phone,order_total,order_discount,order_promocode,shop_order_statuses.status_sysname FROM ".$shop_table." LEFT JOIN shop_order_statuses ON shop_orders.status_id=shop_order_statuses.status_id 
             WHERE shop_orders.order_campagin".$where_condition." 
              UNION 
             SELECT 'Sum','','','','',SUM(order_total),SUM(order_discount),'','' FROM ".$shop_table." WHERE order_campagin".$where_condition;
             
             $orders=$this->dbh->select($sql);            
-            $order_list.= $this->FormatToRowCSVString(($campagin["order_campagin"]==NULL)?$this->translate("Export_Orders_NoCampagin"):$campagin["order_campagin"]);
+            $order_list.= $this->FormatToRowCSVString(($campagin["order_campagin"]==NULL)?$tNoCampagin:$campagin["order_campagin"]);
             $order_list.= $this->FormatToCSVString($orders);
             }
             return $order_list;

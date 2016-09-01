@@ -253,12 +253,23 @@ adr_street as order_street
 //             $this->downloadFile($data, $MIMEType, $filename);
             $this->response->setHeader('Content-Type', 'application/csv; charset=utf-8');
             $this->response->setHeader('Content-Disposition','attachment; filename="' . $filename . '"');
-            $this->response->write($data);
+            $utf8header=(string)"\xef\xbb\xbf";
+            $this->response->write(  $utf8header.$data);
             $this->response->commit();   
 	}    
 	protected function GetExportData(){
             $order_list="";
-            $order_list.= $this->FormatToCSVString([["Campagin","Order #","Updated","User","Phone","Total","Discount","Promocode","Status"]]);
+            $tCampagin=$this->translate("Export_Orders_Campagin");
+            $tOrder=$this->translate("Export_Orders_Order");
+            $tUpdated=$this->translate("Export_Orders_Updated");
+            $tUser=$this->translate("Export_Orders_User");
+            $tPhone=$this->translate("Export_Orders_Phone");            
+            $tTotal=$this->translate("Export_Orders_Total");
+            $tDiscount=$this->translate("Export_Orders_Discount");
+            $tPromocode=$this->translate("Export_Orders_Promocode");
+            $tStatus=$this->translate("Export_Orders_Status");
+            
+            $order_list.= $this->FormatToCSVString([[$tCampagin,$tOrder,$tUpdated,$tUser,$tPhone,$tTotal,$tDiscount,$tPromocode,$tStatus]]);
             $shop_table=$this->getTableName();            
             $sql="SELECT distinct order_campagin FROM ".$shop_table;
             $campagins=$this->dbh->select($sql);
@@ -274,7 +285,7 @@ adr_street as order_street
             SELECT 'Sum','','','','',SUM(order_total),SUM(order_discount),'','' FROM ".$shop_table." WHERE order_campagin".$where_condition;
             
             $orders=$this->dbh->select($sql);            
-            $order_list.= $this->FormatToRowCSVString(($campagin["order_campagin"]==NULL)?"":$campagin["order_campagin"]);
+            $order_list.= $this->FormatToRowCSVString(($campagin["order_campagin"]==NULL)?$this->translate("Export_Orders_NoCampagin"):$campagin["order_campagin"]);
             $order_list.= $this->FormatToCSVString($orders);
             }
             return $order_list;

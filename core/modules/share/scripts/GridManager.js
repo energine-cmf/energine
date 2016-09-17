@@ -702,7 +702,6 @@ var Grid = (function () {
                 if (gridBodyHeight < this.minGridHeight) {
                     gridBodyHeight = this.minGridHeight;
                 }
-
                 /*
                  * +3 at the end is:
                  *   +2 from e-pane-content border
@@ -718,13 +717,20 @@ var Grid = (function () {
                  */
                 var windowHeight = window.getSize().y;
                 var freespace = windowHeight;
+
                 if ($(document.body).scrollHeight - ScrollBarWidth  < windowHeight) {
                     freespace -= this.pane.getPosition().y + ScrollBarWidth ;
                 }
 
-                if (totalH > paneH) {
-                    this.pane.setStyle('height', (totalH > freespace) ? freespace : totalH);
+                if (totalH > paneH) {                    
+                    this.pane.setStyle('height', (totalH > freespace) ? freespace : totalH);                     
+                    if (this.pane.parentNode.parentNode.parentNode.hasClass("fitGridHeightToLeftCol")) {
+                        var fitGridHeightToLeftCol=$$('div[column=left]')[0].clientHeight-(toolbarH + gridHeadH-30);//ugly
+                        //var fitGridHeightToLeftCol=$$('div[column=left]')[0].clientHeight-(toolbarH+gridHeadH+paneToolbarBH);//ugly
+                        this.pane.setStyle('height', fitGridHeightToLeftCol);
+                    }
                 }
+
                 this.fitGridSize();
             }
         },

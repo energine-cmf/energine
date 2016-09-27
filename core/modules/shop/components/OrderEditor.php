@@ -24,6 +24,8 @@ use Energine\share\gears\DataDescription;
 use Energine\share\gears\JSONCustomBuilder;
 use Energine\share\gears\QAL;
 use Energine\share\gears\GridExtender;
+use PHPExcel_IOFactory;
+use PHPExcel_Worksheet_MemoryDrawing;
 
 /**
  * Order editor.
@@ -39,6 +41,8 @@ class OrderEditor extends Grid implements SampleOrderEditor {
 	 * @var OrderGoodsEditor $orderGoodsEditor
 	 */
 	protected $orderGoodsEditor;
+        const TEMP_TILE = '/uploads/tmp/order_editor_export.csv';
+        const XLS_TEMP_FILE = '/uploads/tmp/order_editor_export.xlsx';	
 
 	/**
 	 * @copydoc Grid::__construct
@@ -247,18 +251,16 @@ adr_street as order_street
 	
 	protected function ordersExport() {
             $data=$this->GetExportData();
-            $filename = $this->getTitle() . '.csv';
-//            $filename = 'OrdersExport' . '.csv';
-//             $MIMEType = 'application/csv; charset=utf-8';
-//             $this->downloadFile($data, $MIMEType, $filename);
-            $this->response->setHeader('Content-Type', 'application/csv; charset=utf-8');
-            $this->response->setHeader('Content-Disposition','attachment; filename="' . $filename . '"');
-            $utf8header=(string)"\xef\xbb\xbf";
-            $this->response->write(  $utf8header.$data);
+            $filename=$this->export($data);
+            $this->response->setHeader('Content-Type', 'application/vnd.ms-excel; charset=utf-8');
+            $this->response->setHeader('Content-Disposition','attachment; filename="' . basename($filename) . '"');
+            $handle = fopen(HTDOCS_DIR . self::XLS_TEMP_FILE, "r");
+            $this->response->write(  fread($handle,filesize(HTDOCS_DIR . self::XLS_TEMP_FILE)));
+            fclose($handle);
             $this->response->commit();   
 	}    
 	protected function GetExportData(){
-            $order_list="";
+            $order_list=[];
             $tCampagin=$this->translate("Export_Orders_Campagin");
             $tOrder=$this->translate("Export_Orders_Order");
             $tUpdated=$this->translate("Export_Orders_Updated");
@@ -270,7 +272,7 @@ adr_street as order_street
             $tStatus=$this->translate("Export_Orders_Status");
             $tNoCampagin=$this->translate("Export_Orders_NoCampagin");
             
-            $order_list.= $this->FormatToCSVString([[$tCampagin,$tOrder,$tUpdated,$tUser,$tPhone,$tTotal,$tDiscount,$tPromocode,$tStatus]]);
+            $order_list[]=[$tCampagin,$tOrder,$tUpdated,$tUser,$tPhone,$tTotal,$tDiscount,$tPromocode,$tStatus];
             $shop_table=$this->getTableName();            
             $sql="SELECT distinct order_campagin FROM ".$shop_table;
             $campagins=$this->dbh->select($sql);
@@ -287,38 +289,104 @@ adr_street as order_street
             SELECT 'Sum','','','','',SUM(order_total),SUM(order_discount),'','' FROM ".$shop_table." WHERE order_campagin".$where_condition;
             
             $orders=$this->dbh->select($sql);            
-            $order_list.= $this->FormatToRowCSVString(($campagin["order_campagin"]==NULL)?$tNoCampagin:$campagin["order_campagin"]);
-            $order_list.= $this->FormatToCSVString($orders);
+            $txt_campagin=($campagin["order_campagin"]==NULL)?$tNoCampagin:$campagin["order_campagin"];
+            array_unshift($orders,[0=>$txt_campagin]);
+            $order_list[]=$orders;
             }
             return $order_list;
 	}
-        /**
-            * Prepare CSV string.
-            * @param array $nextValue Next value.
+            /**
             * @return string
+            * @throws \Exception
             */
-        protected function FormatToCSVString(Array $Value) {
-        $separator = '"';
-        $delimiter = ';';
-        $rowDelimiter = "\r\n";
-        $row = '';
-        foreach ($Value as $nextValue) {            
-            foreach ($nextValue as $fieldValue) {
-                $row .= $separator .
-                str_replace([$separator, $delimiter], ["''", ','], $fieldValue) .
-                $separator . $delimiter;
+            public function export($data)
+            {
+            try {
+                $prices = $data;
+                $headers=array_shift($prices);
+                $this->addExtraStaceBefore(4);
+                $this->writeLineToFile($headers);                
+                foreach ($prices as $campagins)
+                foreach ($campagins as $priceRow) {                    
+                    $this->writeLineToFile($priceRow);
+                    
+                }
+                $this->endOfWriting();
+
+                $csv = PHPExcel_IOFactory::load(HTDOCS_DIR . self::TEMP_TILE);
+                
+                $writer= PHPExcel_IOFactory::createWriter($csv, 'Excel2007');
+                $writer = $this->addLogo($writer);
+                $writer->save(HTDOCS_DIR . self::XLS_TEMP_FILE);
+                return self::XLS_TEMP_FILE;
+            } catch (\Exception $exception) {
+                throw new \Exception($exception->getMessage());
+                }
+            }	
+    private function addLogo($excelWriter)
+    {
+        $dbh = E()->getDb();
+        //$site_id=E()->getSiteManager()->getCurrentSite()->id;
+        $site_id=E()->getSiteManager()->getDefaultSite()->id;        
+        
+        $logoUrl = $dbh->getScalar(
+            'SELECT su.upl_path FROM share_sites_uploads as ssu,share_uploads as su WHERE (ssu.site_id=%s) and (ssu.upl_id=su.upl_id) and (su.upl_is_active=1) ORDER BY ssu.ssu_order_num  LIMIT 1',
+            $site_id
+        );
+        if($logoUrl===false) return;
+
+        if (strpos($logoUrl, 'http') === false) {
+            $logoUrl = sprintf('%s/%s', HTDOCS_DIR, $logoUrl);
+        }
+
+        try {
+            $gdImage = imagecreatefromjpeg($logoUrl);
+        } catch (\Exception $e) {
+            try {
+                $gdImage = imagecreatefrompng($logoUrl);
+            } catch (\Exception $exception) {
+                $gdImage = '';
             }
-            //$row = substr($row, 0, -1);
-            $row.=$rowDelimiter;
         }
-        return $row;
-        }	
-        protected function FormatToRowCSVString($Value) {
-        $separator = '"';
-        $delimiter = ';';
-        $rowDelimiter = "\r\n";
-        return  $separator.str_replace([$separator, $delimiter], ["''", ','],(string) $Value).$separator . $delimiter.$rowDelimiter;
+
+        $objDrawing = new PHPExcel_Worksheet_MemoryDrawing();
+        $objDrawing->setCoordinates('A1');
+        $objDrawing->setName('Logo');
+        $objDrawing->setDescription('Logo');
+        if ($gdImage) {
+            $objDrawing->setImageResource($gdImage);
         }
+        $objDrawing->setRenderingFunction(PHPExcel_Worksheet_MemoryDrawing::RENDERING_JPEG);
+        $objDrawing->setMimeType(PHPExcel_Worksheet_MemoryDrawing::MIMETYPE_DEFAULT);
+        $objDrawing->setHeight(70);
+        $objDrawing->setWorksheet($excelWriter->getPHPExcel()->getActiveSheet());
+        return $excelWriter;
+    }
+
+    private function addExtraStaceBefore($lines)
+    {
+        for ($i = 0; $i < $lines; $i++) {
+            $this->writeLineToFile(array_fill(0, 10, null));
+        }
+    }
+    private function writeLineToFile($row)
+    {
+        fputcsv($this->getFile(), array_values($row));
+    }
+
+    private function endOfWriting()
+    {
+        fclose($this->getFile());
+    }
+    public function getFile()
+    {
+        if (is_null($this->file)) {
+            $this->file = fopen(HTDOCS_DIR . self::TEMP_TILE, 'w+');
+        }
+        return $this->file;
+    }    
+
+
 }
 
 interface SampleOrderEditor {

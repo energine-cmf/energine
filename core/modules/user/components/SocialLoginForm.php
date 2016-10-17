@@ -49,16 +49,16 @@ class SocialLoginForm extends LoginForm {
         $f = new Field('username');
         $f->setData('');
         $this->getData()->addField($f);
-        //Если есть информация о авторизации через соц. сети
-        foreach (['fb', 'vk', 'ok', 'goo'] as $socialType) {
+        //Если есть информация о авторизации через соц. сети        
+        foreach (['fb', 'vk', 'ok', 'goo', 'ok', 'in'] as $socialType) {        
             foreach (array_values($this->getToolbar()) as $tbr) {
-                if ($ctrl = $tbr->getControlByID('auth.' . $socialType)) {
+                if ($ctrl = $tbr->getControlByID('auth.' . $socialType)) {		    
                     $ctrl->disable();
-                }
+                } 
                 if ($ctrl && $this->getConfigValue('auth.' . $socialType)) {
                     if (($appID = $this->getConfigValue('auth.' . $socialType . '.appID'))
                         && ($secretKey = $this->getConfigValue('auth.' . $socialType . '.appID'))
-                    ) {
+                    ) { 
                         $authClassName = 'Energine\\user\\gears\\' . strtoupper($socialType) . 'OAuth';
                         /**
                          * @var $auth IOAuth
@@ -67,11 +67,11 @@ class SocialLoginForm extends LoginForm {
                             'appId' => $appID,
                             'secret' => $secretKey,
                             'public' => $this->getConfigValue('auth.' . $socialType . '.publicKey'),
-                        ]);
+                        ]);                        
                         $ctrl->setAttribute('loginUrl', $auth->getLoginUrl(
                             [
                                 'redirect_uri' => ($base = E()->getSiteManager()->getCurrentSite()->base)
-                                    . 'auth.php?' . $socialType . 'Auth&return=' . $this->getReturnUrl(),
+                                    . 'auth.php?' . $socialType . 'Auth=1&return=' . $this->getReturnUrl(),
                                 'scope' => $ctrl->getAttribute('permissions')
                             ]
                         ));
@@ -90,7 +90,8 @@ class SocialLoginForm extends LoginForm {
      */
     private function getReturnUrl() {
         if (!$returnUrl = $this->getParam('successAction')) {
-            $returnUrl = (string)E()->getRequest()->getURI();
+            //$returnUrl = (string)E()->getRequest()->getURI();
+            $returnUrl = (string)E()->getSiteManager()->getCurrentSite()->base;
         }
         return $returnUrl;
     }

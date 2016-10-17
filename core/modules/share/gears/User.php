@@ -164,8 +164,7 @@ class User extends Primitive {
                 array_push($uniqueFields, $columnName);
             }
         }
-        //если пересечение списка необходимых полей и списка полей данных не пустое  - значит недостаточно данных для сохранения
-
+        //если пересечение списка необходимых полей и списка полей данных не пустое  - значит недостаточно данных для сохранения        
         if ($undefinedFields = array_diff($necessaryFields, array_keys($data))) {
             throw new SystemException('ERR_INSUFFICIENT_DATA', SystemException::ERR_WARNING, $undefinedFields);
         }
@@ -321,7 +320,19 @@ class User extends Primitive {
         }
         return $result;
     }
-
+    /**
+     * Get user by his ID in Instagram.
+     *
+     * @param string $inID User ID in Instagram.
+     * @return bool|User
+     */
+    public static function getINUser($inID) {
+        $result = false;
+        if ($UID = E()->getDB()->getScalar(self::USER_TABLE_NAME, 'u_id', ['u_inid' => $inID, 'u_is_active' => 1])) {
+            return new User($UID);
+        }
+        return $result;
+    }
     /**
      * Generate random password with specific length from numbers and latin characters.
      *

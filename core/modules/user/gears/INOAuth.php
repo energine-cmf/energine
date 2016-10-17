@@ -1,15 +1,16 @@
 <?php
 /**
  * @file
- * OKOAuth
+ * IOAuth
  *
  * It contains the definition to:
  * @code
-class OKOAuth;
+class IOAuth;
 @endcode
  *
- * @author Andrii Alieksieienko
- * @copyright 2013 eggmengroup.com
+ * @author Oleg Marichev
+ * based on OKOAuth
+ * @copyright 2016
  *
  * @version 1.0.0
  */
@@ -17,13 +18,13 @@ class OKOAuth;
 namespace Energine\user\gears;
 use Energine\share\gears\Primitive;
 /**
- * Class for user authorisation over <a href="http://www.odnoklassniki.ru">Однокласники</a>.
+ * Class for user authorisation over <a href="http://www.instagram.com">Instagram</a>.
  *
  * @code
-class OKOAuth;
+class IOAuth;
 @endcode
  */
-class OKOAuth extends Primitive {
+class INOAuth extends Primitive {
     /**
      * API URL.
      * @var string API_URL
@@ -33,12 +34,16 @@ class OKOAuth extends Primitive {
      * Authorize URL.
      * @var string AUTHORIZE_URL
      */
-    const AUTHORIZE_URL = 'http://www.odnoklassniki.ru/oauth/authorize';
+    //const AUTHORIZE_URL = 'http://www.odnoklassniki.ru/oauth/authorize';   
+    //https://api.instagram.com/oauth/authorize/?client_id=CLIENT-ID&redirect_uri=REDIRECT-URI&response_type=code
+    const AUTHORIZE_URL = 'https://api.instagram.com/oauth/authorize';
     /**
      * Access token URL.
      * @var string ACCESS_TOKEN_URL
      */
-    const ACCESS_TOKEN_URL = 'http://api.odnoklassniki.ru/oauth/token.do';
+    //const ACCESS_TOKEN_URL = 'http://api.odnoklassniki.ru/oauth/token.do';
+    // https://api.instagram.com/oauth/access_token
+    const ACCESS_TOKEN_URL = 'https://api.instagram.com/oauth/access_token';
     /**
      * Sign token name.
      * @var string SIGN_TOKEN_NAME
@@ -70,6 +75,11 @@ class OKOAuth extends Primitive {
      * @var $accessToken
      */
     private $accessToken;
+    /**
+     * userClass.
+     * @var $user
+     */
+    public $user;
 
     /**
      * @param array $config Configurations.
@@ -77,10 +87,10 @@ class OKOAuth extends Primitive {
      */
     public function __construct($config, $return = false) {    
         $this->appId = $config['appId'];
-        $this->appPublic = $config['public'];
+        //$this->appPublic = $config['public'];
         $this->appSecret = $config['secret'];
         $this->callbackUrl = ($base = E()->getSiteManager()->getCurrentSite()->base)
-            . 'auth.php?okAuth&return=' . ((!$return) ? $base : $return);
+            . 'auth.php?inAuth=1&return=' . ((!$return) ? $base : $return);
     }
 
     /**
@@ -138,7 +148,7 @@ class OKOAuth extends Primitive {
             "grant_type"    => "authorization_code",
             "redirect_uri"  => $this->callbackUrl,
             "code"          => $this->getCode()
-        );
+        );        
         $response = $this->request($this->createUrl(self::ACCESS_TOKEN_URL, $parameters), $parameters);
         $response = $this->parseRequestResult($response);
 
@@ -146,25 +156,8 @@ class OKOAuth extends Primitive {
             throw new \Exception( "Error: " . $response->error);
         }
         $this->accessToken = $response->access_token;
+        $this->user=$response->user;
         return $response;
-    }
-
-    /**
-     * Get user information.
-     *
-     * @return array
-     */
-    public function getUser() {
-        $user = array();
-        $sig = md5('application_key=' . $this->appPublic . 'method=users.getCurrentUser' . md5($this->accessToken . $this->appSecret));
-        $response = $this->api( '?application_key=' . $this->appPublic . '&method=users.getCurrentUser&sig=' .$sig);
-
-        $user['id']    = (property_exists($response,'uid'))?$response->uid:"";
-        $user['firstName']     = (property_exists($response,'first_name'))?$response->first_name:"";
-        $user['lastName']      = (property_exists($response,'last_name'))?$response->last_name:"";
-        $user['photoURL']      = (property_exists($response,'pic_1'))?$response->pic_1:"";
-
-        return $user;
     }
 
     /**
@@ -198,9 +191,10 @@ class OKOAuth extends Primitive {
      * @return string
      */
     public function getLoginUrl($params) {
+        $scope=(empty($params['scope']))? 'basic':$params['scope'];//+public_content
         $parameters = array(
             'client_id' => $this->appId,
-            'scope' => $params['scope'],
+            'scope' => $scope,
             'redirect_uri' => $params['redirect_uri'],
             'response_type' => 'code'
         );

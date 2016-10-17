@@ -80,7 +80,7 @@ class OKOAuth extends Primitive {
         $this->appPublic = $config['public'];
         $this->appSecret = $config['secret'];
         $this->callbackUrl = ($base = E()->getSiteManager()->getCurrentSite()->base)
-            . 'auth.php?okAuth&return=' . ((!$return) ? $base : $return);
+            . 'auth.php?okAuth=1&return=' . ((!$return) ? $base : $return);
     }
 
     /**

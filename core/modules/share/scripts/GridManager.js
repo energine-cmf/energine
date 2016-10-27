@@ -409,7 +409,7 @@ var Grid = (function () {
         sortRecordAsHeadersName: function(record,header) {
             var sorted=new Object();
             for (var fieldName in record) { //add hidden fields to object
-                if (this.metadata[fieldName].type == 'hidden') {
+                if ((this.metadata[fieldName].type == 'hidden') ^ (this.metadata[fieldName].type == 'custom') )  {
                     fieldName.sortedByHeadersName=true;
                     sorted[fieldName]=record[fieldName];                         
                 }
@@ -477,7 +477,7 @@ var Grid = (function () {
                     preiouslySelectedRecordKey = false;
                 }
                 this.data.each(function (record, id) {                    
-                    //modbysd: addRecord.call(this, record, id, preiouslySelectedRecordKey);                    
+                    //modbysd: addRecord.call(this, record, id, preiouslySelectedRecordKey);
                     addRecord.call(this, this.sortRecordAsHeadersName(record,this.gridHeadContainerTabs), id, preiouslySelectedRecordKey);		    
                 }, this);
                 if (!this.selectedItem.length && !preiouslySelectedRecordKey) {

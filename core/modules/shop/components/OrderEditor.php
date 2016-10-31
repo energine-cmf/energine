@@ -42,7 +42,9 @@ class OrderEditor extends Grid implements SampleOrderEditor {
 	 */
 	protected $orderGoodsEditor;
         const TEMP_TILE = '/uploads/tmp/order_editor_export.csv';
-        const XLS_TEMP_FILE = '/uploads/tmp/order_editor_export.xlsx';	
+        const XLS_TEMP_FILE = '/uploads/tmp/order_editor_export.xlsx';
+//         const TEMP_SELECTED_FILE = '/uploads/tmp/order_editor_selected_export.csv';
+        const XLS_TEMP_SELECTED_FILE = '/uploads/tmp/order_editor_selected_export.xlsx';	
 
 	/**
 	 * @copydoc Grid::__construct
@@ -259,6 +261,18 @@ adr_street as order_street
             fclose($handle);
             $this->response->commit();   
 	}    
+        protected function ordersExportSelected() {
+            $items = $this->getStateParams();            
+            $items=explode(",",$items[0]);           
+            $data=$this->GetExportDataSelected($items);            
+            $filename=$this->exportSelected($data);
+            $this->response->setHeader('Content-Type', 'application/vnd.ms-excel; charset=utf-8');
+            $this->response->setHeader('Content-Disposition','attachment; filename="' . basename($filename) . '"');
+            $handle = fopen(HTDOCS_DIR . self::XLS_TEMP_SELECTED_FILE, "r");
+            $this->response->write(  fread($handle,filesize(HTDOCS_DIR . self::XLS_TEMP_SELECTED_FILE)));
+            fclose($handle);
+            $this->response->commit();           	
+	}
 	protected function GetExportData(){
             $order_list=[];
             $tCampagin=$this->translate("Export_Orders_Campagin");
@@ -295,6 +309,53 @@ adr_street as order_street
             }
             return $order_list;
 	}
+	protected function GetExportDataSelected($items){
+            $order_list=[];
+            //before table
+            $tOrderNum=$this->translate("Export_Orders_Order_Number");
+            $tOrderDate=$this->translate("Export_Orders_Order_Date");
+            $tUserName=$this->translate("Export_Orders_User_Name");
+            //table
+            $tOrderProductCode=$this->translate("Export_Orders_Product_Code");
+            $tOrderProductName=$this->translate("Export_Orders_Product_Name");
+            $tOrderProductAmount=$this->translate("Export_Orders_Product_Amount");
+            $tOrderProductPricePerItem=$this->translate("Export_Orders_Product_Price_Per_Item");
+            $tOrderProductItemSummPrice=$this->translate("Export_Orders_Product_Item_Summ_Price");
+            //after table
+            $tOrderProductSummPrice=$this->translate("Export_Orders_Product_Summ_Price");
+            //after after table
+            $tOrderPromocodeUsed=$this->translate("Export_Orders_Promocode_Used");
+            $tOrderDiscountSumm=$this->translate("Export_Orders_Summ_Discount");
+            $tOrderStatus=$this->translate("Export_Orders_Status");
+
+            $shop_table=$this->getTableName();
+            
+            foreach ($items as $item ) {
+                $sql="SELECT order_id,order_updated,order_user_name,
+                order_total,order_promocode,order_discount,shop_order_statuses.status_sysname as status                   
+                FROM ".$shop_table." LEFT JOIN shop_order_statuses ON shop_orders.status_id=shop_order_statuses.status_id 
+                WHERE order_id=".intval($item)." LIMIT 1";
+                $order_data=$this->dbh->select($sql);                
+                $order_data=$order_data[0];
+                $sql="SELECT goods_id,goods_title,goods_quantity,goods_price,goods_amount            
+                FROM shop_orders_goods
+                WHERE order_id=".intval($item)."";
+                $order_goods=$this->dbh->select($sql);
+                
+                $order_list[]=[$tOrderNum,$order_data["order_id"],$tOrderDate,$order_data["order_updated"],$tUserName,$order_data["order_user_name"]];
+                $order_list[]=[$tOrderProductCode,$tOrderProductName,$tOrderProductAmount,$tOrderProductPricePerItem,$tOrderProductItemSummPrice];
+                foreach ($order_goods as $data ) {                    
+                    $order_list[]=[$data["goods_id"],$data["goods_title"],$data["goods_quantity"],$data["goods_price"],$data["goods_amount"]];
+                }
+                $order_list[]=['','','',$tOrderProductSummPrice,$order_data["order_total"]];
+                $order_list[]=[$tOrderPromocodeUsed,$order_data["order_promocode"]];
+                $order_list[]=[$tOrderDiscountSumm,$order_data["order_discount"]];
+                $order_list[]=[$tOrderStatus,$order_data["status"]];
+                $order_list[]=[' '];
+             
+            }
+            return $order_list;
+            }	
             /**
             * @return string
             * @throws \Exception
@@ -322,7 +383,28 @@ adr_street as order_street
             } catch (\Exception $exception) {
                 throw new \Exception($exception->getMessage());
                 }
-            }	
+            }
+            public function exportSelected($data)
+            {
+            try {
+                $prices = $data;
+                $headers=array_shift($prices);
+                $this->addExtraStaceBefore(4);
+                $this->writeLineToFile($headers);
+                foreach ($prices as $line)
+                  $this->writeLineToFile($line);
+                $this->endOfWriting();
+
+                $csv = PHPExcel_IOFactory::load(HTDOCS_DIR . self::TEMP_TILE);
+                
+                $writer= PHPExcel_IOFactory::createWriter($csv, 'Excel2007');
+                $writer = $this->addLogo($writer);
+                $writer->save(HTDOCS_DIR . self::XLS_TEMP_SELECTED_FILE);
+                return self::XLS_TEMP_SELECTED_FILE;
+            } catch (\Exception $exception) {
+                throw new \Exception($exception->getMessage());
+                }
+            }	            
     private function addLogo($excelWriter)
     {
         $dbh = E()->getDb();
@@ -371,7 +453,11 @@ adr_street as order_street
     }
     private function writeLineToFile($row)
     {
+        if (is_array($row)) {
         fputcsv($this->getFile(), array_values($row));
+        } else {
+          fputcsv($this->getFile(), [$row]);
+        }
     }
 
     private function endOfWriting()
@@ -385,6 +471,7 @@ adr_street as order_street
         }
         return $this->file;
     }    
+
 
 
 }

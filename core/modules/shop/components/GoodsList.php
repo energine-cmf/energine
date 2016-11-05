@@ -16,6 +16,7 @@ use Energine\share\gears\DataDescription;
 use Energine\share\gears\SimpleBuilder;
 use Energine\shop\gears\SampleGoodsList;
 
+
 class GoodsList extends DBDataSet implements SampleGoodsList {
     /**
      * Заполняются в loadData используются в main
@@ -39,7 +40,7 @@ class GoodsList extends DBDataSet implements SampleGoodsList {
      * @var array
      */
     protected $sort_data = [];
-
+	
     /**
      * Конструктор
      * @param string $name
@@ -47,7 +48,7 @@ class GoodsList extends DBDataSet implements SampleGoodsList {
      */
     public function __construct($name, array $params = NULL) {
         parent::__construct($name, $params);
-
+        
         $this->setTableName('shop_goods');
         $this->setParam('onlyCurrentLang', true);
         $this->setOrder(['goods_price' => QAL::ASC]);
@@ -669,9 +670,11 @@ class GoodsList extends DBDataSet implements SampleGoodsList {
             $am = new AttachmentManager(
                 $this->getDataDescription(),
                 $this->getData(),
-                $this->getTableName()
+                $this->getTableName(),
+                true // add to OG description
             );
             $am->createFieldDescription();
+            
             if ($f = $this->getData()->getFieldByName('goods_id')) {
                 $am->createField('goods_id', ($this->getType() == self::COMPONENT_TYPE_LIST), $f->getData());
             }
@@ -695,6 +698,9 @@ class GoodsList extends DBDataSet implements SampleGoodsList {
      * @throws SystemException
      */
     protected function view() {
+
+
+    
         $this->setType(self::COMPONENT_TYPE_FORM);
 
         $params = $this->getStateParams(true);
@@ -721,11 +727,11 @@ class GoodsList extends DBDataSet implements SampleGoodsList {
             $fieldDescription->setMode(FieldDescription::FIELD_MODE_READ);
         }
 
-        $this->setSEO();
-
         // attachments in view
-        $this->buildAttachments();
-
+        $this->buildAttachments();        
+        
+        $this->setSEO(); //set Name Title keywords description Description_Rtf + GO NAME ,  Description_Rtf
+        
         // tags in view
         $this->buildTags();
 
@@ -801,7 +807,7 @@ class GoodsList extends DBDataSet implements SampleGoodsList {
                     'feature_images' => $images
                 ];
             }
-	    
+
             $builder = new SimpleBuilder();
             $localData = new Data();
             $localData->load($feature_data);
@@ -977,10 +983,18 @@ class GoodsList extends DBDataSet implements SampleGoodsList {
 
     protected function setSEO() {
         $data = $this->getData();
-        foreach(['title', 'keywords', 'description'] as $key){
-            if($f = $data->getFieldByName('goods_seo_'.$key))
-                $this->document->setProperty($key, $f->getRowData(0));
-        }
+         foreach(['name','title', 'keywords', 'description_rtf','description'] as $key){
+            if($f = $data->getFieldByName('goods_seo_'.$key)) {
+                $this->document->setProperty($key, $f->getRowData(0));               
+            } else {
+	      if($f = $data->getFieldByName('goods_'.$key)) 
+		$this->document->setProperty($key, $f->getRowData(0));
+            }
+         }
+         if($f = $data->getFieldByName('goods_name')) 
+	    E()->getOGObject()->setTitle($f->getRowData(0));
+         if($f = $data->getFieldByName('goods_description_rtf')) 
+	    E()->getOGObject()->setDescription($f->getRowData(0));
     }
 
 }

@@ -168,7 +168,9 @@ final class Document extends Primitive implements IDocument {
             $this->setProperty('keywords', $this->documentInfo['MetaKeywords']);
         if ($this->documentInfo['MetaDescription'])
             $this->setProperty('description', $this->documentInfo['MetaDescription']);
-
+        if ($this->documentInfo['DescriptionRtf'])
+            $this->setProperty('DescriptionRtf', $this->documentInfo['DescriptionRtf']);
+            
         if ($this->documentInfo['MetaRobots'])
             $this->setProperty('robots', implode(',', $this->documentInfo['MetaRobots']));
         $this->setProperty('template', $this->request->getPath(Request::PATH_TEMPLATE, true));

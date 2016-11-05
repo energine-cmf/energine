@@ -111,7 +111,7 @@ class OGPrimitive extends Primitive {
     public function setDescription($description) {
         $this->description = strip_tags(html_entity_decode($description));
     }
-
+     
     /**
      * @param string $url
      */
@@ -150,9 +150,16 @@ class OGPrimitive extends Primitive {
      * @return DOMElement
      */
     public function build() {
-        if (empty($this->title)) {
+        if (empty($this->title)) {	    
             $this->setTitle(E()->getDocument()->getProperty('title'));
         }
+        if (empty($this->description)) {
+	    if(!empty(E()->getDocument()->getProperty('DescriptionRtf'))) {
+	      $this->setDescription(E()->getDocument()->getProperty('DescriptionRtf'));//Page Description
+            } else {
+	      $this->setDescription(E()->getDocument()->getProperty('description'));//Site Meta Description
+            }
+        }        
 
         $doc = new \DOMDocument('1.0', 'UTF-8');
         $result = $doc->createElement('og');

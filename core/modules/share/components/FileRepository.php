@@ -24,6 +24,8 @@ use Energine\share\gears\QAL;
 use Energine\share\gears\SystemException;
 use Energine\share\gears\Translit;
 
+use Energine\share\gears\EmptyBuilder;
+use Energine\share\gears\Document;
 /**
  * Fake interface for XSLT
  * Interface SampleFileRepository
@@ -129,7 +131,203 @@ class FileRepository extends Grid implements SampleFileRepository {
 
         return (object)['mime' => $mime, 'data' => base64_decode($string)];
     }
+     /**
+     * moveToDir
+     * @param int $uplID Upload ID.
+     */
+    protected function moveToDir() {
+        $sp = $this->getStateParams();
+        $uplID = $sp[0];
+        $this->setBuilder(new EmptyBuilder());
+        $this->setDataDescription($this->createDataDescription());
+        $this->setData(new Data());
+        $this->setProperty('move_id', $uplID);
+        $this->addToolbar($this->loadToolbar()); // add ok cancel buttons
+        $this->js = $this->buildJS();
+    }
+     /**
+     * GetDirectories
+     * @param
+     */
+    protected function getDirs() {
+        $this->setDataDescription($this->createDataDescription());
 
+        $this->addFilterCondition("(upl_internal_type = 'repo' )");
+        $repos=$this->loadData();
+
+        $this->clearFilter();
+        $this->addFilterCondition("(upl_internal_type = 'folder' )");
+        $folders=$this->loadData();
+        $d=new Data();
+        $d->load(array_merge($repos,$folders));
+        $this->setData($d);
+        $this->setBuilder(new JSONRepoBuilder());
+
+    }
+      /**
+     * Move Folder
+     * @param int,int $moving_id $movetoid
+     */
+    protected function getDirsMove() {
+        $transactionStarted = $this->dbh->beginTransaction();
+       try {
+        $sp = $this->getStateParams();
+        list($moving_id,$movetoid)= explode(',',$sp[0]);
+        $currentUplPath = simplifyDBResult($this->dbh->select($this->getTableName(), array('upl_path'), array('upl_id' => $moving_id)), 'upl_path', true);
+        $moveUplPath = simplifyDBResult($this->dbh->select($this->getTableName(), array('upl_path'), array('upl_id' => $movetoid)), 'upl_path', true);
+        //basename
+        $newpath=$moveUplPath.'/'.(basename($currentUplPath));
+        $result_rename=rename($currentUplPath,$newpath);
+        //update refs
+        if ($result_rename===true) {
+            $result = $this->dbh->modify(QAL::UPDATE, $this->getTableName(),['upl_path'=>$newpath,'upl_pid'=>$movetoid] , [$this->getPK() => $moving_id]);
+             $this->dbh->commit();
+        }
+
+        $b = new JSONCustomBuilder();
+        $b->setProperties([
+               'data'   => $movetoid,
+              'result' => true,
+              'mode'   => 'select'
+        ]);
+        $this->setBuilder($b);
+
+        } catch (SystemException $e) {
+            if ($transactionStarted) {
+                $this->dbh->rollback();
+            }
+            throw $e;
+        }
+    }
+     /**
+     * Copy
+     * @param int $uplID Upload ID.
+     */
+    protected function copy() {
+        $sp = $this->getStateParams();
+        $uplID = $sp[0];
+        if ($this->dbh->getScalar($this->getTableName(),
+                'upl_internal_type',
+                ['upl_id' => $uplID]) == FileRepoInfo::META_TYPE_FOLDER
+        ) {
+            $this->copyDir($uplID);
+        } else {
+            $this->copyFile($uplID);
+        }
+        $b = new JSONCustomBuilder();
+        $b->setProperties([
+              'result' => true,
+              'mode'   => 'select'
+        ]);
+        $this->setBuilder($b);
+    }
+     /**
+     * Copy File
+     * @param int $uplID Upload ID.
+     */
+    protected function copyFile($uplID,$root_path=null,$root_upl_pid=null) {
+        $db_key=$this->getPK();
+        $sql= "SELECT * FROM ".$this->getTableName()." WHERE ".$db_key."=". $uplID. " LIMIT 1";
+        $file_info=$this->dbh->select($sql)[0];
+        $file_path=pathinfo($file_info['upl_path']);
+        $extension=$file_path['extension'];
+        if ($root_path==null) { //same or other location
+            $dir=$file_path['dirname'].'/';
+        } else {
+            //$newpath=$this->dbh->getScalar($this->getTableName(), 'upl_path', [$db_key => $upl_pid]);
+            $dir=$root_path.'/';
+        }
+        $new_filename=self::generateFilename($dir,$extension);
+
+        if (!copy($file_info['upl_path'],$dir.$new_filename)) {
+            throw new SystemException('ERR_CANT_COPY_FILE');
+        }
+        //chmod($dir.$new_filename,0777);
+        //update_db
+        if ($root_upl_pid!=null)  {
+            $file_info['upl_pid']=$root_upl_pid;
+        }
+        unset($file_info['upl_id']);
+        $file_info['upl_title']="copy_".$file_info['upl_title'];
+        $file_info['upl_path']=$dir.$new_filename;
+        $file_info['upl_filename']=$new_filename;
+        $file_info['upl_childs_count']=intval($file_info['upl_childs_count']);//bug workaround
+        $result = $this->dbh->modify(QAL::INSERT, $this->getTableName(), $file_info);
+    }
+      /**
+     * Copy Dir Recursive
+     * @param int $uplID Upload ID.
+     */
+    protected function copyDir($uplID,$root_path=null,$root_upl_pid=null) {
+        $db_key=$this->getPK();
+        $sql= "SELECT * FROM ".$this->getTableName()." WHERE ".$db_key."=". $uplID. " LIMIT 1";
+        $file_info=$this->dbh->select($sql)[0];
+
+        $new_dirname="copy_".basename($file_info['upl_path']);
+        $old_path=$file_info['upl_path'];
+        if ($root_path==null) {
+            $file_info['upl_path']=dirname($file_info['upl_path']).'/'.$new_dirname;
+        } else {
+            $file_info['upl_path']=$root_path.'/'.$new_dirname;
+        }
+
+        if (!mkdir($file_info['upl_path'])) {
+            throw new SystemException('ERR_CANT_CREATE_DIR');
+        }
+        //chmod($file_info['upl_path'],0777);
+        //update_db
+        $orig_upl_id=$file_info['upl_id'];
+        unset($file_info['upl_id']);
+        if ($root_upl_pid!=null)  {
+            $file_info['upl_pid']=$root_upl_pid;
+        }
+        $file_info['upl_title']=$new_dirname;
+        $file_info['upl_filename']=$new_dirname;
+        $file_info['upl_width']=intval($file_info['upl_width']);//bug workaround
+        $file_info['upl_height']=intval($file_info['upl_height']);//bug workaround
+        $file_info['upl_childs_count']=intval($file_info['upl_childs_count']);//bug workaround
+        $insert_id = $this->dbh->modify(QAL::INSERT, $this->getTableName(), $file_info);
+
+        //fetching childs
+        $sql= "SELECT * FROM ".$this->getTableName()." WHERE upl_pid=". $orig_upl_id." ORDER BY upl_internal_type,upl_path";
+        $child_records=$this->dbh->select($sql);
+        foreach ($child_records as $child) {
+            if ($child['upl_internal_type'] == FileRepoInfo::META_TYPE_FOLDER) {
+                $this->copyDir($child['upl_id'],$file_info['upl_path'],$insert_id);
+            }else { //file
+                $this->copyFile($child['upl_id'],$file_info['upl_path'],$insert_id);
+            }
+        }
+    }
+      /**
+     * Delete
+     * @param int $uplID Upload ID.
+     */
+    protected function delete() {
+        $sp = $this->getStateParams();
+        $uplID = $sp[0];
+        $db_key=$this->getPK();
+        $sql= "SELECT * FROM ".$this->getTableName()." WHERE ".$db_key."=". $uplID. " LIMIT 1";
+        $file_info=$this->dbh->select($sql)[0];
+        parent::delete();
+        if ($file_info['upl_internal_type'] == FileRepoInfo::META_TYPE_FOLDER) {
+            $this->rmdir_recursive($file_info['upl_path']);
+        } else {
+            unlink($file_info['upl_path']);
+        }
+    }
+      /**
+     * Delete Dirs+Files Recursive
+     * @param int $dir name
+     */
+    function rmdir_recursive($dir) {
+        foreach(scandir($dir) as $file) {
+            if ('.' === $file || '..' === $file) continue;
+            if (is_dir("$dir/$file")) $this->rmdir_recursive("$dir/$file");
+            else unlink("$dir/$file");
+        }
+        rmdir($dir);
+    }
 
     protected function edit() {
         $sp = $this->getStateParams();
@@ -431,6 +629,7 @@ class FileRepository extends Grid implements SampleFileRepository {
      * @copydoc Grid::loadData
      */
     protected function loadData() {
+        $this->setOrder(['upl_internal_type'=>QAL::ASC,'upl_title'=>QAL::ASC]);
         $result = parent::loadData();
 
         if ($this->getState() == 'getRawData') {

@@ -49,8 +49,10 @@
             <control id="open" title="BTN_OPEN" type="button" onclick="open"/>
             <control id="sep01" type="separator"/>
             <control id="add" title="BTN_UPLOAD" type="button" onclick="add"/>
+            <control id="copy" title="BTN_COPY_FM" type="button" onclick="copy"/>
             <control id="addDir" title="BTN_ADD_DIR" type="button" onclick="addDir"/>
             <control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>
+            <control id="moveToDir" title="BTN_MOVE_TO_DIR" type="button" onclick="moveToDir"/>
             <control id="sep02" type="separator"/>
             <control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
             <control id="sep03" type="separator"/>
@@ -107,6 +109,11 @@
                      onclick="close"/>
         </toolbar>
     </state>
+    <state name="copy" rights="3">
+        <uri_patterns>
+            <pattern>/[pid]/copy/</pattern>
+        </uri_patterns>
+    </state>
     <state name="edit">
         <uri_patterns>
             <pattern>/[int]/edit/</pattern>
@@ -127,6 +134,37 @@
             <control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
         </toolbar>
     </state>
+    <state name="moveToDir">
+        <uri_patterns>
+            <pattern>/[pid]/moveToDir/</pattern>
+        </uri_patterns>
+        <fields>
+            <field name="upl_id"/>
+            <field name="upl_pid" type="hidden"/>
+            <field name="upl_path" type="file" title="FIELD_UPL_PATH2"/>
+            <field name="upl_title"/>
+             <field name="upl_name"/>
+            <field name="upl_filename" type="hidden"/>
+        </fields>
+        <javascript>
+              <behavior name="getDirsTree"/>
+        </javascript>
+        <toolbar>
+            <control id="saveDirsMove" title="BTN_SAVE" type="button" onclick="saveDirsMove"/>
+            <control id="close" title="BTN_CANCEL" type="button"
+                     onclick="close"/>
+    </toolbar>
+    </state>
+    <state name="getDirs">
+        <uri_patterns>
+            <pattern>/getDirs/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="getDirsMove">
+        <uri_patterns>
+            <pattern>/[int]/getDirsMove/</pattern>
+        </uri_patterns>
+    </state>
     <state name="saveDir" rights="3">
         <uri_patterns>
             <pattern>/save-dir/</pattern>
@@ -137,6 +175,7 @@
             <pattern>/save/</pattern>
         </uri_patterns>
     </state>
+
     <!--    <state name="upload" rights="2">
             <uri_patterns>
                 <pattern>/upload/</pattern>

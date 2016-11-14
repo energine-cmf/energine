@@ -86,7 +86,7 @@
 			<field name="smap_html_title"/>
 			<field name="smap_meta_keywords"/>
 			<field name="smap_meta_description"/>
-			<field name="page_rights" type="custom" tabName="TAB_PAGE_RIGHTS"/>
+			<field name="page_rights" type="custom" tabName="trans(TAB_PAGE_RIGHTS)"/>
 		</fields>
 		<javascript>
 			<behavior name="DivForm"/>
@@ -126,7 +126,7 @@
 			<field name="smap_html_title"/>
 			<field name="smap_meta_keywords"/>
 			<field name="smap_meta_description"/>
-			<field name="page_rights" type="custom" tabName="TAB_PAGE_RIGHTS"/>
+			<field name="page_rights" type="custom" tabName="trans(TAB_PAGE_RIGHTS)"/>
 		</fields>
 		<javascript>
 			<behavior name="DivForm"/>

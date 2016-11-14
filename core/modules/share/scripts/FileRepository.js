@@ -79,6 +79,11 @@ Grid.implement(/** @lends Grid# */{
 
                     case 'repo':
                         image.setProperty('src', 'images/icons/icon_repository.gif');
+
+                        if(record['upl_path']=='uploads/public')
+                            image.setProperty('src', 'images/icons/public.png');
+                        if(record['upl_path']=='uploads/user_files')
+                            image.setProperty('src', 'images/icons/user_files.png');
                         break;
 
                     case 'folderup':
@@ -277,6 +282,7 @@ var FileRepository = new Class(/** @lends FileRepository# */{
     initialize: function (element) {
         this.parent(element);
 
+        document.FileRepository=this;
         /**
          * List of paths.
          * @type {PathList}
@@ -483,7 +489,38 @@ var FileRepository = new Class(/** @lends FileRepository# */{
             }.bind(this)
         });
     },
+    /**
+     * Move To directory action.
+     * @function
+     * @public
+     */
+    moveToDir: function () {
+        var pid = this.grid.getSelectedRecord().upl_id;
+        if (pid) {
+            pid += '/';
+        }
 
+        ModalBox.open({
+            url: this.singlePath + pid + 'moveToDir/',
+            onClose: function (response) {
+                this.reload();
+            }.bind(this)
+        });
+    },
+    /**
+     * Move To directory action.
+     * @function
+     * @public
+     */
+    copy: function () {
+        var pid = this.grid.getSelectedRecord().upl_id;
+        if (pid) {
+            pid += '/';
+        }
+        Energine.request(this.singlePath + pid +'copy/', '', function (response) {
+            document.FileRepository.reload();
+        });
+    },
     /**
      * Upload zip-file.
      *

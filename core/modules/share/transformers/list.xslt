@@ -34,6 +34,10 @@
     <xsl:template match="component[@type='list' and @exttype='grid']/recordset">
         <xsl:variable name="NAME" select="../@name"/>
         <div id="{generate-id(.)}" class="e-pane e-pane-has-t-toolbar1  e-pane-has-b-toolbar1" template="{$BASE}{$LANG_ABBR}{$TEMPLATE}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}">
+             <xsl:if test="ancestor::component[@class and @componentAction]">
+                            <xsl:attribute name="class">e-pane e-pane-has-t-toolbar1  e-pane-has-b-toolbar1 <xsl:value-of select="concat(ancestor::component/@class,' ', ancestor::component/@componentAction)"/>
+                            </xsl:attribute>
+             </xsl:if>
             <!--<xsl:if test="../toolbar">
                 <xsl:attribute name="class">e-pane e-pane-has-t-toolbar1 e-pane-has-b-toolbar1</xsl:attribute>
             </xsl:if>-->
@@ -112,6 +116,16 @@
         <!-- /Хитрый фикс для оперы с добавлением просто дива -->
             <div class="e-pane-content">
                 <div id="{$TAB_ID}">
+                    <xsl:if test="ancestor::component[@name='filelibrary' and @componentAction='moveToDir']">
+                        <xsl:if test="ancestor::component[@class]">
+                            <xsl:attribute name="class"><xsl:value-of select="ancestor::component/@class"/></xsl:attribute>
+                        </xsl:if>
+                        <div id="treeContainer" class="e-divtree-select">
+                          <xsl:if test="ancestor::component[@move_id]">
+                            <xsl:attribute name="move_id"><xsl:value-of select="ancestor::component/@move_id"/></xsl:attribute>
+                          </xsl:if>
+                        </div>
+                    </xsl:if>
                     <div class="grid">                        
                         <!-- если есть хотя бы одно поле с типом string -->
                         <!-- или если есть узел filters -->

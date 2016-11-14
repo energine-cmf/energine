@@ -271,3 +271,11 @@
     }
 }
 /* ----- /tabpane ----- */
+.FileRepository.moveToDir .e-pane-t-toolbar{
+    display: none;
+}
+.FileRepository.moveToDir  .e-pane-content {
+    top:0px;
+    padding: 10px;
+    overflow: scroll;
+}

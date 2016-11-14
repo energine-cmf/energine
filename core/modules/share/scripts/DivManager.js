@@ -68,6 +68,7 @@ var DivManager = new Class(/** @lends DivManager# */{
          * Tree.
          * @type {TreeView}
          */
+
         this.tree = new TreeView('divTree', {dblClick: this.go.bind(this)});
 
         /**

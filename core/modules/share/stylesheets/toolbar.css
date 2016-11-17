@@ -190,8 +190,8 @@ ul.toolbar li.edit_btn.disabled:focus, ul.toolbar li.edit_btn.disabled:hover, ul
     color: black;
     /*background-color: #f0ad4e; 
      *border-color: #eea236;modbysd*/
-    background-color: lightgray; 
-    border-color: silver;
+/*    background-color: lightgray; 
+    border-color: silver;*/
     
 }
 ul.toolbar li.edit_btn:focus, ul.toolbar li.edit_btn:hover, ul.toolbar li.edit_btn:active {
@@ -200,8 +200,8 @@ ul.toolbar li.edit_btn:focus, ul.toolbar li.edit_btn:hover, ul.toolbar li.edit_b
     border-color: #d58512;modbysd
     background-color: lightgray; 
     border-color: silver;*/    
-    background-color: #e0e0e0;    
-    border-color: #efffde;    
+/*    background-color: #e0e0e0;    
+    border-color: #efffde;  */  
 }
 ul.toolbar li.add_btn,
 ul.toolbar li.add_btn.disabled:focus, ul.toolbar li.add_btn.disabled:hover, ul.toolbar li.add_btn.disabled:active {
@@ -209,7 +209,8 @@ ul.toolbar li.add_btn.disabled:focus, ul.toolbar li.add_btn.disabled:hover, ul.t
     background-color: #5cb85c;
     border-color: #4cae4c;modbysd #f0f0f0;*/
     color:black;
-    background: #dfffce;
+    background-color:rgb(235,235,235);
+/*    background: #dfffce;*/
     /*border-color: #efffde;      */
 }
 ul.toolbar li.add_btn:focus, ul.toolbar li.add_btn:hover, ul.toolbar li.add_btn:active {
@@ -217,24 +218,25 @@ ul.toolbar li.add_btn:focus, ul.toolbar li.add_btn:hover, ul.toolbar li.add_btn:
     /*background-color: #47a447;
      border-color: #398439;modbysd #f0f0f0;*/
     color:black;
-    background-color: #efffde;    
-    border-color: #efffde;    
+/*    background-color: #efffde;    */
+/*    border-color: #efffde;   */ 
 }
 ul.toolbar li.delete_btn,
 ul.toolbar li.delete_btn.disabled:focus, ul.toolbar li.delete_btn.disabled:hover, ul.toolbar li.delete_btn.disabled:active {
     color: black;
     /*background-color: #d9534f;
     border-color: #d43f3a;modbysd*/
-    background-color: rgb(250, 205, 205);
-    border-color: lightred;
+    /*background-color: rgb(250, 205, 205);*/
+    /*border-color: lightred;*/
+    float:right;
 }
 ul.toolbar li.delete_btn:focus, ul.toolbar li.delete_btn:hover, ul.toolbar li.delete_btn:active {
     /*color: #fff;
     background-color: #d2322d;
     border-color: #ac2925;*/
         color:black;
-    background-color: rgb(250, 225, 225);    
-    border-color: #efffde;    
+/*    background-color: rgb(250, 225, 225);    
+    border-color: #efffde; */   
 }
 ul.toolbar li.save_btn,ul.toolbar li.close_btn,
 ul.toolbar li.save_btn.disabled:focus, ul.toolbar li.save_btn.disabled:hover, ul.toolbar li.save_btn.disabled:active {
@@ -242,6 +244,14 @@ ul.toolbar li.save_btn.disabled:focus, ul.toolbar li.save_btn.disabled:hover, ul
     /*background-color: #3276b1;
     border-color: #285e8e;*/
     background-color:#589586;/*#A08A9F;*/
+/*     background: linear-gradient(to bottom, #c7a61f 0%,#947624 48%,#6b5f0c 52%,#ccb412 100%); */
+/*    background: linear-gradient(to bottom, #a98e22 0%,#947624 48%,#6b5f0c 52%,#ab970f 100%);*/
+    background-color: rgb(171, 148, 91);
+    background-image: linear-gradient(0deg, rgb(199, 170, 126) 0%, rgb(191, 163, 108) 10%, rgb(185, 159, 101) 20%, rgb(183, 159, 104) 30%, rgb(187, 163, 102) 50%, rgb(181, 158, 108) 100%);
+    background-image: -webkit-linear-gradient(0deg, rgb(199, 170, 126) 0%, rgb(191, 163, 108) 10%, rgb(185, 159, 101) 20%, rgb(183, 159, 104) 30%, rgb(187, 163, 102) 50%, rgb(181, 158, 108) 100%);
+    background-image: -moz-linear-gradient(0deg, rgb(199, 170, 126) 0%, rgb(191, 163, 108) 10%, rgb(185, 159, 101) 20%, rgb(183, 159, 104) 30%, rgb(187, 163, 102) 50%, rgb(181, 158, 108) 100%);
+    background-image: -webkit-linear-gradient(0deg, rgb(199, 170, 126) 0%, rgb(191, 163, 108) 10%, rgb(185, 159, 101) 20%, rgb(183, 159, 104) 30%, rgb(187, 163, 102) 50%, rgb(181, 158, 108) 100%);
+    
 }
 
 ul.toolbar li.save_btn:focus, ul.toolbar li.save_btn:hover, ul.toolbar li.save_btn:active,
@@ -249,7 +259,7 @@ ul.toolbar li.close_btn:focus,ul.toolbar li.close_btn:hover,ul.toolbar li.close_
     color: #fff;
     /*background-color: #3276b1;
     border-color: #285e8e;*/
-    background-color:#589586;/*#A08A9F;*/
+    /*background-color:#589586;*//*#A08A9F;*/
 }
 ul.toolbar li.copy_btn,
 ul.toolbar li.copy_btn.disabled:focus, ul.toolbar li.copy_btn.disabled:hover, ul.toolbar li.copy_btn.disabled:active {
@@ -257,17 +267,17 @@ ul.toolbar li.copy_btn.disabled:focus, ul.toolbar li.copy_btn.disabled:hover, ul
     /*background-color: #d9534f;
     border-color: #d43f3a;modbysd
     background-color: rgb(250, 150, 205);*/
-    background-color: white;
-    border-color: lightred;
+/*    background-color: white;
+    border-color: lightred;*/
 }
 ul.toolbar li.copy_btn:focus, ul.toolbar li.copy_btn:hover, ul.toolbar li.copy_btn:active {
     /*color: #fff;
     background-color: #d2322d;
     border-color: #ac2925;
     background-color: rgb(250, 180, 205);    */    
-    background-color: rgb(240, 240, 240);    
-        color:black;
-    border-color: #efffde;    
+    color:black;    
+/*    background-color: rgb(240, 240, 240);            
+    border-color: #efffde;    */
 }
 ul.e-divtree-toolbar.toolbar li.edit_btn,
 ul.e-divtree-toolbar.toolbar li.edit_btn:focus, ul.e-divtree-toolbar.toolbar li.edit_btn:hover, ul.e-divtree-toolbar.toolbar li.edit_btn:active,
@@ -322,13 +332,15 @@ ul.e-divtree-toolbar.toolbar li.delete_btn:focus, ul.e-divtree-toolbar.toolbar l
 ul.toolbar li.up_btn,
 ul.toolbar li.down_btn {
     color: #fff;
-    background-color: #43BDFE;
+    color:black;
+    /*background-color: #43BDFE;*/
 }
 
 ul.toolbar li.up_btn:focus, ul.toolbar li.up_btn:hover, ul.toolbar li.up_btn:active,
 ul.toolbar li.down_btn:focus, ul.toolbar li.down_btn:hover, ul.toolbar li.down_btn:active {
     color: #fff;
-    background-color: #1DA6FB;
+    color:black;
+    /*background-color: #1DA6FB;*/
 }
 /* -- button colors -- */
 

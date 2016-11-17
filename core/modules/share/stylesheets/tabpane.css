@@ -199,7 +199,7 @@
 }
 .e-tabs .highlighted {
     /*border-bottom: 3px solid #EEEEEE;*/
-    border-bottom: 3px solid rgb(159, 137, 157);
+    border-bottom: 3px solid #589586;/*rgb(159, 137, 157);*/
     padding-bottom:0px;
 }
 .e-tabs li.disabled a{
@@ -215,7 +215,7 @@
     cursor: default;
     background-color: #fff;
     /*border-bottom: 3px solid gray;*/
-    border-bottom: 3px solid rgb(159, 137, 157);
+    border-bottom: 3px solid #589586;/*rgb(159, 137, 157);*/
     font-weight: bold;
     background:transparent;
 }

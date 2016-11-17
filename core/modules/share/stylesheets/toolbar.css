@@ -241,7 +241,7 @@ ul.toolbar li.save_btn.disabled:focus, ul.toolbar li.save_btn.disabled:hover, ul
     color: #fff;
     /*background-color: #3276b1;
     border-color: #285e8e;*/
-    background-color:#A08A9F;
+    background-color:#589586;/*#A08A9F;*/
 }
 
 ul.toolbar li.save_btn:focus, ul.toolbar li.save_btn:hover, ul.toolbar li.save_btn:active,
@@ -249,7 +249,7 @@ ul.toolbar li.close_btn:focus,ul.toolbar li.close_btn:hover,ul.toolbar li.close_
     color: #fff;
     /*background-color: #3276b1;
     border-color: #285e8e;*/
-    background-color:#A08A9F;
+    background-color:#589586;/*#A08A9F;*/
 }
 ul.toolbar li.copy_btn,
 ul.toolbar li.copy_btn.disabled:focus, ul.toolbar li.copy_btn.disabled:hover, ul.toolbar li.copy_btn.disabled:active {

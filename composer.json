@@ -10,10 +10,6 @@
     "cmf"
   ],
   "homepage": "http://energine.net/",
-  "support": {
-    "issues": "https://github.com/energine-cmf/energine/issues",
-    "source": "https://github.com/energine-cmf/energine"
-  },
   "require": {
     "php": ">=5.5.0",
     "ext-dom": "*",

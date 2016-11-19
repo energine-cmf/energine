@@ -9,7 +9,6 @@
  *
  * @author Pavel Dubenko
  *
- * @version 1.0.0
  */
 
 ScriptLoader.load('GridManager');
@@ -30,7 +29,8 @@ Grid.implement(/** @lends Grid# */{
      * @param {Element} tmplElement Template element.
      */
     popImage: function (path, tmplElement) {
-        var popUpImg = new Element('img', {'src': Energine.resizer + 'w298-h224/' + path, 'width': 60, 'height': 45,
+        var popUpImg = new Element('img', {
+            'src': Energine.resizer + 'w298-h224/' + path, 'width': 60, 'height': 45,
             'styles': {
                 border: '1px solid gray',
                 'border-radius': '10px',
@@ -64,7 +64,7 @@ Grid.implement(/** @lends Grid# */{
 
         switch (fieldName) {
             case 'upl_path':
-                cell.setStyles({ 'text-align': 'center', 'vertical-align': 'middle' });
+                cell.setStyles({'text-align': 'center', 'vertical-align': 'middle'});
 
                 var image = new Element('img', {src: 'about:blank'}),
                     tmt,
@@ -73,28 +73,28 @@ Grid.implement(/** @lends Grid# */{
 
                 switch (record['upl_internal_type']) {
                     case 'folder':
-			dimensions = {'width': 50, 'height': 50};
-                        image.setProperty('src', 'images/icons/icon_folder.png');						
+                        dimensions = {'width': 50, 'height': 50};
+                        image.setProperty('src', 'images/icons/icon_folder.png');
                         break;
 
                     case 'repo':
                         image.setProperty('src', 'images/icons/icon_repository.gif');
 
-                        if(record['upl_path']=='uploads/public')
+                        if (record['upl_path'] == 'uploads/public')
                             image.setProperty('src', 'images/icons/public.png');
-                        if(record['upl_path']=='uploads/user_files')
+                        if (record['upl_path'] == 'uploads/user_files')
                             image.setProperty('src', 'images/icons/user_files.png');
                         break;
 
                     case 'folderup':
-			dimensions = {'width': 80, 'height': 78};
+                        dimensions = {'width': 80, 'height': 78};
                         image.setProperty('src', 'images/icons/icon_folder_up2.png');
-			
+
                         break;
 
                     case 'video':
                     case 'image':
-                        dimensions = {'width': 60, 'height': 45};			
+                        dimensions = {'width': 60, 'height': 45};
                         image.setProperty('src', Energine.resizer + 'w60-h45/' + record[fieldName])
                             .addEvents({
                                 'error': function () {
@@ -131,39 +131,39 @@ Grid.implement(/** @lends Grid# */{
                         if (record['upl_internal_type'] == 'video') {
                             container.grab(new Element('div', {'class': 'video_file'}));
                         }
-                        
-                        cell.requestFilesSize= new XMLHttpRequest();
-			cell.requestFilesSize.ImageProps=cell;
-			cell.requestFilesSize.open('HEAD',  record[fieldName], true);
-			cell.requestFilesSize.onreadystatechange = function() 
-			  {	
-			    if (this.readyState == 4) 
-				{
-				  if (this.status == 200) 
-				      {
-					  var props=this.ImageProps.parentNode.getElementsByClassName('properties');
-					  if (props.length>0) {
-					      var size=this.getResponseHeader('Content-Length');
-					      var size_abbr='B';
-					      if (size > 1024) {
-						    size=size/1024;size_abbr="KiB"; 
-						    if (size > 1024) {
-						      size=size/1024;size_abbr="MiB";
-						      if (size > 1024) {
-							size=size/1024;size_abbr="GiB";
-						      }
-						    }
-					      }
-					      size=(size).toPrecision(3);					      
-					      new Element('tr').inject(props[0].getElementsByTagName("tbody")[0]).adopt([
-						new Element('td', {'html': Energine.translations.get('TXT_FILE_SIZE')+":"}),
-						new Element('td', {'html': size+" "+size_abbr})
-					      ]);
-					  }
-				      }
-				}
-			  };
-			cell.requestFilesSize.send(null);
+
+                        cell.requestFilesSize = new XMLHttpRequest();
+                        cell.requestFilesSize.ImageProps = cell;
+                        cell.requestFilesSize.open('HEAD', record[fieldName], true);
+                        cell.requestFilesSize.onreadystatechange = function () {
+                            if (this.readyState == 4) {
+                                if (this.status == 200) {
+                                    var props = this.ImageProps.parentNode.getElementsByClassName('properties');
+                                    if (props.length > 0) {
+                                        var size = this.getResponseHeader('Content-Length');
+                                        var size_abbr = 'B';
+                                        if (size > 1024) {
+                                            size = size / 1024;
+                                            size_abbr = "KiB";
+                                            if (size > 1024) {
+                                                size = size / 1024;
+                                                size_abbr = "MiB";
+                                                if (size > 1024) {
+                                                    size = size / 1024;
+                                                    size_abbr = "GiB";
+                                                }
+                                            }
+                                        }
+                                        size = (size).toPrecision(3);
+                                        new Element('tr').inject(props[0].getElementsByTagName("tbody")[0]).adopt([
+                                            new Element('td', {'html': Energine.translations.get('TXT_FILE_SIZE') + ":"}),
+                                            new Element('td', {'html': size + " " + size_abbr})
+                                        ]);
+                                    }
+                                }
+                            }
+                        };
+                        cell.requestFilesSize.send(null);
 
                         break;
 
@@ -172,7 +172,7 @@ Grid.implement(/** @lends Grid# */{
                         image.setProperty('src', 'images/icons/icon_undefined.gif');
                         break;
                 }
-                image.setProperties(dimensions).inject(container);		
+                image.setProperties(dimensions).inject(container);
                 break;
 
             case 'upl_publication_date':
@@ -282,16 +282,16 @@ var FileRepository = new Class(/** @lends FileRepository# */{
     initialize: function (element) {
         this.parent(element);
 
-        document.FileRepository=this;
+        document.FileRepository = this;
         /**
          * List of paths.
          * @type {PathList}
          */
         this.pathBreadCrumbs = new PathList(this.element.getElementById('breadcrumbs'));
 
-	$$('.e-pane-toolbar.e-tabs.clearfix .current').setStyle('padding', '0px');
-	$$('.e-pane-toolbar.e-tabs.clearfix .current').setStyle('width', '100%');
-	$$('.e-pane-toolbar.e-tabs.clearfix .current').adopt(this.element.getElementById('breadcrumbs'));
+        $$('.e-pane-toolbar.e-tabs.clearfix .current').setStyle('padding', '0px');
+        $$('.e-pane-toolbar.e-tabs.clearfix .current').setStyle('width', '100%');
+        $$('.e-pane-toolbar.e-tabs.clearfix .current').adopt(this.element.getElementById('breadcrumbs'));
         /**
          * Current PID (Parent ID).
          * @type {string|number}
@@ -331,9 +331,9 @@ var FileRepository = new Class(/** @lends FileRepository# */{
                 if (openBtn) {
                     openBtn.enable();
                 }
-                if(this.toolbar.getControlById('addDir'))
+                if (this.toolbar.getControlById('addDir'))
                     this.toolbar.getControlById('addDir').enable();
-                if(this.toolbar.getControlById('add'))
+                if (this.toolbar.getControlById('add'))
                     this.toolbar.getControlById('add').enable();
                 break;
 
@@ -358,7 +358,7 @@ var FileRepository = new Class(/** @lends FileRepository# */{
         for (var btn in btn_map) {
             if (r[btn_map[btn]] && this.toolbar.getControlById(btn) && !this.toolbar.getControlById(btn).disabled()) {
                 this.toolbar.getControlById(btn).enable();
-            } else if(this.toolbar.getControlById(btn)){
+            } else if (this.toolbar.getControlById(btn)) {
                 this.toolbar.getControlById(btn).disable();
             }
         }
@@ -383,7 +383,10 @@ var FileRepository = new Class(/** @lends FileRepository# */{
             result.data = [];
         }
         if (this.currentPID) {
-            Cookie.write(FILE_COOKIE_NAME, this.currentPID, {path: new URI(Energine.base).get('directory'), duration: 1});
+            Cookie.write(FILE_COOKIE_NAME, this.currentPID, {
+                path: new URI(Energine.base).get('directory'),
+                duration: 1
+            });
         }
 
         this.grid.setData(result.data);
@@ -435,7 +438,7 @@ var FileRepository = new Class(/** @lends FileRepository# */{
             default:
                 if (r.upl_is_ready) {
                     if (this.toolbar.getControlById('open')) {
-                        if(r['upl_path']){
+                        if (r['upl_path']) {
                             var t = r['upl_path'].split('?');
                             r['upl_path'] = t[0];
                         }
@@ -517,7 +520,7 @@ var FileRepository = new Class(/** @lends FileRepository# */{
         if (pid) {
             pid += '/';
         }
-        Energine.request(this.singlePath + pid +'copy/', '', function (response) {
+        Energine.request(this.singlePath + pid + 'copy/', '', function (response) {
             document.FileRepository.reload();
         });
     },
@@ -540,7 +543,7 @@ var FileRepository = new Class(/** @lends FileRepository# */{
      * @param {number|string} pageNum Page number.
      * @returns {string}
      */
-    buildRequestURL: function(pageNum) {
+    buildRequestURL: function (pageNum) {
         var url = '',
             level = '';
 
@@ -569,7 +572,7 @@ var FileRepository = new Class(/** @lends FileRepository# */{
      *
      * @returns {string}
      */
-    buildRequestPostBody: function() {
+    buildRequestPostBody: function () {
         var postBody = '';
 
         if (this.filter) {

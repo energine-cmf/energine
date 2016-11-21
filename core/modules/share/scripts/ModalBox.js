@@ -238,8 +238,8 @@ var ModalBox = window.top.ModalBox || /** @lends ModalBox */{
                 box.iframe.destroy();
 
                 //After iframe was destroyed, focus has been lost, so focusing on main document
-                if(window.parent.document.body.getElement('a'))
-                    window.parent.document.body.getElement('a').focus();
+//disble blue box                 if(window.parent.document.body.getElement('a'))
+//                     window.parent.document.body.getElement('a').focus();
             }
             box.destroy();
         };

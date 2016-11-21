@@ -32,6 +32,7 @@ class SocialLoginForm extends LoginForm {
      * @copydoc LoginForm::showLoginForm
      */
     public function showLoginForm() {
+    
         $this->prepare();
         if (isset($_COOKIE[UserSession::FAILED_LOGIN_COOKIE_NAME])) {
             $messageField = new FieldDescription('message');
@@ -48,7 +49,10 @@ class SocialLoginForm extends LoginForm {
         //Во избежание появления empty рекордсета
         $f = new Field('username');
         $f->setData('');
-        $this->getData()->addField($f);
+        $this->getData()->addField($f);       
+        //add site name
+	$this->setProperty('site_name', E()->getSiteManager()->getCurrentSite()->name);
+        
         //Если есть информация о авторизации через соц. сети        
         foreach (['fb', 'vk', 'ok', 'goo', 'ok', 'in'] as $socialType) {        
             foreach (array_values($this->getToolbar()) as $tbr) {

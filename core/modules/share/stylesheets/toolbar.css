@@ -23,7 +23,7 @@ ul.toolbar * {
 ul.toolbar li {
     float: left;
     margin: 2px !important;
-    padding: 6px 12px !important;
+    padding: 6px 5px !important;
     list-style: none !important;
 	clear: none;
 	-khtml-user-select: none;
@@ -251,6 +251,7 @@ ul.toolbar li.save_btn.disabled:focus, ul.toolbar li.save_btn.disabled:hover, ul
     background-image: -webkit-linear-gradient(0deg, rgb(199, 170, 126) 0%, rgb(191, 163, 108) 10%, rgb(185, 159, 101) 20%, rgb(183, 159, 104) 30%, rgb(187, 163, 102) 50%, rgb(181, 158, 108) 100%);
     background-image: -moz-linear-gradient(0deg, rgb(199, 170, 126) 0%, rgb(191, 163, 108) 10%, rgb(185, 159, 101) 20%, rgb(183, 159, 104) 30%, rgb(187, 163, 102) 50%, rgb(181, 158, 108) 100%);
     background-image: -webkit-linear-gradient(0deg, rgb(199, 170, 126) 0%, rgb(191, 163, 108) 10%, rgb(185, 159, 101) 20%, rgb(183, 159, 104) 30%, rgb(187, 163, 102) 50%, rgb(181, 158, 108) 100%);
+    padding: 6px 7px !important;
     
 }
 

@@ -797,6 +797,7 @@ abstract class DataSet extends Component
                     'numeric-entities' => true,
                     'show-body-only' => true,
                     'quote-nbsp' => false,
+                    'preserve-entities' => true,
                     'indent' => 'auto',
                     'wrap' => 72,
                     'output-html' => true,

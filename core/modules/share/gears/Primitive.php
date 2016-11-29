@@ -34,7 +34,7 @@ abstract class Primitive {
     /**
      * Configuration file name.
      */
-    const CONFIG_FILE = 'system.config.php';
+    const CONFIG_FILE = 'package.json';
 
     /**
      * System configuration.
@@ -103,7 +103,7 @@ abstract class Primitive {
      */
     public static function getConfigValue($paramPath, $initial = NULL) {
         if (is_null(self::$systemConfig)) {
-            self::setConfig(include(self::CONFIG_FILE));
+            self::setConfig(json_decode(file_get_contents(ROOT_DIR.self::CONFIG_FILE), true));
         }
         $result = self::$systemConfig;
         $paramPath = explode('.', $paramPath);

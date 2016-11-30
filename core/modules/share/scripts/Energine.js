@@ -292,7 +292,7 @@ $(window).addEvent('domready', function () {
                 &&
                     (matches.length >2)
                 ) {
-                     image.setProperty('src', 'http://placehold.it/'+matches[1]+'x'+matches[2]);
+                     image.setProperty('src', '//placehold.it/'+matches[1]+'x'+matches[2]);
                 }
             };
         });

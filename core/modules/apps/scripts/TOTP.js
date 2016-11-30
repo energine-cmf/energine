@@ -1,4 +1,4 @@
-ScriptLoader.load('http://cdn.jsdelivr.net/jquery.slick/1.5.0/slick.min.js');
+ScriptLoader.load('//cdn.jsdelivr.net/jquery.slick/1.5.0/slick.min.js');
 Asset.css('simple_tabs.css');
 
 var TOTP = function (el) {

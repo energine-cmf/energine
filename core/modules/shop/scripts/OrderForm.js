@@ -44,7 +44,6 @@ var OrderForm = new Class(/** @lends OrderForm# */{
         jQuery($uid).on('change', this.fetchUserDetails.bind(this, $uid));
 
         $(window).fireEvent('orderTabMain');
-
     },
 
     onTabChange: function () {
@@ -147,22 +146,19 @@ var OrderForm = new Class(/** @lends OrderForm# */{
                     if (this.element.getElementById('order_amount_read')) {
                         this.element.getElementById('order_amount_read').set('value', data.amount);
                     }
-                    if (!isPromoCodeUsed) {
+
                         order_total.set('value', data.total);
                         if (this.element.getElementById('order_total_read')) {
                             this.element.getElementById('order_total_read').set('value', data.total);
                         }
                         if (this.element.getElementById('order_goods_discount_read')) {
-                            this.element.getElementById('order_goods_discount_read').set('value', data.discount);
+                            this.element.getElementById('order_goods_discount_read').set('value', data.goods_discount);
                         }
-
+                    if (this.element.getElementById('order_goods_discount')) {
+                        this.element.getElementById('order_goods_discount').set('value', data.discount);
+                    }
                         if (onSuccess && ((typeof onSuccess) == 'function')) onSuccess();
-                    }
-                    else {
-                        if (this.element.getElementById('order_goods_discount_read')) {
-                            this.element.getElementById('order_goods_discount_read').set('value', order_amount.get('value') - order_total.get('value'));
-                        }
-                    }
+
                 }
             }.bind(this),
             this.processServerError.bind(this),

@@ -116,6 +116,7 @@ class OrderEditor extends Grid implements SampleOrderEditor {
 		}
 	}
 
+
 	/**
 	 * Create component for editing ordered goods.
 	 */
@@ -207,7 +208,8 @@ class OrderEditor extends Grid implements SampleOrderEditor {
 		$b = $this->getBuilder();
 
 		$b->setProperty( 'result', true )
-		  ->setProperty( 'discount', number_format( $goods_discount, 2, '.', '' ) )
+		  ->setProperty( 'discount', number_format( $discount, 2, '.', '' ) )
+		  ->setProperty( 'goods_discount', number_format( $goods_discount, 2, '.', '' ) )
 		  ->setProperty( 'amount', number_format( $goods_total, 2, '.', '' ) )
 		  ->setProperty( 'total', number_format( $total, 2, '.', '' ) );
 	}

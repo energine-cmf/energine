@@ -340,6 +340,10 @@
             <!--multiple="multiple"-->
             <select id="{@name}_name"  class="text acpl" style="width:100%;" data-lang="{$DOC_PROPS[@name='lang']/@real_abbr}" data-placeholder="...">
                 <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
+                <xsl:if test="value">
+                    <option value="{value/@id}" selected="selected"><xsl:value-of select="value"/></option>
+                    <!--<xsl:attribute name="data-value">{id:'<xsl:value-of select="value/@id"/>',text:'<xsl:value-of select="value"/>'}</xsl:attribute>-->
+                </xsl:if>
             </select>
             <div class="appended_block">
                 <button type="button"  style="height: 18px;">...</button>

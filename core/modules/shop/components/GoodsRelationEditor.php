@@ -80,7 +80,8 @@ class GoodsRelationEditor extends Grid {
 
 		if (in_array($this->getState(), array('add', 'edit'))) {
 			$fd = $result->getFieldDescriptionByName('goods_from_id');
-			$fd->setType(FieldDescription::FIELD_TYPE_HIDDEN);
+			$fd->setType(FieldDescription::FIELD_TYPE_LOOKUP);
+			$fd->setMode(FieldDescription::FIELD_MODE_READ);
 			$fd = $result->getFieldDescriptionByName('session_id');
 			$fd->setType(FieldDescription::FIELD_TYPE_HIDDEN);
 		}

@@ -1,4 +1,5 @@
 @import url("controls.css");
+
 /*
     Tabpane - это стандартный блок с вкладками, в котором размещаются элементы управления Energine. 
     Tabpane может выводиться как в модальном окне, так и просто на странице. Разницы в структуре в этих двух случаях нет, 
@@ -25,6 +26,7 @@
     padding: 0;
     font-family: Tahoma, sans-serif;
 }
+
 /* ----- /grid form ----- */
 
 /* ----- tabpane ----- */
@@ -36,9 +38,11 @@
     font-size: 13px;
     line-height: normal;
 }
+
 .e-singlemode-layout .e-pane {
     min-height: 0;
 }
+
 .e-pane .e-overlay {
     position: absolute;
 }
@@ -52,53 +56,64 @@
     z-index: 1;
     background: white;
 }
+
 .e-pane-t-toolbar {
     top: 0;
     padding-top: 10px;
     padding-left: 10px;
     padding-right: 10px;
 }
-.e-pane-b-toolbar {                    
+
+.e-pane-b-toolbar {
     bottom: 0;
     padding-bottom: 10px;
-} 
+}
+
 /* Классы-модификаторы (для контейнера e-pane) для случая, когда есть тулбары вверху и/или внизу */
-.e-pane-has-t-toolbar1 .e-pane-t-toolbar, 
-.e-pane-has-t-toolbar2 .e-pane-t-toolbar, 
-.e-pane-has-b-toolbar1 .e-pane-b-toolbar, 
+.e-pane-has-t-toolbar1 .e-pane-t-toolbar,
+.e-pane-has-t-toolbar2 .e-pane-t-toolbar,
+.e-pane-has-b-toolbar1 .e-pane-b-toolbar,
 .e-pane-has-b-toolbar2 .e-pane-b-toolbar {
     display: block;
 }
+
 /* 1 тулбар вверху */
 .e-pane-has-t-toolbar1 .e-pane-t-toolbar {
     height: 36px;
 }
+
 .e-pane-has-t-toolbar1 .e-pane-content {
-    /*top: 47px;*/
-    top: 87px;
+    top: 47px;
 }
+
 /* modBySD move bottom controls up */
 .e-pane-has-t-toolbar1.inside-form .e-pane-content {
-      top: 87px;
+    top: 87px;
 }
+
 /* 2 тулбара вверху */
 .e-pane-has-t-toolbar2 .e-pane-t-toolbar {
     height: 48px;
 }
+
 .e-pane-has-t-toolbar2 .e-pane-content {
     top: 58px;
 }
+
 /* 1 тулбар внизу */
 .e-pane-has-b-toolbar1 .e-pane-b-toolbar {
     height: 62px;
 }
+
 .e-pane-has-b-toolbar1 .e-pane-content {
     bottom: 72px;
 }
+
 /* 2 тулбара внизу */
 .e-pane-has-b-toolbar2 .e-pane-b-toolbar {
     /*height: 108px;*/
 }
+
 .e-pane-has-b-toolbar2 .e-pane-content {
     bottom: 0px;
 }
@@ -106,9 +121,11 @@
 .e-pane-toolbar {
     padding: 5px 10px;
 }
+
 .e-pane ul.toolbar li.separator {
     background: none;
 }
+
 /* pane content  */
 .e-pane-content {
     position: absolute;
@@ -122,31 +139,35 @@
     padding: 0;
     font-family: Tahoma, sans-serif;
 }
+
 .e-singlemode-layout .e-pane-t-toolbar,
 .e-singlemode-layout .e-pane-b-toolbar,
 .e-singlemode-layout .e-pane-content {
     position: fixed;
 }
-.e-pane-item {/*
-        Для этого блока применяется метод перевода боксовой модели в модель border-box,
-        что дает возможность создать отступы и бордеры у блока при его 100% высоте.
-    */
-        -moz-box-sizing: border-box;/* Firefox 2+ */
-        -ms-box-sizing: border-box;/* IE 8 */
-        -khtml-box-sizing: border-box;/* Konquerror */
-        -webkit-box-sizing: border-box;/* Safari 3+ */
-        box-sizing: border-box;/* Opera 8+, Chrome, браузеры с поддержкой CSS3 */
-        height: 100%;
-        overflow: auto;
-        padding: 10px;*
-        position: absolute;*
-        top: 10px;*
-        right: 10px;*
-        bottom: 10px;*
-        left: 10px;*
-        height: auto;
-        font-family: Tahoma, sans-serif;
+
+.e-pane-item {
+    /*
+            Для этого блока применяется метод перевода боксовой модели в модель border-box,
+            что дает возможность создать отступы и бордеры у блока при его 100% высоте.
+        */
+    -moz-box-sizing: border-box; /* Firefox 2+ */
+    -ms-box-sizing: border-box; /* IE 8 */
+    -khtml-box-sizing: border-box; /* Konquerror */
+    -webkit-box-sizing: border-box; /* Safari 3+ */
+    box-sizing: border-box; /* Opera 8+, Chrome, браузеры с поддержкой CSS3 */
+    height: 100%;
+    overflow: auto;
+    padding: 10px;
+    *position: absolute;
+    *top: 10px;
+    *right: 10px;
+    *bottom: 10px;
+    *left: 10px;
+    *height: auto;
+    font-family: Tahoma, sans-serif;
 }
+
 .e-grid-pane .e-pane-item {
     border: 0;
     /*padding: 0;*/
@@ -164,6 +185,7 @@
     /*-moz-box-shadow: inset 0px -1px 0px 0px rgba(0,0,0,0.5);*/
     /* box-shadow: inset 0px -1px 0px 0px rgba(0,0,0,0.5); */
 }
+
 .e-tabs li {
     float: left;
     margin: 0 2px -1px 0;
@@ -177,6 +199,7 @@
     text-transform: uppercase;
 
 }
+
 /*.inside-form .e-items-count-1 .e-pane-t-toolbar li{
     display: none;
 }
@@ -189,54 +212,62 @@
 .e-tabs li a:visited,
 .e-tabs li a:hover,
 .e-tabs li a:active {
-      font-family: 'Roboto', sans-serif;
+    font-family: 'Roboto', sans-serif;
     /*font-family: Tahoma, sans-serif;
     color: #428bca;modbysd*/
-    color:black;
+    color: black;
     text-decoration: none;
     font-weight: 300;
-    padding-bottom:0px;
+    padding-bottom: 0px;
 }
+
 .e-tabs .highlighted {
     /*border-bottom: 3px solid #EEEEEE;*/
-    border-bottom: 3px solid #589586;/*rgb(159, 137, 157);*/
-    padding-bottom:0px;
+    border-bottom: 3px solid #589586; /*rgb(159, 137, 157);*/
+    padding-bottom: 0px;
 }
-.e-tabs li.disabled a{
-    color:silver;
+
+.e-tabs li.disabled a {
+    color: silver;
 }
+
 .e-tabs .current {
     position: relative;
     z-index: 1;
     padding: 10px 15px;
-    padding-bottom:0px;
+    padding-bottom: 0px;
     font-size: 13px;
     /*color: #555;*/
     cursor: default;
     background-color: #fff;
     /*border-bottom: 3px solid gray;*/
-    border-bottom: 3px solid #589586;/*rgb(159, 137, 157);*/
+    border-bottom: 3px solid #589586; /*rgb(159, 137, 157);*/
     font-weight: bold;
-    background:transparent;
+    background: transparent;
 }
+
 .e-tabs .current a {
     cursor: default;
     color: black;
 }
+
 .e-tabs li .data {
     display: none;
 }
+
 /* --- media queries --- */
-@media screen and (max-width: 680px){
+@media screen and (max-width: 680px) {
     .e-pane-has-t-toolbar1 .e-pane-t-toolbar,
     .e-pane-has-b-toolbar1 .e-pane-b-toolbar,
     .e-pane-has-t-toolbar2 .e-pane-t-toolbar,
     .e-pane-has-b-toolbar2 .e-pane-b-toolbar {
         height: auto;
     }
+
     .e-pane-has-b-toolbar2 .e-pane-b-toolbar ul.toolbar {
         margin: 0 2px !important;
     }
+
     /*.e-pane-has-t-toolbar1 .e-pane-content {
         border: 1px solid #ddd;
     }*/
@@ -260,22 +291,26 @@
         color: #fafafa;
     }*/
 }
-@media screen and (max-width: 630px){
+
+@media screen and (max-width: 630px) {
     .e-pane-has-t-toolbar1 .e-pane-content {
         top: 72px;
     }
 }
-@media screen and (max-width: 370px){
+
+@media screen and (max-width: 370px) {
     .e-pane-has-t-toolbar1 .e-pane-content {
         top: 102px;
     }
 }
+
 /* ----- /tabpane ----- */
-.FileRepository.moveToDir .e-pane-t-toolbar{
+.FileRepository.moveToDir .e-pane-t-toolbar {
     display: none;
 }
-.FileRepository.moveToDir  .e-pane-content {
-    top:0px;
+
+.FileRepository.moveToDir .e-pane-content {
+    top: 0px;
     padding: 10px;
     overflow: scroll;
 }

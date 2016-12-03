@@ -557,7 +557,7 @@
     </xsl:template>
 
     <!-- read-only lookup -->
-    <xsl:template match="field[@mode='1' and ancestor::component[@type='form'] and @type='lookup'  and (@exttype='feed' or @exttype='grid') ]" mode="field_input_readonly">
+    <xsl:template match="field[@mode='1'  and @type='lookup' and ancestor::component[@type='form'  and (@exttype='feed' or @exttype='grid') ]]" mode="field_input_readonly">
         <div class="control">
             <input type="text" id="{@name}_read" disabled="disabled" value="{.}"/>
             <input>

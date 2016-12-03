@@ -48,7 +48,6 @@ var DivForm = new Class(/** @lends DivForm# */{
 
             if (segmentInput) {
                 if (segment = contentSelector.getSelected()[0].getProperty('data-segment')) {
-                (segment)
                     segmentInput.setProperty('readOnly', 'readOnly');
                     segmentInput.set('value', segment);
                 }

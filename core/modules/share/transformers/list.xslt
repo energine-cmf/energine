@@ -115,6 +115,9 @@
         <div>
         <!-- /Хитрый фикс для оперы с добавлением просто дива -->
             <div class="e-pane-content">
+                <xsl:if test="ancestor::component/filter">
+                    <xsl:attribute name="class">e-pane-content with-filter</xsl:attribute>
+                </xsl:if>
                 <div id="{$TAB_ID}">
                     <xsl:if test="ancestor::component[@name='filelibrary' and @componentAction='moveToDir']">
                         <xsl:if test="ancestor::component[@class]">

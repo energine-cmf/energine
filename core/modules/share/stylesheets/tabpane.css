@@ -85,7 +85,9 @@
 .e-pane-has-t-toolbar1 .e-pane-content {
     top: 47px;
 }
-
+.e-pane-has-t-toolbar1 .e-pane-content.with-filter {
+    top: 87px;
+}
 /* modBySD move bottom controls up */
 .e-pane-has-t-toolbar1.inside-form .e-pane-content {
     top: 87px;
@@ -158,13 +160,13 @@
     box-sizing: border-box; /* Opera 8+, Chrome, браузеры с поддержкой CSS3 */
     height: 100%;
     overflow: auto;
-    padding: 10px;
-    *position: absolute;
-    *top: 10px;
-    *right: 10px;
-    *bottom: 10px;
-    *left: 10px;
-    *height: auto;
+        padding: 10px;*
+        position: absolute;*
+        top: 10px;*
+        right: 10px;*
+        bottom: 10px;*
+        left: 10px;*
+        height: auto;
     font-family: Tahoma, sans-serif;
 }
 

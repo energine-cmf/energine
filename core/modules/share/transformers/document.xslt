@@ -23,8 +23,7 @@
     <xsl:variable name="MAIN_SITE"><xsl:value-of select="$DOC_PROPS[@name='base']/@default"/><xsl:value-of select="$LANG_ABBR"/></xsl:variable>
     <xsl:variable name="TEMPLATE"><xsl:value-of select="$DOC_PROPS[@name='template']"/></xsl:variable>
 
-    <!--@deprecated-->
-    <!--Оставлено для обратной совместимости, сейчас рекомендуется определять обработчик рута в модуле сайта и взывать рутовый шаблон в режиме head-->
+
     <xsl:template match="/" mode="title">
         <title><xsl:choose>
             <xsl:when test="$DOC_PROPS[@name='title']/@alt = ''">

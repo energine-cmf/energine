@@ -202,8 +202,8 @@ class GoodsList extends DBDataSet implements SampleGoodsList {
 					if ( is_array( $list_features ) and ! in_array( $feature->getSysName(), $list_features ) ) {
 						continue;
 					}
-//                    if($showOnlyMainFeatures)    
-//		      if (empty($feature->getValue())) continue;//modbysd remove empty values, fixes unrelated values in GOODs_List (carusel)
+                                        if($showOnlyMainFeatures)    
+                            		      if (empty($feature->getValue())) continue;//modbysd remove empty values, fixes unrelated values in GOODs_List (carusel)
 					if ( $list_features_onlyfilter and ( $feature->isFilter() == false ) ) {
 						continue;
 					}

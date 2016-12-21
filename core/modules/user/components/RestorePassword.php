@@ -72,12 +72,18 @@ class RestorePassword extends DataSet {
                 $this->dbh->modify(QAL::UPDATE, 'user_users', array('u_password' => password_hash($password, PASSWORD_DEFAULT)), array('u_id' => $UID));
                 $user = new User($UID);
 
+                $sex=$user->getValue('u_sex');
+                    if ($sex=='M') { $sex=$this->translate('TXT_EMAIL_SUFFIX_SEX_M'); }
+                         else if ($sex=='F') { $sex=$this->translate('TXT_EMAIL_SUFFIX_SEX_F'); }
+                          else { $sex=$this->translate('TXT_EMAIL_SUFFIX_SEX_UNKNOWN'); }
+                
                 $template = new MailTemplate('user_restore_password', [
                     'user_login' => $uName,
                     'user_name' => $user->getValue('u_fullname'),
                     'user_password' => $password,
                     'site_url' => E()->getSiteManager()->getCurrentSite()->base,
-                    'site_name' => $this->translate('TXT_SITE_NAME')
+                    'site_name' => $this->translate('TXT_SITE_NAME'),
+                    'sex_suffix_hello' => $sex
                 ]);
 
                 $mailer = new Mail();

@@ -82,7 +82,8 @@ class RestorePassword extends DataSet {
                     'user_name' => $user->getValue('u_fullname'),
                     'user_password' => $password,
                     'site_url' => E()->getSiteManager()->getCurrentSite()->base,
-                    'site_name' => $this->translate('TXT_SITE_NAME'),
+                    //'site_name' => $this->translate('TXT_SITE_NAME'),
+                    'site_name' => E()->getSiteManager()->getCurrentSite()->name,
                     'sex_suffix_hello' => $sex
                 ]);
 

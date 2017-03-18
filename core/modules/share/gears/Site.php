@@ -105,7 +105,7 @@ class Site extends Primitive {
         $this->data = array_merge($this->data, $domainData);
         $this->data['base'] =
             $this->data['protocol'] . '://' .
-            $this->data['host'] . (($this->data['port'] == 80) ? '' : ':' . $this->data['port']) .
+            $this->data['host'] . ((in_array($this->data['port'], [80, 443])) ? '' : ':' . $this->data['port']) .
             $this->data['root'];
     }
 

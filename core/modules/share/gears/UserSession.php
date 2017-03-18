@@ -280,7 +280,7 @@ final class UserSession implements \SessionHandlerInterface {
      * @see UserSession::data
      */
     public function read($phpSessId) {
-        return ($this->data);
+        return (!empty($this->data))?$this->data:'';
     }
 
     /**

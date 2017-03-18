@@ -287,7 +287,17 @@
         <xsl:variable name="PATH" select="@path"/>
         <xsl:variable name="NAME" select="@name"/>
         <xsl:if test="contains($PATH,'jquery')">
-            <script type="text/javascript" src="{@path}"/>
+
+                <script type="text/javascript">
+                    <xsl:attribute name="src">
+                        <xsl:if test="not((substring(@path, 1,2) = '//') or (substring(@path, 1,4) = 'http'))">
+                            <xsl:value-of select="$STATIC_URL"/>
+                        </xsl:if>
+                        <xsl:value-of select="@path"/>
+                    </xsl:attribute>
+                </script>
+
+
         </xsl:if>
         <xsl:if test="//behavior[@use='jquery']/@name=$NAME">
             <script type="text/javascript" src="{$STATIC_URL}scripts/{@path}.js"/>

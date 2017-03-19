@@ -423,15 +423,11 @@ adr_street as order_street
             $logoUrl = sprintf('%s/%s', HTDOCS_DIR, $logoUrl);
         }
 
-        try {
-            $gdImage = imagecreatefromjpeg($logoUrl);
-        } catch (\Exception $e) {
-            try {
-                $gdImage = imagecreatefrompng($logoUrl);
-            } catch (\Exception $exception) {
-                $gdImage = '';
-            }
-        }
+            $gdImage = @imagecreatefromjpeg($logoUrl); //modbysd according to php examples,try-catch fails
+            if (!$gdImage)
+                $gdImage = @imagecreatefrompng($logoUrl);
+            if (!$gdImage)
+                $gdImage = '';     
 
         $objDrawing = new PHPExcel_Worksheet_MemoryDrawing();
         $objDrawing->setCoordinates('A1');

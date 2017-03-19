@@ -418,17 +418,28 @@ adr_street as order_street
             'SELECT su.upl_path FROM share_sites_uploads as ssu,share_uploads as su WHERE (ssu.site_id=%s) and (ssu.upl_id=su.upl_id) and (su.upl_is_active=1) ORDER BY ssu.ssu_order_num  LIMIT 1',
             $site_id
         );
-        if($logoUrl===false) return;
-
-        if (strpos($logoUrl, 'http') === false) {
-            $logoUrl = sprintf('%s/%s', HTDOCS_DIR, $logoUrl);
-        }
-
-            $gdImage = @imagecreatefromjpeg($logoUrl); //modbysd according to php examples,try-catch fails
-            if (!$gdImage)
-                $gdImage = @imagecreatefrompng($logoUrl);
-            if (!$gdImage)
-                $gdImage = '';     
+         
+	if($logoUrl!==false) {
+	  if (strpos($logoUrl, 'http') === false) 
+	      $logoUrl = sprintf('%s/%s', HTDOCS_DIR, $logoUrl);
+          $size=getimagesize($logoUrl);
+        } else { $size["mime"]='';}
+        switch($size["mime"]){
+	  case "image/jpeg":
+            $gdImage = imagecreatefromjpeg($logoUrl); //jpeg file
+	    break;
+	  case "image/gif":
+            $gdImage = imagecreatefromgif($logoUrl); //gif file
+	    break;
+	  case "image/png":
+	    $gdImage = imagecreatefrompng($logoUrl); //png file
+	  break;
+	  default: 
+	    $gdImage=imagecreatetruecolor(2, 2);
+	    $w=imagecolorallocate($gdImage, 255, 255, 255);
+	    imagefill($gdImage,0,0,$w);
+	  break;
+	}
 
         $objDrawing = new PHPExcel_Worksheet_MemoryDrawing();
         $objDrawing->setCoordinates('A1');

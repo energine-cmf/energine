@@ -298,7 +298,7 @@ adr_street as order_street
             } else {
                 $where_condition=" = '".$campagin["order_campagin"]."' ";
             }             
-            $sql="SELECT IF(order_campagin IS NULL,'".$tNoCampagin."',order_campagin),order_id,order_updated,order_user_name,
+            $sql="SELECT IF(order_campagin IS NULL,'".$tNoCampagin."',order_campagin),order_id,order_updated,order_user_name,            
             QUOTE(order_phone) as  order_phone,order_total,order_discount,order_promocode,shop_order_statuses.status_sysname FROM ".$shop_table." LEFT JOIN shop_order_statuses ON shop_orders.status_id=shop_order_statuses.status_id 
             WHERE shop_orders.order_campagin".$where_condition." 
              UNION 
@@ -339,8 +339,9 @@ adr_street as order_street
                 WHERE order_id=".intval($item)." LIMIT 1";
                 $order_data=$this->dbh->select($sql);                
                 $order_data=$order_data[0];
-                $sql="SELECT goods_id,goods_title,goods_quantity,goods_price,goods_amount            
-                FROM shop_orders_goods
+                $sql="SELECT sg.goods_code as goods_id,goods_title,goods_quantity,sog.goods_price as goods_price,goods_amount            
+                FROM shop_orders_goods as sog
+                 LEFT JOIN shop_goods as sg ON sog.goods_id=sg.goods_id
                 WHERE order_id=".intval($item)."";
                 $order_goods=$this->dbh->select($sql);
                 

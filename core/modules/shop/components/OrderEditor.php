@@ -292,8 +292,8 @@ adr_street as order_street
             $shop_table=$this->getTableName();            
             $sql="SELECT distinct order_campagin FROM ".$shop_table;
             $campagins=$this->dbh->select($sql);
-            foreach ($campagins as $campagin ) {
-            if ($campagin["order_campagin"]==NULL) {
+            foreach ($campagins as $campagin ) { 
+            if (is_null($campagin["order_campagin"])) { //nullcheck otherwise fails on empty string
                 $where_condition=" IS NULL ";
             } else {
                 $where_condition=" = '".$campagin["order_campagin"]."' ";
@@ -303,7 +303,6 @@ adr_street as order_street
             WHERE shop_orders.order_campagin".$where_condition." 
              UNION 
             SELECT 'Sum','','','','',SUM(order_total),SUM(order_discount),'','' FROM ".$shop_table." WHERE order_campagin".$where_condition;
-            
             $orders=$this->dbh->select($sql);            
             $txt_campagin=($campagin["order_campagin"]==NULL)?$tNoCampagin:$campagin["order_campagin"];
             array_unshift($orders,[0=>$txt_campagin]);

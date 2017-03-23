@@ -79,7 +79,7 @@ var Grid = (function () {
             }
         }
 
-        // Создаем новую строку в таблице.
+        // Создаем новую строку в таблице.        
         row = new Element('tr').addClass((id % 2 == 0) ? 'odd' : 'even').setProperty('unselectable', 'on').inject(this.tbody);
         
         // Сохраняем запись в объекте строки.
@@ -540,6 +540,7 @@ var Grid = (function () {
             }
 
             var cell = new Element('td').setProperty('unselectable', 'on').inject(row);
+	    cell.addClass(fieldName); // добавляем имя поля в класс
             switch (this.metadata[fieldName].type) {
                 case 'boolean':
                     var checkbox = new Element('img').setProperties({

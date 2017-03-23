@@ -292,18 +292,17 @@ adr_street as order_street
             $shop_table=$this->getTableName();            
             $sql="SELECT distinct order_campagin FROM ".$shop_table;
             $campagins=$this->dbh->select($sql);
-            foreach ($campagins as $campagin ) {
-            if ($campagin["order_campagin"]==NULL) {
+            foreach ($campagins as $campagin ) { 
+            if (is_null($campagin["order_campagin"])) { //nullcheck otherwise fails on empty string
                 $where_condition=" IS NULL ";
             } else {
                 $where_condition=" = '".$campagin["order_campagin"]."' ";
             }             
-            $sql="SELECT IF(order_campagin IS NULL,'".$tNoCampagin."',order_campagin),order_id,order_updated,order_user_name,
+            $sql="SELECT IF(order_campagin IS NULL,'".$tNoCampagin."',order_campagin),order_id,order_updated,order_user_name,            
             QUOTE(order_phone) as  order_phone,order_total,order_discount,order_promocode,shop_order_statuses.status_sysname FROM ".$shop_table." LEFT JOIN shop_order_statuses ON shop_orders.status_id=shop_order_statuses.status_id 
             WHERE shop_orders.order_campagin".$where_condition." 
              UNION 
             SELECT 'Sum','','','','',SUM(order_total),SUM(order_discount),'','' FROM ".$shop_table." WHERE order_campagin".$where_condition;
-            
             $orders=$this->dbh->select($sql);            
             $txt_campagin=($campagin["order_campagin"]==NULL)?$tNoCampagin:$campagin["order_campagin"];
             array_unshift($orders,[0=>$txt_campagin]);
@@ -339,8 +338,9 @@ adr_street as order_street
                 WHERE order_id=".intval($item)." LIMIT 1";
                 $order_data=$this->dbh->select($sql);                
                 $order_data=$order_data[0];
-                $sql="SELECT goods_id,goods_title,goods_quantity,goods_price,goods_amount            
-                FROM shop_orders_goods
+                $sql="SELECT sg.goods_code as goods_id,goods_title,goods_quantity,sog.goods_price as goods_price,goods_amount            
+                FROM shop_orders_goods as sog
+                 LEFT JOIN shop_goods as sg ON sog.goods_id=sg.goods_id
                 WHERE order_id=".intval($item)."";
                 $order_goods=$this->dbh->select($sql);
                 
@@ -417,21 +417,28 @@ adr_street as order_street
             'SELECT su.upl_path FROM share_sites_uploads as ssu,share_uploads as su WHERE (ssu.site_id=%s) and (ssu.upl_id=su.upl_id) and (su.upl_is_active=1) ORDER BY ssu.ssu_order_num  LIMIT 1',
             $site_id
         );
-        if($logoUrl===false) return;
-
-        if (strpos($logoUrl, 'http') === false) {
-            $logoUrl = sprintf('%s/%s', HTDOCS_DIR, $logoUrl);
-        }
-
-        try {
-            $gdImage = imagecreatefromjpeg($logoUrl);
-        } catch (\Exception $e) {
-            try {
-                $gdImage = imagecreatefrompng($logoUrl);
-            } catch (\Exception $exception) {
-                $gdImage = '';
-            }
-        }
+         
+	if($logoUrl!==false) {
+	  if (strpos($logoUrl, 'http') === false) 
+	      $logoUrl = sprintf('%s/%s', HTDOCS_DIR, $logoUrl);
+          $size=getimagesize($logoUrl);
+        } else { $size["mime"]='';}
+        switch($size["mime"]){
+	  case "image/jpeg":
+            $gdImage = imagecreatefromjpeg($logoUrl); //jpeg file
+	    break;
+	  case "image/gif":
+            $gdImage = imagecreatefromgif($logoUrl); //gif file
+	    break;
+	  case "image/png":
+	    $gdImage = imagecreatefrompng($logoUrl); //png file
+	  break;
+	  default: 
+	    $gdImage=imagecreatetruecolor(2, 2);
+	    $w=imagecolorallocate($gdImage, 255, 255, 255);
+	    imagefill($gdImage,0,0,$w);
+	  break;
+	}
 
         $objDrawing = new PHPExcel_Worksheet_MemoryDrawing();
         $objDrawing->setCoordinates('A1');

@@ -118,7 +118,10 @@ class ErrorDocument extends Primitive implements IDocument {
             }
         }
     }
-
+    public function setProperties($name,$value) {
+	if (is_null($this->doc)) return;
+	$this->doc->getElementsByTagName('properties')[0]->setAttribute($name,$value);
+    }
     public function getResult() {
         return $this->doc;
     }

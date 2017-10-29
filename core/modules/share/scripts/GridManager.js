@@ -723,11 +723,13 @@ var Grid = (function () {
                     freespace -= this.pane.getPosition().y + ScrollBarWidth ;
                 }
 
-                if (totalH > paneH) {                    
-                    this.pane.setStyle('height', (totalH > freespace) ? freespace : totalH);                     
-                    if (this.pane.parentNode.parentNode.parentNode.hasClass("fitGridHeightToLeftCol")) {
-                        var fitGridHeightToLeftCol=$$('div[column=left]')[0].clientHeight-(toolbarH + gridHeadH-30);//ugly
-                        //var fitGridHeightToLeftCol=$$('div[column=left]')[0].clientHeight-(toolbarH+gridHeadH+paneToolbarBH);//ugly
+                if (totalH > paneH) {
+                    this.pane.setStyle('height', (totalH > freespace) ? freespace : totalH);
+                    var leftCol=$$('div[column=left]');//ugly
+
+                    if (this.pane.parentNode.parentNode.parentNode.hasClass("fitGridHeightToLeftCol") && leftCol.length) {
+                        var fitGridHeightToLeftCol=leftCol.clientHeight-(toolbarH + gridHeadH-30);//ugly
+
                         this.pane.setStyle('height', fitGridHeightToLeftCol);
                     }
                 }
